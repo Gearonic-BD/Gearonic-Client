@@ -1,9 +1,13 @@
 import type { Metadata } from "next";
-import "./globals.css";
+import "../styles/globals.css";
+import Navbar from "@/components/Navbar";
 
 export const metadata: Metadata = {
   title: "Gearonic BD",
   description: "The largest ecommerce platform for electronics in Bangladesh",
+  icons: {
+    icon: "/fav.svg",
+  },
 };
 
 export default function RootLayout({
@@ -13,7 +17,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <Navbar />
+        {children}
+      </body>
     </html>
   );
 }
