@@ -1,0 +1,24 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
+
+@import "tailwindcss";
+
+html {
+  font-family: "Roboto", sans-serif;
+}
+
+@theme {
+  /* breakpoints */
+  --breakpoint-xs: 30rem; /* 480px */
+  --breakpoint-ml: 56rem; /* 896px */
+  /* colors */
+  --color-primary-green: #01e376;
+  --color-primary: #ff9800;
+  --color-warning: #ffc107;
+  --color-success: #01e376;
+  --color-info: #2196f3;
+  --color-danger: #f44336;
+
+  --color-offblack: #222222
+  --color-text-light: #666666;
+}
+/* #FED700 #EF262C */
