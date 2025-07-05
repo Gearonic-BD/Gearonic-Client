@@ -1,5 +1,11 @@
+import HomeSwiper from "@/components/HomeSwiper";
+
 const Home = () => {
-  return <div>hello world</div>;
+  return (
+    <>
+      <HomeSwiper />
+    </>
+  );
 };
 
 export default Home;

@@ -109,6 +109,8 @@ const Navbar = () => {
           </div>
         )}
       </nav>
+      <div className="h-[144px] hidden ml:block" />
+      <div className="h-[96px] ml:hidden" />
 
       {/* Sidebar Component (mobile only) */}
       <SideNavbar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
