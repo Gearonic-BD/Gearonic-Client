@@ -1,58 +1,102 @@
-"use client"; // This is a Client Component
+"use client";
 
+type ErrorComponentProps = {
+  error: Error & { digest?: string }; 
+  reset: () => void; 
+};
+
+import Link from "next/link";
 import { useEffect } from "react";
-import Link from "next/link"; // Import Link for client-side navigation
+import { AlertTriangle, Home, RefreshCw, ArrowLeft } from "lucide-react";
 
-export default function Error({
-  error,
-  reset,
-}: {
-  error: Error & { digest?: string };
-  reset: () => void;
-}) {
-  // Log the error to an error reporting service
+export default function Error({ error, reset }: ErrorComponentProps) {
   useEffect(() => {
-    console.error(error);
+    // Log error to error reporting service
+    console.error("Error boundary caught an error:", error);
   }, [error]);
 
-  return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900 p-4 sm:p-6 lg:p-8">
-      {/* Container for the content, centered and styled */}
-      <div className="bg-white dark:bg-gray-800 shadow-xl rounded-xl p-8 md:p-12 text-center max-w-lg w-full">
-        {/* Error icon or prominent text */}
-        <div className="text-6xl md:text-8xl text-red-500 dark:text-red-400 mb-4">
-          &#9888; {/* Unicode warning sign */}
-        </div>
-        {/* Main error message */}
-        <h1 className="text-3xl md:text-4xl font-bold text-gray-800 dark:text-gray-100 mb-4">
-          Something Went Wrong!
-        </h1>
-        {/* Explanatory text */}
-        <p className="text-lg text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">
-          We are sorry, but an unexpected error occurred. Please try again.
-        </p>
-        {/* Optional: Display error details for debugging (remove in production) */}
-        {/* <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-          Error details: {error.message}
-        </p> */}
+  const getErrorInfo = () => {
+    if (error?.digest) {
+      return {
+        title: "Server Error",
+        message: "Something went wrong on our end. Please try again later.",
+        code: "500",
+      };
+    }
 
-        {/* Action buttons */}
-        <div className="flex flex-col sm:flex-row justify-center gap-4">
+    if (error?.message?.includes("fetch")) {
+      return {
+        title: "Network Error",
+        message:
+          "Unable to connect to our servers. Please check your internet connection.",
+        code: "NET",
+      };
+    }
+
+    return {
+      title: "Something went wrong",
+      message: "An unexpected error occurred. Please try refreshing the page.",
+      code: "ERR",
+    };
+  };
+
+  const errorInfo = getErrorInfo();
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="max-w-md w-full mx-auto text-center px-4">
+        {/* Error Icon */}
+        <div className="mb-8">
+          <div className="w-24 h-24 mx-auto bg-red-100 rounded-full flex items-center justify-center mb-6">
+            <AlertTriangle className="w-12 h-12 text-red-500" />
+          </div>
+
+          {/* Error Code */}
+          <div className="text-6xl font-bold text-gray-200 mb-2">
+            {errorInfo.code}
+          </div>
+
+          <h1 className="text-3xl font-semibold text-gray-800 mb-2">
+            {errorInfo.title}
+          </h1>
+
+          <p className="text-gray-600 text-lg mb-6">{errorInfo.message}</p>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="space-y-4 mb-8">
           <button
-            className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-all duration-300 transform hover:scale-105"
-            onClick={
-             
-              () => reset()
-            }
+            onClick={reset}
+            className="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary/90 transition-colors w-full justify-center"
           >
+            <RefreshCw size={20} />
             Try Again
           </button>
-          <Link
-            href="/"
-            className="inline-flex items-center px-6 py-3 border border-gray-300 text-base font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-300 transform hover:scale-105 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
-          >
-            Go to Homepage
-          </Link>
+
+          <div className="flex gap-3">
+            <Link
+              href="/"
+              className="flex-1 inline-flex items-center gap-2 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors justify-center"
+            >
+              <Home size={18} />
+              Go Home
+            </Link>
+
+            <button
+              onClick={() => window.history.back()}
+              className="flex-1 inline-flex items-center gap-2 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors justify-center"
+            >
+              <ArrowLeft size={18} />
+              Go Back
+            </button>
+          </div>
+        </div>
+
+        {/* Additional Help */}
+        <div className="pt-8 border-t border-gray-200">
+          <p className="text-sm text-gray-500 mb-4">
+            If this problem persists, please contact support
+          </p>
         </div>
       </div>
     </div>

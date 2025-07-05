@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "../styles/globals.css";
 import Navbar from "@/components/Navbar";
+import BottomNavbar from "@/components/BottomNavbar";
 
 export const metadata: Metadata = {
   title: "Gearonic BD",
@@ -20,6 +21,7 @@ export default function RootLayout({
       <body>
         <Navbar />
         {children}
+        <BottomNavbar />
       </body>
     </html>
   );

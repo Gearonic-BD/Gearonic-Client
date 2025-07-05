@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import Link from "next/link";
 import { Home, ArrowLeft } from "lucide-react";
@@ -40,7 +40,6 @@ export default function NotFound() {
             Go Back
           </button>
         </div>
-
       </div>
     </div>
   );

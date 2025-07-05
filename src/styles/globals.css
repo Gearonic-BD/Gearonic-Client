@@ -9,6 +9,7 @@ html {
 @theme {
   /* breakpoints */
   --breakpoint-xs: 30rem; /* 480px */
+  --breakpoint-ml: 56rem; /* 896px */
   /* colors */
   --color-primary-green: #01e376;
   --color-primary: #ff9800;
