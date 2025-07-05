@@ -22,3 +22,7 @@ html {
   --color-text-light: #666666;
 }
 /* #FED700 #EF262C */
+
+body{
+  background-color: #f5f5f5;
+}
