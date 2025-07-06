@@ -16,11 +16,10 @@ const FlashSaleProductCard = ({ product }: { product: Product }) => {
   );
   const soldPercentage = (product.sold / product.totalStock) * 100;
   return (
-    <div className="rounded-lg bg-white shadow-sm overflow-hidden group transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+    <div className="rounded-lg bg-white active:scale-98 shadow-sm overflow-hidden group transition-all duration-300 active:shadow-lg active:-translate-y-1 hover:shadow-lg hover:-translate-y-1">
       <Link href={"/product/iphone"} className="block ">
         {/* Image Container */}
         <div className="p-4 relative">
-          {" "}
           {/* Make this relative */}
           <img
             src={product.image}
@@ -36,7 +35,7 @@ const FlashSaleProductCard = ({ product }: { product: Product }) => {
         {/* Content Container */}
         <div className="px-4 pb-4 flex flex-col space-y-3">
           <h3
-            className="text-sm font-semibold text-gray-800 line-clamp-2"
+            className="text-sm group-active:text-danger group-hover:text-danger transition-all font-semibold text-gray-800 line-clamp-2"
             title={product.title}
           >
             {product.title}
