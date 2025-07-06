@@ -1,5 +1,5 @@
 "use client";
-import { Navigation, Pagination } from "swiper/modules";
+import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
@@ -94,10 +94,15 @@ const HomeFeaturedCategories = () => {
       {/* Categories Carousel */}
       <div className="relative">
         <Swiper
-          modules={[Navigation, Pagination]}
+          modules={[Navigation, Pagination, Autoplay]}
           onSwiper={(swiper) => (swiperRef.current = swiper)}
           spaceBetween={16}
           loop={true}
+          autoplay={{
+            delay: 3000,
+            disableOnInteraction: false,
+            pauseOnMouseEnter: true,
+          }}
           pagination={{
             clickable: true,
             el: ".custom-pagination",

@@ -5,10 +5,10 @@ const NavCategoryLink = ({ href, text }: { href: string; text: string }) => {
     <div className="group">
       <Link
         href={href}
-        className="relative font-medium text-[15px]  lg:px-2 py-1 text-offblack hover:text-primary transition-colors duration-200"
+        className="relative font-medium text-sm lg:text-[15px] px-3 py-2 text-gray-700 hover:text-primary transition-colors duration-200 whitespace-nowrap rounded-lg "
       >
         {text}
-        <span className="absolute left-0 -bottom-0.5 w-full h-0.5 bg-primary scale-x-0 origin-left transition-transform duration-300 ease-in-out group-hover:scale-x-100" />
+        <span className="absolute left-1/2 -bottom-1 w-0 h-0.5 bg-primary transition-all duration-300 ease-in-out group-hover:w-full group-hover:left-0" />
       </Link>
     </div>
   );

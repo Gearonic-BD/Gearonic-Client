@@ -1,5 +1,4 @@
 "use client";
-
 import { SearchIcon, ShoppingCart, User2, Zap, Menu } from "lucide-react";
 import Link from "next/link";
 import SideNavbar from "./SideNavbar";
@@ -12,105 +11,133 @@ const Navbar = () => {
 
   return (
     <>
-      <nav className="w-full h-fit ml:shadow-md fixed top-0 left-0 z-50 bg-white">
-        <div className="container ml:shadow-none shadow-md max-w-[1280px] py-2 mx-auto flex items-center justify-between px-4 gap-4 lg:gap-12">
-          <div className="flex items-center gap-2">
+      <nav className="w-full h-fit shadow-sm border-b border-gray-100 fixed top-0 left-0 z-50 bg-white/95 backdrop-blur-sm">
+        <div className="container max-w-[1280px] py-3 mx-auto flex items-center justify-between px-4 gap-4 lg:gap-8">
+          <div className="flex items-center gap-3">
             {/* Sidebar Toggle (visible on small screens) */}
             <button
-              className="block ml:hidden"
+              className="block ml:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors"
               onClick={() => setSidebarOpen(true)}
             >
-              <Menu />
+              <Menu size={20} />
             </button>
 
             {/* Logo */}
-            <Link href={"/"} className="">
-              <img className="w-30 lg:w-36" src="/logo.svg" alt="Gearonic BD" />
+            <Link href={"/"} className="flex-shrink-0">
+              <img className="w-28 lg:w-32" src="/logo.svg" alt="Gearonic BD" />
             </Link>
           </div>
 
           {/* Search (hidden on mobile) */}
-          <div className="flex-1 hidden sm:block">
-            <div className="flex items-stretch">
+          <div className="flex-1 hidden sm:block max-w-lg lg:max-w-xl xl:max-w-2xl mx-4">
+            <div className="flex items-stretch rounded-lg overflow-hidden shadow-sm border border-gray-200 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20 transition-all">
               <input
-                className="w-full text-sm focus:border-primary rounded-l-xs border border-r-0 border-text-light px-2 py-2 outline-none"
+                className="w-full text-sm px-4 py-2.5 outline-none placeholder:text-gray-400"
                 type="text"
+                placeholder="Search for products..."
               />
-              <button className="bg-primary cursor-pointer rounded-r-xs border w-10 flex items-center justify-center border-primary">
-                <SearchIcon className="text-white" />
+              <button className="bg-primary hover:bg-primary/90 cursor-pointer px-4 flex items-center justify-center transition-colors">
+                <SearchIcon className="text-white" size={18} />
               </button>
             </div>
           </div>
 
           {/* Icons */}
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-4">
             <button
-              className="block sm:hidden cursor-pointer"
+              className="block sm:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors"
               onClick={() => setShowMobileSearch((prev) => !prev)}
             >
-              <SearchIcon />
+              <SearchIcon size={20} />
             </button>
 
             <Link
-              href={"/cart"}
-              className="xs:flex hidden items-center gap-1 hover:text-primary transition-all"
+              href={"/offers"}
+              className="xs:flex hidden items-center gap-2 px-3 py-2 hover:bg-gray-50 rounded-lg transition-colors group"
             >
-              <Zap />
-              <span className="hidden md:block">Offers</span>
+              <Zap
+                size={18}
+                className="group-hover:text-primary transition-colors"
+              />
+              <span className="hidden md:block text-sm font-medium">
+                Offers
+              </span>
             </Link>
+
             <div className="relative">
               <Link
                 href={"/cart"}
-                className="xs:flex hidden items-center gap-1 hover:text-primary transition-all"
+                className="xs:flex hidden items-center gap-2 px-3 py-2 hover:bg-gray-50 rounded-lg transition-colors group relative"
               >
-                <ShoppingCart />
-                <span className="hidden md:block">Cart</span>
-                <span className="absolute -top-3 left-4 text-sm bg-primary px-1.5 text-white rounded-full">
+                <ShoppingCart
+                  size={18}
+                  className="group-hover:text-primary transition-colors"
+                />
+                <span className="hidden md:block text-sm font-medium">
+                  Cart
+                </span>
+                <span className="absolute -top-1 -right-1 text-xs bg-primary text-white rounded-full w-5 h-5 flex items-center justify-center font-medium">
                   2
                 </span>
               </Link>
             </div>
+
             <Link
-              href={"/cart"}
-              className=" relative xs:flex hidden items-center gap-1 hover:text-primary transition-all"
+              href={"/account"}
+              className="xs:flex hidden items-center gap-2 px-3 py-2 hover:bg-gray-50 rounded-lg transition-colors group"
             >
-              <User2 />
-              <span className="hidden md:block">Account</span>
+              <User2
+                size={18}
+                className="group-hover:text-primary transition-colors"
+              />
+              <span className="hidden md:block text-sm font-medium">
+                Account
+              </span>
             </Link>
           </div>
         </div>
 
         {/* Desktop category bar (visible on medium+) */}
-        <div className="container pb-1.5 gap-2 bg-white w-fit ml:w-full ml:gap-0 max-w-[1280px] justify-between mx-auto px-4 hidden ml:flex flex-row items-center">
-          <NavCategoryLink href="/categories/mobile" text="Mobiles" />
-          <NavCategoryLink href="/categories/mobile" text="Airpods" />
-          <NavCategoryLink href="/categories/mobile" text="Powerbanks" />
-          <NavCategoryLink href="/categories/mobile" text="Smartwatches" />
-          <NavCategoryLink href="/categories/mobile" text="Speakers" />
-          <NavCategoryLink href="/categories/mobile" text="Chargers" />
-          <NavCategoryLink href="/categories/mobile" text="Mouse" />
-          <NavCategoryLink href="/categories/mobile" text="Keyboards" />
-          <NavCategoryLink href="/categories/mobile" text="Accessories" />
-          <NavCategoryLink href="/categories/mobile" text="Adapters" />
-          <NavCategoryLink href="/categories/mobile" text="Routers" />
+        <div className="container max-w-[1280px] mx-auto px-4 hidden ml:flex items-center justify-center border-t border-gray-50 bg-gray-50/50">
+          <div className="flex items-center gap-6 py-2 overflow-x-auto scrollbar-hide">
+            <NavCategoryLink href="/categories/mobile" text="Mobiles" />
+            <NavCategoryLink href="/categories/airpods" text="Airpods" />
+            <NavCategoryLink href="/categories/powerbanks" text="Powerbanks" />
+            <NavCategoryLink
+              href="/categories/smartwatches"
+              text="Smartwatches"
+            />
+            <NavCategoryLink href="/categories/speakers" text="Speakers" />
+            <NavCategoryLink href="/categories/chargers" text="Chargers" />
+            <NavCategoryLink href="/categories/mouse" text="Mouse" />
+            <NavCategoryLink href="/categories/keyboards" text="Keyboards" />
+            <NavCategoryLink
+              href="/categories/accessories"
+              text="Accessories"
+            />
+            <NavCategoryLink href="/categories/adapters" text="Adapters" />
+            <NavCategoryLink href="/categories/routers" text="Routers" />
+          </div>
         </div>
+
         {showMobileSearch && (
-          <div className="block sm:hidden bg-white shadow-md px-4 py-2 w-full absolute top-[100%] z-40">
-            <div className="flex items-stretch">
+          <div className="block sm:hidden bg-white border-t border-gray-100 px-4 py-3 w-full absolute top-full z-40 shadow-sm">
+            <div className="flex items-stretch rounded-lg overflow-hidden shadow-sm border border-gray-200 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20 transition-all">
               <input
-                className="w-full text-sm focus:border-primary border rounded-l-xs border-r-0 border-text-light px-2 py-2 outline-none"
+                className="w-full text-sm px-4 py-2.5 outline-none placeholder:text-gray-400"
                 type="text"
                 placeholder="Search products..."
+                autoFocus
               />
-              <button className="bg-primary cursor-pointer rounded-r-xs border border-primary w-10 flex items-center justify-center ">
-                <SearchIcon className="text-white" />
+              <button className="bg-primary hover:bg-primary/90 cursor-pointer px-4 flex items-center justify-center transition-colors">
+                <SearchIcon className="text-white" size={18} />
               </button>
             </div>
           </div>
         )}
       </nav>
-      <div className="h-[144px] hidden ml:block" />
-      <div className="h-[96px] ml:hidden" />
+      <div className="h-[120px] hidden ml:block" />
+      <div className="h-[80px] ml:hidden" />
 
       {/* Sidebar Component (mobile only) */}
       <SideNavbar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />

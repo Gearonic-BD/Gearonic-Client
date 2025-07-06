@@ -23,7 +23,7 @@ const HomeSwiper = () => {
   ];
 
   return (
-    <section className="max-w-[1280px] h-fit px-3 sm:px-6 container grid grid-cols-2 sm:grid-cols-3 sm:grid-rows-2 gap-4 gap-y-2 mx-auto relative">
+    <section className="max-w-[1280px] h-fit px-3 sm:px-6 container grid grid-cols-2 sm:grid-cols-3 sm:grid-rows-2 gap-4 gap-y-2 mx-auto relative pt-5 sm:pt-8" >
       <div className="relative col-span-2 sm:row-span-2">
         <Swiper
           modules={[Navigation, Pagination, Autoplay]}

@@ -1,6 +1,6 @@
 "use client";
 
-import { Navigation } from "swiper/modules";
+import { Autoplay, Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 
 // Import Swiper styles
@@ -73,7 +73,7 @@ const HomeFlashSale = () => {
         </div>
 
         <Swiper
-          modules={[Navigation]}
+          modules={[Navigation, Autoplay]}
           loop={true}
           onSwiper={(swiper) => (swiperRef.current = swiper)}
           spaceBetween={10}
@@ -84,6 +84,11 @@ const HomeFlashSale = () => {
             960: { slidesPerView: 4 },
             1024: { slidesPerView: 5 },
             1280: { slidesPerView: 6 },
+          }}
+          autoplay={{
+            delay: 3500,
+            disableOnInteraction: false,
+            pauseOnMouseEnter: true,
           }}
         >
           <SwiperSlide className="py-2">
