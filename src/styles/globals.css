@@ -10,6 +10,7 @@ html {
   /* breakpoints */
   --breakpoint-xs: 30rem; /* 480px */
   --breakpoint-ml: 56rem; /* 896px */
+  --breakpoint-2xs: 18.75rem; /* 300px */
   /* colors */
   --color-primary-green: #01e376;
   --color-primary: #ff9800;
@@ -25,4 +26,13 @@ html {
 
 body{
   background-color: #f5f5f5;
+}
+
+/* Hide scrollbar for category navigation */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* Internet Explorer 10+ */
+  scrollbar-width: none;  /* Firefox */
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;  /* Safari and Chrome */
 }
