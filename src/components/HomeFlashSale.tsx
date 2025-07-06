@@ -11,6 +11,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useRef } from "react";
 import type { Swiper as SwiperType } from "swiper";
 import Link from "next/link";
+import SectionHeader from "./SectionHeader";
 
 const product = {
   image: "/assets/iphone.png",
@@ -37,10 +38,10 @@ const HomeFlashSale = () => {
   const swiperRef = useRef<SwiperType | null>(null);
 
   return (
-    <section className="max-w-[1280px] mb-64 my-8 mx-auto  container px-3">
-      <h2 className="my-2 text-2xl font-bold">Flash Sale🔥</h2>
+    <section className="w-full max-w-[1280px] px-4 sm:px-6 mx-auto my-8">
+      <SectionHeader text="Flash Sale🔥" />
       {/* <h2 className="text-2xl font-bold">Flash Sale 🔥</h2> */}
-      <div className="p-2 sm:p-4 relative bg-[#f9f9f9]">
+      <div className=" relative ">
         <div className="flex items-center justify-between w-full mb-2">
           <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
             <div className="text-center sm:text-right">
@@ -85,40 +86,40 @@ const HomeFlashSale = () => {
             1280: { slidesPerView: 6 },
           }}
         >
-          <SwiperSlide>
+          <SwiperSlide className="py-2">
             <FlashSaleProductCard product={product} />
           </SwiperSlide>
-          <SwiperSlide>
+          <SwiperSlide className="py-2">
             <FlashSaleProductCard product={product2} />
           </SwiperSlide>
-          <SwiperSlide>
+          <SwiperSlide className="py-2">
             <FlashSaleProductCard product={product} />
           </SwiperSlide>
-          <SwiperSlide>
+          <SwiperSlide className="py-2">
             <FlashSaleProductCard product={product2} />
           </SwiperSlide>
-          <SwiperSlide>
+          <SwiperSlide className="py-2">
             <FlashSaleProductCard product={product} />
           </SwiperSlide>
-          <SwiperSlide>
+          <SwiperSlide className="py-2">
             <FlashSaleProductCard product={product2} />
           </SwiperSlide>
-          <SwiperSlide>
+          <SwiperSlide className="py-2">
             <FlashSaleProductCard product={product} />
           </SwiperSlide>
-          <SwiperSlide>
+          <SwiperSlide className="py-2">
             <FlashSaleProductCard product={product2} />
           </SwiperSlide>
-          <SwiperSlide>
+          <SwiperSlide className="py-2">
             <FlashSaleProductCard product={product} />
           </SwiperSlide>
-          <SwiperSlide>
+          <SwiperSlide className="py-2">
             <FlashSaleProductCard product={product2} />
           </SwiperSlide>
-          <SwiperSlide>
+          <SwiperSlide className="py-2">
             <FlashSaleProductCard product={product} />
           </SwiperSlide>
-          <SwiperSlide>
+          <SwiperSlide className="py-2">
             <FlashSaleProductCard product={product2} />
           </SwiperSlide>
         </Swiper>
