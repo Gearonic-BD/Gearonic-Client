@@ -23,7 +23,7 @@ const HomeSwiper = () => {
   ];
 
   return (
-    <section className="max-w-[1280px] h-fit px-3 sm:px-6 container grid grid-cols-2 sm:grid-cols-3 grid-rows-2 gap-4 gap-y-2 mx-auto relative">
+    <section className="max-w-[1280px] h-fit px-3 sm:px-6 container grid grid-cols-2 sm:grid-cols-3 sm:grid-rows-2 gap-4 gap-y-2 mx-auto relative">
       <div className="relative col-span-2 sm:row-span-2">
         <Swiper
           modules={[Navigation, Pagination, Autoplay]}
@@ -32,8 +32,8 @@ const HomeSwiper = () => {
           slidesPerView={1}
           loop={true}
           autoplay={{
-            delay: 3000, 
-            disableOnInteraction: false, 
+            delay: 3000,
+            disableOnInteraction: false,
           }}
         >
           {slides.map((src, index) => (
@@ -60,7 +60,7 @@ const HomeSwiper = () => {
         </button>
 
         {/* Custom Pagination */}
-        <div className="flex absolute bottom-4 left-1/2 -translate-x-1/2 z-50 justify-center mt-4 gap-2">
+        <div className="flex absolute bottom-4 left-1/2 -translate-x-1/2 z-40 justify-center mt-4 gap-2">
           {slides.map((_, index) => (
             <div
               key={index}
@@ -72,12 +72,12 @@ const HomeSwiper = () => {
           ))}
         </div>
       </div>
-      <div>
+      <div className="h-fit">
         <Link href={"/flash-sale"}>
           <img src="/assets/flash.png" alt="" />
         </Link>
       </div>
-      <div>
+      <div className="h-fit">
         <Link href={"/deals"}>
           <img src="/assets/deals.png" alt="" />
         </Link>
