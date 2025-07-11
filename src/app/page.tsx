@@ -1,6 +1,7 @@
 import HomeFeaturedCategories from "@/components/HomeFeaturedCategories";
 import HomeFeaturedProducts from "@/components/HomeFeaturedProducts";
 import HomeFlashSale from "@/components/HomeFlashSale";
+import HomeAllCategories from "@/components/HomeAllCategories";
 import HomeSwiper from "@/components/HomeSwiper";
 
 const Home = () => {
@@ -10,6 +11,7 @@ const Home = () => {
       <HomeFlashSale />
       <HomeFeaturedCategories />
       <HomeFeaturedProducts />
+      <HomeAllCategories />
     </>
   );
 };

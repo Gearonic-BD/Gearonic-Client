@@ -1,11 +1,7 @@
+import { Category } from "@/types/types";
 import Link from "next/link";
 
-type Category = {
-  id: number;
-  name: string;
-  image: string;
-  href: string;
-};
+
 
 const CategoryCard = ({ category }: { category: Category }) => {
   return (

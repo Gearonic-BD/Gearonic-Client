@@ -228,7 +228,7 @@ const products = [
 
 const HomeFeaturedProducts = () => {
   return (
-    <section className="max-w-[1280px] mx-auto container mb-64 px-3 sm:px-6">
+    <section className="max-w-[1280px] mx-auto container mb-16 px-3 sm:px-6">
       <SectionHeader text="Featured Products For YOU" />
       <div className="grid 2xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-6 gap-2.5 md:gap-4">
         {products.map((product) => (
