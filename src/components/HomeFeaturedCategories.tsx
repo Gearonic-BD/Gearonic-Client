@@ -138,10 +138,10 @@ const HomeFeaturedCategories = () => {
               <CategoryCard category={category} />
             </SwiperSlide>
           ))}
+        <div className="custom-pagination flex justify-center items-center gap-2 mt-3 md:invisible md:h-0 md:overflow-hidden"></div>
         </Swiper>
 
         {/* Mobile Pagination */}
-        <div className="custom-pagination flex justify-center items-center gap-2 mt-3 md:hidden"></div>
       </div>
     </section>
   );

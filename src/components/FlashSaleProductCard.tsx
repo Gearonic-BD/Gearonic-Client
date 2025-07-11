@@ -1,15 +1,8 @@
+import { Product } from "@/types/types";
 import Link from "next/link";
+type DiscountedProduct = Product & { discountPrice: number };
 
-type Product = {
-  image: string;
-  title: string;
-  originalPrice: number;
-  discountPrice: number;
-  sold: number;
-  totalStock: number;
-};
-
-const FlashSaleProductCard = ({ product }: { product: Product }) => {
+const FlashSaleProductCard = ({ product }: { product: DiscountedProduct }) => {
   const discountPercentage = Math.round(
     ((product.originalPrice - product.discountPrice) / product.originalPrice) *
       100

@@ -1,16 +1,6 @@
 import Link from "next/link";
 import { Star } from "lucide-react";
-
-type Product = {
-  id: string;
-  image: string;
-  title: string;
-  originalPrice: number;
-  discountPrice: number | null;
-  sold: number;
-  totalStock: number;
-  rating: number;
-};
+import { Product } from "@/types/types";
 
 const FeaturedProductCard = ({ product }: { product: Product }) => {
   const discountPercentage = product.discountPrice
@@ -65,7 +55,7 @@ const FeaturedProductCard = ({ product }: { product: Product }) => {
 
   return (
     <div className="rounded-lg bg-white active:scale-98 shadow-sm overflow-hidden group transition-all duration-300 active:shadow-lg active:-translate-y-1 hover:shadow-lg hover:-translate-y-1 h-full flex flex-col">
-      <Link href={"/product/iphone"} className="block flex flex-col h-full">
+      <Link href={"/product/iphone"} className="flex flex-col h-full">
         {/* Image Container */}
         <div className="p-4 relative flex-shrink-0">
           <img

@@ -14,6 +14,7 @@ import Link from "next/link";
 import SectionHeader from "./SectionHeader";
 
 const product = {
+  id: "2",
   image: "/assets/iphone.png",
   title:
     "Iphone 12 Pro Max Special Edition with Extra Long Product Title to Test Two-Line Limitation",
@@ -21,8 +22,10 @@ const product = {
   discountPrice: 2099,
   sold: 80,
   totalStock: 100,
+  rating: 4,
 };
 const product2 = {
+  id: "1",
   image: "/assets/iphone2.png",
   title:
     "Iphone 12 Pro Max Special Edition with Extra Long Product Title to Test Two-Line Limitation",
@@ -30,6 +33,7 @@ const product2 = {
   discountPrice: 20199,
   sold: 40,
   totalStock: 100,
+  rating: 4,
 };
 
 // Calculate discount percentage
