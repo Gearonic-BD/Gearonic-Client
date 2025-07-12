@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { Star } from "lucide-react";
 import { Product } from "@/types/types";
+import { renderStars } from "@/app/utils/ratings";
 
 const FeaturedProductCard = ({ product }: { product: Product }) => {
   const discountPercentage = product.discountPrice
@@ -11,47 +11,6 @@ const FeaturedProductCard = ({ product }: { product: Product }) => {
       )
     : 0;
 
-  const renderStars = (rating: number) => {
-    const stars = [];
-    const fullStars = Math.floor(rating);
-    const hasHalfStar = rating % 1 !== 0;
-
-    // Add full stars
-    for (let i = 0; i < fullStars; i++) {
-      stars.push(
-        <Star
-          key={`full-${i}`}
-          size={12}
-          className="fill-yellow-400 text-yellow-400"
-        />
-      );
-    }
-
-    // Add half star if needed
-    if (hasHalfStar) {
-      stars.push(
-        <div key="half-star" className="relative">
-          <Star size={12} className="text-gray-300" />
-          <div
-            className="absolute inset-0 overflow-hidden"
-            style={{ width: "50%" }}
-          >
-            <Star size={12} className="fill-yellow-400 text-yellow-400" />
-          </div>
-        </div>
-      );
-    }
-
-    // Add empty stars
-    const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
-    for (let i = 0; i < emptyStars; i++) {
-      stars.push(
-        <Star key={`empty-${i}`} size={12} className="text-gray-300" />
-      );
-    }
-
-    return stars;
-  };
 
   return (
     <div className="rounded-lg bg-white active:scale-98 shadow-sm overflow-hidden group transition-all duration-300 active:shadow-lg active:-translate-y-1 hover:shadow-lg hover:-translate-y-1 h-full flex flex-col">

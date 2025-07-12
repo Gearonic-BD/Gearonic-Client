@@ -12,10 +12,9 @@ html {
   --breakpoint-ml: 56rem; /* 896px */
   --breakpoint-2xs: 18.75rem; /* 300px */
   /* colors */
-  --color-primary-green: #01e376;
   --color-primary: #ff9800;
   --color-warning: #ffc107;
-  --color-success: #01e376;
+  --color-success: #01d676;
   --color-info: #2196f3;
   --color-danger: #f44336;
 

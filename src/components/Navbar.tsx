@@ -12,7 +12,7 @@ const Navbar = () => {
   return (
     <>
       <nav className="w-full h-fit shadow-sm border-b border-gray-100 fixed top-0 left-0 z-50 bg-white/95 backdrop-blur-sm">
-        <div className="container max-w-[1280px] py-3 mx-auto flex items-center justify-between px-4 gap-4 lg:gap-8">
+        <div className="container max-w-[1280px] sm:py-3 mx-auto flex items-center justify-between px-4 gap-4 lg:gap-8">
           <div className="flex items-center gap-3">
             {/* Sidebar Toggle (visible on small screens) */}
             <button
@@ -136,8 +136,7 @@ const Navbar = () => {
           </div>
         )}
       </nav>
-      <div className="h-[120px] hidden ml:block" />
-      <div className="h-[80px] ml:hidden" />
+      <div className="h-[65px] sm:h-[90px] md:h-[145px]" />
 
       {/* Sidebar Component (mobile only) */}
       <SideNavbar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />

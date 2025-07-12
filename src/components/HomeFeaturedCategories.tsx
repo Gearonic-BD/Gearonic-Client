@@ -50,7 +50,7 @@ const categories = [
     id: 6,
     name: "Screen Protectors",
     image:
-      "https://vinetanextjs.vercel.app/images/cls-categories/electronic/screen-protector.png",
+        "https://vinetanextjs.vercel.app/images/cls-categories/electronic/keyboard.png",
     href: "/category/screen-protectors",
   },
   {
