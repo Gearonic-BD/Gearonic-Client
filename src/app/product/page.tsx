@@ -6,6 +6,7 @@ import ProductDetailsCard from "@/components/ProductDetailsCard";
 import ProductQuestions from "@/components/ProductQuestions";
 import ProductReviews from "@/components/ProductReviews";
 import ProductSpecifications from "@/components/ProductSpecifications";
+import RelatedProducts from "@/components/RelatedProducts";
 
 const product = {
   id: "1",
@@ -60,6 +61,12 @@ const product = {
     },
   },
   description: `<h2>Blue Gean Shark L4S Sport Smart Watch</h2>
+
+  <img
+  src="https://www.startech.com.bd/image/cache/catalog/smart-watch/black-shark/gs3-sport/gs3-sport-lava-black-official-500x500.webp"
+  alt="Blue Gean Shark L4S Sport Smart Watch Front View"
+  width="400"
+/>
 
 <p>The <strong>Blue Gean Shark L4S Sport Smart Watch</strong> is a premium wearable that blends performance, durability, and style, making it a perfect choice for modern, tech-savvy individuals. Featuring a vivid <strong>1.32-inch AMOLED full touch display</strong> with a resolution of 454×454 pixels, it delivers sharp visuals, vibrant colors, and a smooth touch experience that elevates everyday usability.</p>
 
@@ -189,6 +196,9 @@ const ProductPage = () => {
           averageRating={product.rating}
           totalReviews={product.reviews.length}
         />
+      </section>
+      <section className="container mx-auto max-w-[1280px] px-4 sm:px-6 pb-4 md:pb-8">
+        <RelatedProducts />
       </section>
     </>
   );

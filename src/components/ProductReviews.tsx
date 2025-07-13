@@ -1,8 +1,3 @@
-"use client";
-
-import type React from "react";
-
-import { useState } from "react";
 import { Star, MessageSquare } from "lucide-react";
 import { renderStars } from "@/app/utils/ratings";
 
