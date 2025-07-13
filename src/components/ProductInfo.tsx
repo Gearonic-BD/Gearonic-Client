@@ -27,7 +27,7 @@ const ProductInfo = ({
   return (
     <div className="space-y-2 sm:space-y-4">
       <div>
-        <h1 className="text-2xl lg:text-3xl text-gray-900 mb-1.5 sm:mb-2">
+        <h1 className="text-xl sm:text-2xl lg:text-3xl text-gray-900 mb-1.5 sm:mb-2">
           {title}
         </h1>
         <div className="flex items-center gap-2 mb-1.5 sm:mb-3">

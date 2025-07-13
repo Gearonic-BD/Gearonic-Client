@@ -20,4 +20,5 @@ export interface Product {
   rating: number;
   variants: Variant[];
   features: string[];
+  specifications: Record<string, Record<string, string>>;
 }
