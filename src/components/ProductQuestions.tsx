@@ -26,7 +26,7 @@ const ProductQuestions = ({ questions }: ProductQuestionsProps) => {
   const handleSubmitQuestion = (e: React.FormEvent) => {
     e.preventDefault();
     if (newQuestion.trim()) {
-      console.log("New question submitted:", newQuestion);
+     
       // Here you would typically send the question to your backend
       setNewQuestion("");
       setShowQuestionForm(false);

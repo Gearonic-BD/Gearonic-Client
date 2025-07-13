@@ -159,23 +159,22 @@ const product = {
 };
 
 const ProductPage = () => {
+  const breadcrumbItems = [
+    { label: "Products", href: "/products" },
+    {
+      label: product.category,
+      href: `/products/${product.category.toLowerCase()}`,
+    },
+    {
+      label: product.brand,
+      href: `/products/${product.category.toLowerCase()}/${product.brand.toLowerCase()}`,
+    },
+    { label: product.title },
+  ];
   return (
     <>
       <section className="container mx-auto max-w-[1280px] px-4 sm:px-6">
-        <Breadcrumb
-          items={[
-            { label: "Products", href: "/products" },
-            {
-              label: product.category,
-              href: `/products/${product.category.toLowerCase()}`,
-            },
-            {
-              label: product.brand,
-              href: `/products/${product.category.toLowerCase()}/${product.brand.toLowerCase()}`,
-            },
-            { label: product.title },
-          ]}
-        />
+        <Breadcrumb items={breadcrumbItems} />
       </section>
 
       <section className="container mx-auto max-w-[1280px] px-4 sm:px-6 pb-4 md:pb-8">

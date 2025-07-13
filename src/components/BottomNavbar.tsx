@@ -1,11 +1,14 @@
 "use client";
 
+import { useCartStore } from "@/store/cart";
 import { Home, ShoppingCart, User2, Zap } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const BottomNavbar = () => {
   const pathname = usePathname();
+  const items = useCartStore((state) => state.items);
+  const itemsLen = items.length || 0;
 
   const isActive = (path: string) => pathname === path;
 
@@ -37,9 +40,11 @@ const BottomNavbar = () => {
       >
         <ShoppingCart size={24} />
         Cart
-        <span className="absolute -top-2 -right-2 text-sm bg-primary text-white rounded-full px-1">
-          2
-        </span>
+        {itemsLen > 0 && (
+          <span className="absolute -top-2 -right-2 text-sm bg-primary text-white rounded-full px-1">
+            {itemsLen}
+          </span>
+        )}
       </Link>
       <Link
         href="/account"

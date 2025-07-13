@@ -4,10 +4,13 @@ import Link from "next/link";
 import SideNavbar from "./SideNavbar";
 import { useState } from "react";
 import NavCategoryLink from "./NavbarCategories";
+import { useCartStore } from "@/store/cart";
 
 const Navbar = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [showMobileSearch, setShowMobileSearch] = useState(false);
+  const items = useCartStore((state) => state.items);
+  const itemsLen = items.length || 0;
 
   return (
     <>
@@ -76,9 +79,11 @@ const Navbar = () => {
                 <span className="hidden md:block text-sm font-medium">
                   Cart
                 </span>
-                <span className="absolute -top-1 -right-1 text-xs bg-primary text-white rounded-full w-5 h-5 flex items-center justify-center font-medium">
-                  2
-                </span>
+                {itemsLen > 0 && (
+                  <span className="absolute -top-1 -right-1 text-xs bg-primary text-white rounded-full w-5 h-5 flex items-center justify-center font-medium">
+                    {itemsLen}
+                  </span>
+                )}
               </Link>
             </div>
 

@@ -80,15 +80,6 @@ const ProductDetailsCard = ({ product }: ProductDetailsCardProps) => {
     setSelectedVariant(variant);
   };
 
-  const handleAddToCart = () => {
-    console.log("Added to cart:", {
-      product: product.id,
-      variant: selectedVariant?.id || null,
-      quantity: 1, // This will be handled by ProductActions component
-      price: currentPrice,
-    });
-  };
-
   const handleBuyNow = () => {
     console.log("Buy now:", {
       product: product.id,
@@ -139,10 +130,12 @@ const ProductDetailsCard = ({ product }: ProductDetailsCardProps) => {
           {/* Product Actions */}
           <ProductActions
             currentStock={currentStock}
-            onAddToCart={handleAddToCart}
+            selectedVariant={selectedVariant}
+            currentPrice={currentPrice}
             onBuyNow={handleBuyNow}
             isWishlisted={isWishlisted}
             onWishlistToggle={handleWishlistToggle}
+            product={product}
           />
         </div>
       </div>

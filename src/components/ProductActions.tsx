@@ -2,23 +2,30 @@
 
 import { useState } from "react";
 import { Heart, Minus, Plus, ShoppingCart } from "lucide-react";
+import { CartItem, useCartStore } from "@/store/cart";
+import { Product, Variant } from "@/types/product";
 
 interface ProductActionsProps {
   currentStock: number;
-  onAddToCart: () => void;
+  selectedVariant: Variant | null;
   onBuyNow: () => void;
   isWishlisted: boolean;
+  currentPrice: number;
   onWishlistToggle: () => void;
+  product: Product;
 }
 
 const ProductActions = ({
   currentStock,
-  onAddToCart,
+  selectedVariant,
+  currentPrice,
   onBuyNow,
   isWishlisted,
   onWishlistToggle,
+  product,
 }: ProductActionsProps) => {
   const [quantity, setQuantity] = useState(1);
+  const addToCart = useCartStore((state) => state.addToCart);
 
   const handleQuantityChange = (action: "increase" | "decrease") => {
     if (action === "increase" && quantity < currentStock) {
@@ -26,6 +33,18 @@ const ProductActions = ({
     } else if (action === "decrease" && quantity > 1) {
       setQuantity((prev) => prev - 1);
     }
+  };
+
+  const handleAddToCart = () => {
+    const cartObject: CartItem = {
+      productId: product.id,
+      variantId: selectedVariant?.id || undefined,
+      quantity: quantity,
+      price: currentPrice,
+      image: selectedVariant?.image || product.images[0],
+      title: product.title,
+    };
+    addToCart(cartObject);
   };
 
   return (
@@ -64,7 +83,7 @@ const ProductActions = ({
             Buy Now
           </button>
           <button
-            onClick={onAddToCart}
+            onClick={handleAddToCart}
             disabled={currentStock === 0}
             className="w-2/5 h-12 bg-primary hover:bg-primary/90 text-white font-medium rounded-xs cursor-pointer
              flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
@@ -127,7 +146,7 @@ const ProductActions = ({
           {/* Action Buttons Row */}
           <div className="flex gap-3">
             <button
-              onClick={onAddToCart}
+              onClick={handleAddToCart}
               disabled={currentStock === 0}
               className="flex-1 h-12 bg-primary hover:bg-primary/90 text-white font-medium rounded-lg
        flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
