@@ -8,6 +8,8 @@ const Input = ({
   label,
   required = false,
   error,
+  value,
+  onChange,
 }: {
   type: string;
   name: string;
@@ -16,6 +18,8 @@ const Input = ({
   label: string;
   required?: boolean;
   error?: string;
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }) => {
   return (
     <div>
@@ -30,8 +34,12 @@ const Input = ({
         type={type}
         name={name}
         placeholder={placeholder}
+        value={value}
+        onChange={onChange}
         className={`w-full border border-gray-300 outline-none rounded-xs text-sb px-3 py-2 ${className} 
-        ${error ? "border-red-500 focus:border-red-500" : "focus:border-primary"}`}
+        ${
+          error ? "border-red-500 focus:border-red-500" : "focus:border-primary"
+        }`}
       />
       {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
     </div>
