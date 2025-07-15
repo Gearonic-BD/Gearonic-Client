@@ -1,5 +1,6 @@
 import React from "react";
 import CartShippingSelector from "./CartShippingSelector";
+import Link from "next/link";
 
 interface MobileOrderSummaryProps {
   subtotal: number;
@@ -12,7 +13,6 @@ const MobileOrderSummary: React.FC<MobileOrderSummaryProps> = ({
   subtotal,
   shipping,
   changeShipping,
-  onCheckout,
 }) => (
   <div className="md:hidden fixed bottom-18 xs:bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-50">
     <div className="px-4 py-3">
@@ -34,12 +34,12 @@ const MobileOrderSummary: React.FC<MobileOrderSummaryProps> = ({
             <p className="text-base font-medium">৳{shipping}</p>
           </div>
         </div>
-        <button
+        <Link
+          href={"/checkout"}
           className="bg-primary hover:bg-primary/90 text-white font-medium py-3 px-6 rounded-sm transition-colors"
-          onClick={onCheckout}
         >
           Checkout
-        </button>
+        </Link>
       </div>
     </div>
   </div>

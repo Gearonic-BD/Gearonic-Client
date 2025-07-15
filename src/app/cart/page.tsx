@@ -1,10 +1,10 @@
 "use client";
 
 import Breadcrumb from "@/components/Breadcrumb";
-import CartItemsList from "@/components/cart/CartItemsList";
-import CartVoucherInput from "@/components/cart/CartVoucherInput";
-import OrderSummary from "@/components/cart/OrderSummary";
-import MobileOrderSummary from "@/components/cart/MobileOrderSummary";
+import CartItemsList from "@/components/CartItemsList";
+import CartVoucherInput from "@/components/CartVoucherInput";
+import OrderSummary from "@/components/OrderSummary";
+import MobileOrderSummary from "@/components/MobileOrderSummary";
 import { useCartStore } from "@/store/cart";
 import { useState } from "react";
 

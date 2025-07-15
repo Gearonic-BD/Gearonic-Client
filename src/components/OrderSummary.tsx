@@ -1,6 +1,7 @@
 import React from "react";
 import CartVoucherInput from "./CartVoucherInput";
 import CartShippingSelector from "./CartShippingSelector";
+import Link from "next/link";
 
 interface OrderSummaryProps {
   subtotal: number;
@@ -69,9 +70,12 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
           <span className="">৳{finalTotal.toLocaleString()}</span>
         </div>
       </div>
-      <button className="w-full bg-primary hover:bg-primary/90 cursor-pointer text-white font-medium py-3 px-4 rounded-sm transition-colors">
+      <Link
+        href={"/checkout"}
+        className="w-full block text-center bg-primary hover:bg-primary/90 cursor-pointer text-white font-medium py-3 px-4 rounded-sm transition-colors"
+      >
         Proceed to Checkout
-      </button>
+      </Link>
     </div>
   </div>
 );
