@@ -66,7 +66,9 @@ const ProductDetailsCard = ({ product }: ProductDetailsCardProps) => {
   // Get carousel images
   const getCarouselImages = () => {
     if (hasValidVariants && selectedVariant) {
-      return [selectedVariant.image, ...product.images];
+      if (selectedVariant.image) {
+        return [selectedVariant.image, ...product.images];
+      }
     }
     return product.images;
   };

@@ -4,14 +4,12 @@ import Link from "next/link";
 import SideNavbar from "./SideNavbar";
 import { useState } from "react";
 import NavCategoryLink from "./NavbarCategories";
-import { useCartStore } from "@/store/cart";
+import useCartTotalItems from "@/hooks/useCartTotalItems";
 
 const Navbar = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [showMobileSearch, setShowMobileSearch] = useState(false);
-  const items = useCartStore((state) => state.items);
-  const itemsLen = items.length || 0;
-
+  const itemsLen = useCartTotalItems();
   return (
     <>
       <nav className="w-full h-fit shadow-sm border-b border-gray-100 fixed top-0 left-0 z-50 bg-white/95 backdrop-blur-sm">

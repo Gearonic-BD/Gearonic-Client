@@ -1,19 +1,18 @@
 "use client";
 
-import { useCartStore } from "@/store/cart";
+import useCartTotalItems from "@/hooks/useCartTotalItems";
 import { Home, ShoppingCart, User2, Zap } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const BottomNavbar = () => {
   const pathname = usePathname();
-  const items = useCartStore((state) => state.items);
-  const itemsLen = items.length || 0;
+  const itemsLen = useCartTotalItems();
 
   const isActive = (path: string) => pathname === path;
 
   return (
-    <div className="fixed bottom-0 left-0 z-50 w-full bg-white border-t shadow-md flex justify-around py-3 xs:hidden">
+    <div className="fixed bottom-0 left-0 z-60 w-full bg-white shadow-2xl flex justify-around py-3 xs:hidden">
       <Link
         href="/"
         className={`flex flex-col items-center gap-1 ${

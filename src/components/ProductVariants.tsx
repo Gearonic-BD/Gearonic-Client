@@ -17,7 +17,9 @@ const ProductVariants = ({
 
   return (
     <div className="space-x-3 flex items-center">
-      <h3 className="text-lg text-gray-900">Color</h3>
+      <h3 className="text-lg text-gray-900">
+        {selectedVariant?.color ? "Color" : "Variant"}
+      </h3>
       <div className="flex gap-3">
         {variants.map((variant) => (
           <button
@@ -29,7 +31,7 @@ const ProductVariants = ({
                 : "border-gray-200 hover:border-gray-300"
             }`}
           >
-            {variant.color}
+            {variant.color || variant.size}
           </button>
         ))}
       </div>

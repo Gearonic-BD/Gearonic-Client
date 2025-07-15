@@ -9,8 +9,8 @@ html {
 
 @theme {
   /* breakpoints */
-  --breakpoint-xs: 30rem; /* 480px */
   --breakpoint-ml: 56rem; /* 896px */
+  --breakpoint-xs: 30rem; /* 480px */
   --breakpoint-2xs: 18.75rem; /* 300px */
 
   /* text size */

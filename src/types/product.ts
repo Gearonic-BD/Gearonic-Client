@@ -1,9 +1,10 @@
 export interface Variant {
   id: string;
-  color: string;
+  color?: string;
   price: number;
   stock: number;
-  image: string;
+  image?: string;
+  size?: string;
 }
 
 export interface Product {

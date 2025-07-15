@@ -36,14 +36,20 @@ const ProductActions = ({
   };
 
   const handleAddToCart = () => {
+    //TODO: Only save the product ID and Cart Id and fetch the whole info from the backend.
+    //also add the href to check or navigate through the product.
     const cartObject: CartItem = {
-      productId: product.id,
-      variantId: selectedVariant?.id || undefined,
-      quantity: quantity,
-      price: currentPrice,
-      image: selectedVariant?.image || product.images[0],
+      id: product.id,
       title: product.title,
+      brand: product.brand,
+      image: selectedVariant?.image || product.images[0],
+      productId: product.id,
+      variant: selectedVariant || undefined,
+      quantity: quantity,
+      originalPrice: product.originalPrice,
+      price: currentPrice,
     };
+    console.log(cartObject);
     addToCart(cartObject);
   };
 
