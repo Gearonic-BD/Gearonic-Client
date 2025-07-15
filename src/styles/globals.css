@@ -1,6 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
 
-@import "tailwindcss";
+  @import "tailwindcss";
+ @plugin "@tailwindcss/typography";
 
 html {
   font-family: "Roboto", sans-serif;
@@ -8,14 +9,18 @@ html {
 
 @theme {
   /* breakpoints */
-  --breakpoint-xs: 30rem; /* 480px */
   --breakpoint-ml: 56rem; /* 896px */
+  --breakpoint-xs: 30rem; /* 480px */
   --breakpoint-2xs: 18.75rem; /* 300px */
+
+  /* text size */
+  --text-xsm: 0.8125rem; /* 13px */
+  --text-sb: 0.9375rem; /* 15px */
+
   /* colors */
-  --color-primary-green: #01e376;
   --color-primary: #ff9800;
   --color-warning: #ffc107;
-  --color-success: #01e376;
+  --color-success: #01d676;
   --color-info: #2196f3;
   --color-danger: #f44336;
 
