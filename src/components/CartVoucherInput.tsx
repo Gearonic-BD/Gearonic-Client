@@ -29,12 +29,12 @@ const CartVoucherInput: React.FC<CartVoucherInputProps> = ({
             setError("");
           }}
           placeholder="Enter voucher code"
-          className="w-full px-3 py-2 border border-gray-300 rounded-l-sm focus:outline-none focus:ring-2 focus:ring-info focus:border-transparent"
+          className="w-full px-3 py-2 text-sm border border-gray-300 rounded-l-sm focus:outline-none focus:ring-2 focus:ring-info focus:border-transparent"
         />
       </div>
       <button
         onClick={onApply}
-        className="px-2 xs:px-6 py-2 bg-info text-white cursor-pointer rounded-r-sm hover:bg-info/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
+        className="px-2 xs:px-6 py-2 text-sm bg-info text-white cursor-pointer rounded-r-sm hover:bg-info/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
       >
         Apply
       </button>

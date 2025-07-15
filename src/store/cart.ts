@@ -63,7 +63,7 @@ const dummyCartItems: CartItem[] = [
   {
     id: "15",
     productId: "iphone-15-pro",
-    title: "Apple iPhone 15 Pro Max 256GB",
+    title: "Apple iPhone 15 Pro Max 256GB With Black Titanium Wireless Charger, Wifi Adapter, Musical Instrument and more",
     brand: "Apple",
     image:
       "https://www.startech.com.bd/image/cache/catalog/monitor/aoc/agon-pro-ag276fk/agon-pro-ag276fk-01-500x500.webp",

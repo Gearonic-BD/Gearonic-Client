@@ -39,7 +39,7 @@ const CartItemsList: React.FC<CartItemsListProps> = ({
           key={item.id}
           index={index}
           removeItem={() => removeItem(item.id)}
-          item={item}
+           item={item}
           cartLen={items.length}
           increaseQty={() => increaseQty(item.id)}
           decreaseQty={() => decreaseQty(item.id)}
