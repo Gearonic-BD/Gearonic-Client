@@ -1,5 +1,4 @@
 import React from "react";
-import Link from "next/link";
 
 interface CheckoutSummaryProps {
   total: number;
@@ -17,8 +16,8 @@ const CheckoutSummary: React.FC<CheckoutSummaryProps> = ({
       <div className="flex items-center gap-2 xs:gap-4 justify-between xs:justify-end">
         <div className="flex flex-col flex-1 xs:flex-none justify-center">
           <div className="flex justify-start items-center gap-2">
-            <p className="text-base xs:text-lg font-medium text-gray-800">Total:</p>
-            <p className="text-base xs:text-lg text-danger font-bold ">
+            <p className="text-lg font-medium text-gray-800">Total:</p>
+            <p className="text-lg text-danger font-bold ">
               ৳{total.toLocaleString()}
             </p>
           </div>
@@ -28,13 +27,12 @@ const CheckoutSummary: React.FC<CheckoutSummaryProps> = ({
             </p>
           </div>
         </div>
-        <Link
+        <button
           onClick={onPaymentClick}
-          href={"/checkout"}
-          className="bg-primary text-center hover:bg-primary/90 text-white font-medium xs:py-3 xs:px-6 py-2 px-4 rounded-sm transition-colors"
+          className="bg-primary hover:bg-primary/90 text-white font-medium py-3 px-6 rounded-sm transition-colors"
         >
           Go To Payment
-        </Link>
+        </button>
       </div>
     </div>
   </div>

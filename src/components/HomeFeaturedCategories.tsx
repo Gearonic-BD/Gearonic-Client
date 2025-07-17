@@ -50,7 +50,7 @@ const categories = [
     id: 6,
     name: "Screen Protectors",
     image:
-        "https://vinetanextjs.vercel.app/images/cls-categories/electronic/keyboard.png",
+      "https://vinetanextjs.vercel.app/images/cls-categories/electronic/keyboard.png",
     href: "/category/screen-protectors",
   },
   {
@@ -138,7 +138,7 @@ const HomeFeaturedCategories = () => {
               <CategoryCard category={category} />
             </SwiperSlide>
           ))}
-        <div className="custom-pagination flex justify-center items-center gap-2 mt-3 md:invisible md:h-0 md:overflow-hidden"></div>
+          <div className="custom-pagination flex justify-center items-center gap-2 mt-3 md:invisible md:h-0 md:overflow-hidden"></div>
         </Swiper>
 
         {/* Mobile Pagination */}

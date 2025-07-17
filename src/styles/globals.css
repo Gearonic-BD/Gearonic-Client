@@ -11,7 +11,7 @@ html {
   /* breakpoints */
   --breakpoint-ml: 56rem; /* 896px */
   --breakpoint-xs: 30rem; /* 480px */
-  --breakpoint-2xs: 18.75rem; /* 300px */
+  --breakpoint-2xs: 20rem; /* 320px */
 
   /* text size */
   --text-xsm: 0.8125rem; /* 13px */
@@ -30,7 +30,7 @@ html {
 /* #FED700 #EF262C */
 
 body{
-  background-color: #f5f5f5;
+  background-color: #f4f4f4;
 }
 
 /* Hide scrollbar for category navigation */

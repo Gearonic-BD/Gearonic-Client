@@ -35,7 +35,7 @@ const FeaturedProductCard = ({ product }: { product: Product }) => {
             </h3>
 
             {/* Rating and Sold Section - Always show sold info on the right */}
-            <div className="flex items-center justify-between">
+            <div className="flex items-center flex-wrap gap-2 justify-between">
               {product.rating > 0 ? (
                 <div className="flex items-center gap-.5">
                   <div className="flex items-center">
