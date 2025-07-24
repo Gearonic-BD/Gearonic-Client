@@ -60,58 +60,58 @@ const dummyVouchers: Voucher[] = [
 ];
 
 const dummyCartItems: CartItem[] = [
-  {
-    id: "15",
-    productId: "iphone-15-pro",
-    title: "Apple iPhone 15 Pro Max 256GB With Black Titanium Wireless Charger, Wifi Adapter, Musical Instrument and more",
-    brand: "Apple",
-    image:
-      "https://www.startech.com.bd/image/cache/catalog/monitor/aoc/agon-pro-ag276fk/agon-pro-ag276fk-01-500x500.webp",
-    originalPrice: 189999,
-    price: 179999,
-    quantity: 1,
-    variant: {
-      id: "v1",
-      color: "Black Titanium",
+  // {
+  //   id: "15",
+  //   productId: "iphone-15-pro",
+  //   title: "Apple iPhone 15 Pro Max 256GB With Black Titanium Wireless Charger, Wifi Adapter, Musical Instrument and more",
+  //   brand: "Apple",
+  //   image:
+  //     "https://www.startech.com.bd/image/cache/catalog/monitor/aoc/agon-pro-ag276fk/agon-pro-ag276fk-01-500x500.webp",
+  //   originalPrice: 189999,
+  //   price: 179999,
+  //   quantity: 1,
+  //   variant: {
+  //     id: "v1",
+  //     color: "Black Titanium",
 
-      price: 179999,
-      stock: 10,
-      image:
-        "https://www.startech.com.bd/image/cache/catalog/smart-watch/black-shark/gs3-sport/gs3-sport-lava-black-official-500x500.webp",
-    },
-  },
-  {
-    id: "16",
-    productId: "logitech-g502-x-plus",
-    title: "Logitech G502 X Plus Wireless RGB Gaming Mouse",
-    brand: "Logitech",
-    image:
-      "https://www.startech.com.bd/image/cache/catalog/smart-watch/black-shark/gs3-sport/gs3-sport-lava-black-official-500x500.webp",
-    originalPrice: 16999,
-    price: 15490,
-    quantity: 2,
-    variant: undefined,
-  },
-  {
-    id: "17",
-    productId: "acer-nitro-5",
-    title: "Acer Nitro 5 Ryzen 7 RTX 4060 Gaming Laptop",
-    brand: "Acer",
-    image:
-      "https://www.startech.com.bd/image/cache/catalog/drones/dji/mini-4k-fly-more-combo/mini-4k-fly-more-combo-01-500x500.webp",
-    originalPrice: 139000,
-    price: 134500,
-    quantity: 1,
-    variant: {
-      id: "v3",
-      color: "Obsidian Black",
-      size: "16GB/512GB",
-      price: 134500,
-      stock: 8,
-      image:
-        "https://www.startech.com.bd/image/cache/catalog/laptop/acer/nitro-5-ryzen-7-rtx4060/nitro-5-front-500x500.webp",
-    },
-  },
+  //     price: 179999,
+  //     stock: 10,
+  //     image:
+  //       "https://www.startech.com.bd/image/cache/catalog/smart-watch/black-shark/gs3-sport/gs3-sport-lava-black-official-500x500.webp",
+  //   },
+  // },
+  // {
+  //   id: "16",
+  //   productId: "logitech-g502-x-plus",
+  //   title: "Logitech G502 X Plus Wireless RGB Gaming Mouse",
+  //   brand: "Logitech",
+  //   image:
+  //     "https://www.startech.com.bd/image/cache/catalog/smart-watch/black-shark/gs3-sport/gs3-sport-lava-black-official-500x500.webp",
+  //   originalPrice: 16999,
+  //   price: 15490,
+  //   quantity: 2,
+  //   variant: undefined,
+  // },
+  // {
+  //   id: "17",
+  //   productId: "acer-nitro-5",
+  //   title: "Acer Nitro 5 Ryzen 7 RTX 4060 Gaming Laptop",
+  //   brand: "Acer",
+  //   image:
+  //     "https://www.startech.com.bd/image/cache/catalog/drones/dji/mini-4k-fly-more-combo/mini-4k-fly-more-combo-01-500x500.webp",
+  //   originalPrice: 139000,
+  //   price: 134500,
+  //   quantity: 1,
+  //   variant: {
+  //     id: "v3",
+  //     color: "Obsidian Black",
+  //     size: "16GB/512GB",
+  //     price: 134500,
+  //     stock: 8,
+  //     image:
+  //       "https://www.startech.com.bd/image/cache/catalog/laptop/acer/nitro-5-ryzen-7-rtx4060/nitro-5-front-500x500.webp",
+  //   },
+  // },
 ];
 
 export const useCartStore = create<CartState>((set, get) => ({

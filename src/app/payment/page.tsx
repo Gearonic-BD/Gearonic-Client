@@ -8,6 +8,7 @@ import PaymentMethodSelector from "@/components/PaymentMethodSelector";
 import PaymentMethodDetails from "@/components/PaymentMethodDetails";
 import PaymentOrderSummary from "@/components/PaymentOrderSummary";
 import PaymentMobileSummary from "@/components/PaymentMobileSummary";
+import useCartTotalPrice from "@/hooks/useCartTotalPrice";
 
 interface OrderData {
   id: string;
@@ -56,7 +57,7 @@ export default function PaymentPage() {
   const orderId = searchParams.get("orderId");
   const totalItems = useCartTotalItems();
   const shipping = useCartStore((state) => state.cart.shipping);
-  const totalAmount = useCartStore((state) => state.totalPrice);
+  const totalAmount = useCartTotalPrice()
 
   useEffect(() => {
     if (!orderId) {

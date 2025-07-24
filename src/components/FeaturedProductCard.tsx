@@ -11,10 +11,9 @@ const FeaturedProductCard = ({ product }: { product: Product }) => {
       )
     : 0;
 
-
   return (
     <div className="rounded-lg bg-white active:scale-98 shadow-sm overflow-hidden group transition-all duration-300 active:shadow-lg active:-translate-y-1 hover:shadow-lg hover:-translate-y-1 h-full flex flex-col">
-      <Link href={"/product/iphone"} className="flex flex-col h-full">
+      <Link href={"/product"} className="flex flex-col h-full">
         {/* Image Container */}
         <div className="p-4 relative flex-shrink-0">
           <img
