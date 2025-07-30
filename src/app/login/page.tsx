@@ -1,22 +1,18 @@
 "use client";
 
 import { useState } from "react";
-import { createClient } from "@supabase/supabase-js";
 import { Mail, Lock, User, ArrowLeft, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
+import { useRouter } from "next/navigation";
+import axios from "axios";
+import axiosInstance from "../utils/axiosInstance";
 
 export default function LoginPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [step, setStep] = useState<"initial" | "login" | "signup">("initial");
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
+  const [checkedName, setCheckedName] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
@@ -48,114 +44,81 @@ export default function LoginPage() {
     setLoading(true);
     setError("");
 
-    // For now, let's skip the server check and go directly to login
-    // We'll let Supabase handle the user existence check
-    console.log("Going directly to login step");
-    setStep("signup");
-    setLoading(false);
+    try {
+      // Replace with your actual backend API URL or proxy path
+      const response = await axios.post(
+        "http://localhost:5000/api/check-email",
+        {
+          email,
+        }
+      );
+
+      if (response.data.exists && response.data.hasPassword) {
+        console.log("User exists. Going to login step.");
+        setCheckedName(response?.data?.name);
+        setStep("login");
+      } else {
+        console.log("User does not exist. Going to signup step.");
+        setStep("signup");
+      }
+    } catch (err) {
+      console.error("Error checking user existence", err);
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleGoogleLogin = async () => {
-    setError("");
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
-      },
-    });
-
-    if (error) {
-      setError(error.message);
-      return;
-    }
-
-    // If successful, the user will be redirected to the callback URL
-    // We'll handle user creation in the callback
+    window.location.href = `${process.env.NEXT_PUBLIC_SERVER_URL}/api/google`;
   };
 
   const handleFacebookLogin = async () => {
-    setError("");
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "facebook",
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
-      },
-    });
-
-    if (error) {
-      setError(error.message);
-      return;
-    }
-
-    return;
+    window.location.href = `${process.env.NEXT_PUBLIC_SERVER_URL}/api/facebook`;
   };
 
   const handleLogin = async () => {
-    console.log("Login started...");
     setLoading(true);
-    setError("");
+    try {
+      const res = await axiosInstance.post(`/api/login`, {
+        email,
+        password,
+      });
 
-    console.log("Attempting Supabase login...");
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-
-    console.log("Supabase response:", { error });
-
-    if (error) {
-      console.log("Login error:", error.message);
-      setError(error.message);
+      if (res.status === 200) {
+        router.push("/");
+      }
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        console.error("Login error:", error.response?.data || error.message);
+      } else {
+        console.error("Unexpected error:", error);
+      }
+    } finally {
       setLoading(false);
-      return;
     }
-
-    console.log("Login successful, redirecting...");
-    // Redirect to the intended page or home
-    const redirectTo = searchParams.get("redirect") || "/";
-    console.log("Redirecting to:", redirectTo);
-    router.push(redirectTo);
   };
 
   const handleSignup = async () => {
-    console.log("Signup started...");
     setLoading(true);
-    setError("");
-
-    if (password !== confirmPassword) {
-      console.log("Password mismatch");
-      setError("Passwords do not match");
+    try {
+      const res = await axiosInstance.post(`/api/create-user`, {
+        email,
+        password,
+        name,
+      });
+      if (res.status === 201) {
+        router.push("/");
+      }
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        console.error("Signup error:", err.response?.data || err.message);
+      } else {
+        console.error("Unexpected error:", err);
+      }
+    } finally {
       setLoading(false);
-      return;
     }
-
-    console.log("Attempting Supabase signup...");
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: { name },
-      },
-    });
-
-    console.log("Supabase signup response:", { error });
-
-    if (error) {
-      console.log("Signup error:", error.message);
-      setError(error.message);
-      setLoading(false);
-      return;
-    }
-
-    console.log("Signup successful, redirecting...");
-    // Show success message and redirect
-    setError("");
-    alert(
-      "Account created successfully! Please check your email to verify your account."
-    );
-    const redirectTo = searchParams.get("redirect") || "/";
-    console.log("Redirecting to:", redirectTo);
-    router.push(redirectTo);
   };
 
   return (
@@ -164,7 +127,7 @@ export default function LoginPage() {
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-2xl font-bold text-gray-900 mb-2">
-            {step === "login" && "Welcome back"}
+            {step === "login" && `Welcome back ${checkedName}`}
             {step === "signup" && "Create your account"}
           </h1>
           <p className="text-gray-600">
@@ -207,7 +170,7 @@ export default function LoginPage() {
                 disabled={loading}
                 className="w-full cursor-pointer bg-primary hover:bg-primary/90 disabled:bg-gray-300 text-white font-medium py-3 px-4 rounded-lg transition-colors disabled:cursor-not-allowed"
               >
-                {loading ? "Checking..." : "Continue"}
+                {loading ? "Continueing..." : "Continue"}
               </button>
 
               <div className="text-center text-sm text-gray-600 transition-colors">
@@ -236,7 +199,7 @@ export default function LoginPage() {
                 <button
                   type="button"
                   onClick={handleGoogleLogin}
-                  className="w-full flex items-center justify-center gap-3 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 font-medium py-3 px-4 rounded-lg transition-colors"
+                  className="w-full cursor-pointer flex items-center justify-center gap-3 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 font-medium py-3 px-4 rounded-lg transition-colors"
                 >
                   <svg className="w-5 h-5" viewBox="0 0 24 24">
                     <path
@@ -262,7 +225,7 @@ export default function LoginPage() {
                 <button
                   type="button"
                   onClick={handleFacebookLogin}
-                  className="w-full flex items-center justify-center gap-3 bg-[#1877F2] hover:bg-[#1877F2]/90 text-white font-medium py-3 px-4 rounded-lg transition-colors"
+                  className="w-full cursor-pointer flex items-center justify-center gap-3 bg-[#1877F2] hover:bg-[#1877F2]/90 text-white font-medium py-3 px-4 rounded-lg transition-colors"
                 >
                   <svg
                     className="w-5 h-5"
@@ -327,7 +290,7 @@ export default function LoginPage() {
               <button
                 onClick={handleLogin}
                 disabled={loading}
-                className="w-full bg-primary hover:bg-primary/90 disabled:bg-gray-300 text-white font-medium py-3 px-4 rounded-lg transition-colors disabled:cursor-not-allowed"
+                className="w-full cursor-pointer bg-primary hover:bg-primary/90 disabled:bg-gray-300 text-white font-medium py-3 px-4 rounded-lg transition-colors disabled:cursor-not-allowed"
               >
                 {loading ? "Signing in..." : "Sign in"}
               </button>
