@@ -1,5 +1,5 @@
 import { Star, MessageSquare } from "lucide-react";
-import { renderStars } from "@/app/utils/ratings";
+import { renderStars } from "@/utils/ratings";
 
 interface Review {
   id: string;

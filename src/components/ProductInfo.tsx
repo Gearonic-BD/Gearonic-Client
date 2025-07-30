@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { renderStars } from "@/app/utils/ratings";
+import { renderStars } from "@/utils/ratings";
 
 interface ProductInfoProps {
   title: string;

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Product } from "@/types/types";
-import { renderStars } from "@/app/utils/ratings";
+import { renderStars } from "@/utils/ratings";
 
 const FeaturedProductCard = ({ product }: { product: Product }) => {
   const discountPercentage = product.discountPrice

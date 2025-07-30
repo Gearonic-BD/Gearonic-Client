@@ -5,7 +5,7 @@ import { Mail, Lock, User, ArrowLeft, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import axiosInstance from "../utils/axiosInstance";
+import axiosInstance from "../../utils/axiosInstance";
 
 export default function LoginPage() {
   const router = useRouter();

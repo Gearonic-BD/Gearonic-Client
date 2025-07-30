@@ -1,7 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
-
-  @import "tailwindcss";
- @plugin "@tailwindcss/typography";
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
 html {
   font-family: "Roboto", sans-serif;
@@ -23,7 +22,6 @@ html {
   --color-success: #01d676;
   --color-info: #2196f3;
   --color-danger: #f44336;
-
   --color-offblack: #222222
   --color-text-light: #666666;
 }
