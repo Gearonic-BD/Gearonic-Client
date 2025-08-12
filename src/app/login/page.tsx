@@ -444,11 +444,17 @@ export default function LoginPage() {
         <div className="text-center mt-6">
           <p className="text-sm text-gray-600">
             By continuing, you agree to our{" "}
-            <Link href="/terms" className="text-primary hover:underline">
-              Terms of Service
+            <Link
+              href="/terms-conditions"
+              className="text-primary hover:underline"
+            >
+              Terms and Conditions
             </Link>{" "}
             and{" "}
-            <Link href="/privacy" className="text-primary hover:underline">
+            <Link
+              href="/privacy-policy"
+              className="text-primary hover:underline"
+            >
               Privacy Policy
             </Link>
           </p>

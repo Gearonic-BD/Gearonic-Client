@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Heart, Minus, Plus, ShoppingCart } from "lucide-react";
 import { CartItem, useCartStore } from "@/store/cart";
-import { Product, Variant } from "@/types/product";
+import { Product, Variant } from "@/types/types";
 
 interface ProductActionsProps {
   currentStock: number;
@@ -49,7 +49,6 @@ const ProductActions = ({
       originalPrice: product.originalPrice,
       price: currentPrice,
     };
-    console.log(cartObject);
     addToCart(cartObject);
   };
 

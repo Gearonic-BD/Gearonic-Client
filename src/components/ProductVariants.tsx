@@ -1,4 +1,4 @@
-import { Variant } from "@/types/product";
+import { Variant } from "@/types/types";
 
 interface ProductVariantsProps {
   variants: Variant[];

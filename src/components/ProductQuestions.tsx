@@ -4,16 +4,7 @@ import type React from "react";
 
 import { useState } from "react";
 import { MessageCircle } from "lucide-react";
-
-interface Question {
-  id: string;
-  user: string;
-  question: string;
-  answer?: string;
-
-  date: string;
-  answerDate?: string;
-}
+import { Question } from "@/types/types";
 
 interface ProductQuestionsProps {
   questions: Question[];
@@ -26,7 +17,6 @@ const ProductQuestions = ({ questions }: ProductQuestionsProps) => {
   const handleSubmitQuestion = (e: React.FormEvent) => {
     e.preventDefault();
     if (newQuestion.trim()) {
-     
       // Here you would typically send the question to your backend
       setNewQuestion("");
       setShowQuestionForm(false);
@@ -98,7 +88,7 @@ const ProductQuestions = ({ questions }: ProductQuestionsProps) => {
 
       {/* Questions List */}
       <div className="space-y-4">
-        {questions.length === 0 ? (
+        {questions && questions?.length === 0 ? (
           <div className="text-center py-6 sm:py-8 text-gray-500">
             <MessageCircle
               size={28}
@@ -109,7 +99,7 @@ const ProductQuestions = ({ questions }: ProductQuestionsProps) => {
             </p>
           </div>
         ) : (
-          questions.map((question) => (
+          questions?.map((question) => (
             <div
               key={question.id}
               className="border border-gray-200 rounded-lg p-3 sm:p-4 space-y-2"
