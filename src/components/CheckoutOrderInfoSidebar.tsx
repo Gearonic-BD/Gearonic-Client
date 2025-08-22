@@ -13,6 +13,7 @@ interface CheckoutOrderInfoSidebarProps {
   totalSavings: number;
   finalTotal: number;
   onProceedToPay: () => void;
+ 
 }
 
 const CheckoutOrderInfoSidebar: React.FC<CheckoutOrderInfoSidebarProps> = ({
@@ -27,6 +28,7 @@ const CheckoutOrderInfoSidebar: React.FC<CheckoutOrderInfoSidebarProps> = ({
   totalSavings,
   finalTotal,
   onProceedToPay,
+  
 }) => {
   return (
     <div className="hidden sm:block bg-white p-3 lg:p-6 sticky top md:top-36 rounded-md shadow-sm h-fit">
@@ -71,6 +73,7 @@ const CheckoutOrderInfoSidebar: React.FC<CheckoutOrderInfoSidebarProps> = ({
             </span>
           </div>
         </div>
+
         <button
           className="w-full block text-center bg-primary hover:bg-primary/90 cursor-pointer text-white font-medium py-3 px-4 rounded-sm transition-colors"
           onClick={onProceedToPay}

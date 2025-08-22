@@ -7,16 +7,9 @@ import Link from "next/link";
 interface CartItemsListProps {
   items: CartItem[];
   removeItem: (id: string) => void;
-  increaseQty: (id: string) => void;
-  decreaseQty: (id: string) => void;
 }
 
-const CartItemsList: React.FC<CartItemsListProps> = ({
-  items,
-  removeItem,
-  increaseQty,
-  decreaseQty,
-}) => {
+const CartItemsList: React.FC<CartItemsListProps> = ({ items, removeItem }) => {
   if (items.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
@@ -45,8 +38,6 @@ const CartItemsList: React.FC<CartItemsListProps> = ({
           removeItem={() => removeItem(item.id)}
           item={item}
           cartLen={items.length}
-          increaseQty={() => increaseQty(item.id)}
-          decreaseQty={() => decreaseQty(item.id)}
         />
       ))}
     </div>

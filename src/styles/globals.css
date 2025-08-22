@@ -22,20 +22,20 @@ html {
   --color-success: #01d676;
   --color-info: #2196f3;
   --color-danger: #f44336;
-  --color-offblack: #222222
+  --color-offblack: #222222;
   --color-text-light: #666666;
 }
 /* #FED700 #EF262C */
 
-body{
+body {
   background-color: #f4f4f4;
 }
 
 /* Hide scrollbar for category navigation */
 .scrollbar-hide {
-  -ms-overflow-style: none;  /* Internet Explorer 10+ */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+  scrollbar-width: none; /* Firefox */
 }
 .scrollbar-hide::-webkit-scrollbar {
-  display: none;  /* Safari and Chrome */
+  display: none; /* Safari and Chrome */
 }

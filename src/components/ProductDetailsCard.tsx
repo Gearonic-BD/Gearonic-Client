@@ -82,7 +82,7 @@ const ProductDetailsCard = ({ product }: ProductDetailsCardProps) => {
     setSelectedVariant(variant);
   };
 
-  const handleBuyNow = () => {
+  const handleShopNow = () => {
     console.log("Buy now:", {
       product: product.id,
       variant: selectedVariant?.id || null,
@@ -134,7 +134,7 @@ const ProductDetailsCard = ({ product }: ProductDetailsCardProps) => {
             currentStock={currentStock}
             selectedVariant={selectedVariant}
             currentPrice={currentPrice}
-            onBuyNow={handleBuyNow}
+            onShopNow={handleShopNow}
             isWishlisted={isWishlisted}
             onWishlistToggle={handleWishlistToggle}
             product={product}

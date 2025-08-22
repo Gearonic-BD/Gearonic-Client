@@ -6,10 +6,13 @@ import { useState } from "react";
 import NavCategoryLink from "./NavbarCategories";
 import useCartTotalItems from "@/hooks/useCartTotalItems";
 
+
 const Navbar = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [showMobileSearch, setShowMobileSearch] = useState(false);
+
   const itemsLen = useCartTotalItems();
+
   return (
     <>
       <nav className="w-full h-fit shadow-sm border-b border-gray-100 fixed top-0 left-0 z-50 bg-white/95 backdrop-blur-sm">
@@ -93,6 +96,7 @@ const Navbar = () => {
                 size={18}
                 className="group-hover:text-primary transition-colors"
               />
+
               <span className="hidden md:block text-sm font-medium">
                 Account
               </span>

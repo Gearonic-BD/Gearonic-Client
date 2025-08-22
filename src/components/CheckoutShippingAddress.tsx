@@ -18,6 +18,13 @@ interface CheckoutShippingAddressProps {
   handleSaveAddress: (e: React.MouseEvent<HTMLButtonElement>) => void;
   handleCancelAddressBar: (e: React.MouseEvent<HTMLButtonElement>) => void;
   changeShipping: (shipping: number) => void;
+  error: {
+    name: string;
+    mobile: string;
+    address: string;
+  };
+  isSaving: boolean;
+  isAddressSaved: boolean;
 }
 
 const CheckoutShippingAddress: React.FC<CheckoutShippingAddressProps> = ({
@@ -28,6 +35,8 @@ const CheckoutShippingAddress: React.FC<CheckoutShippingAddressProps> = ({
   handleSaveAddress,
   handleCancelAddressBar,
   changeShipping,
+  error,
+  isSaving,
 }) => {
   return (
     <div className="bg-white p-4 ml:p-6 h-fit rounded-md shadow-sm">
@@ -45,7 +54,7 @@ const CheckoutShippingAddress: React.FC<CheckoutShippingAddressProps> = ({
                   label="Name"
                   className="w-full"
                   required
-                  error="Name is required"
+                  error={error.name}
                   value={address.name}
                   onChange={(e) =>
                     setAddress({ ...address, name: e.target.value })
@@ -60,6 +69,7 @@ const CheckoutShippingAddress: React.FC<CheckoutShippingAddressProps> = ({
                   label="Mobile"
                   className="w-full"
                   required
+                  error={error.mobile}
                   value={address.mobile}
                   onChange={(e) =>
                     setAddress({ ...address, mobile: e.target.value })
@@ -76,6 +86,7 @@ const CheckoutShippingAddress: React.FC<CheckoutShippingAddressProps> = ({
                   label="Address"
                   className="w-full"
                   required
+                  error={error.address}
                   value={address.address}
                   onChange={(e) =>
                     setAddress({ ...address, address: e.target.value })
@@ -97,13 +108,11 @@ const CheckoutShippingAddress: React.FC<CheckoutShippingAddressProps> = ({
                   value={address.zone}
                   onChange={(e) => {
                     setAddress({ ...address, zone: e.target.value });
-                    changeShipping(
-                      e.target.value === "outside-dhaka" ? 120 : 60
-                    );
+                    changeShipping(e.target.value === "outside" ? 120 : 60);
                   }}
                 >
-                  <option value="inside-dhaka">Inside Dhaka City</option>
-                  <option value="outside-dhaka">Outside Dhaka City</option>
+                  <option value="inside">Inside Dhaka City</option>
+                  <option value="outside">Outside Dhaka City</option>
                 </select>
               </div>
             </div>
@@ -123,6 +132,7 @@ const CheckoutShippingAddress: React.FC<CheckoutShippingAddressProps> = ({
             </div>
             <div className="flex gap-4 mt-4 justify-end">
               <button
+                disabled={isSaving}
                 onClick={handleCancelAddressBar}
                 className="w-fit block text-center bg-danger hover:bg-danger/90 cursor-pointer text-white font-medium py-2 xs:py-3 px-4 xs:px-8 rounded-sm transition-colors"
               >
@@ -130,9 +140,10 @@ const CheckoutShippingAddress: React.FC<CheckoutShippingAddressProps> = ({
               </button>
               <button
                 onClick={handleSaveAddress}
-                className="w-fit block text-center bg-primary hover:bg-primary/90 cursor-pointer text-white font-medium py-2 xs:py-3 px-4 xs:px-8 rounded-sm transition-colors"
+                disabled={isSaving}
+                className="w-fit block text-center disabled:opacity-80 bg-primary hover:bg-primary/90 cursor-pointer text-white font-medium py-2 xs:py-3 px-4 xs:px-8 rounded-sm transition-colors"
               >
-                Save Address
+                {isSaving ? "Saving Address..." : "Save Address"}
               </button>
             </div>
           </form>
@@ -150,7 +161,9 @@ const CheckoutShippingAddress: React.FC<CheckoutShippingAddressProps> = ({
                     <div className="flex items-center gap-2  w-full">
                       <div className="flex items-center gap-1 flex-1">
                         <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wide">
-                          {address.zone.replace("-", " ")}
+                          {address.zone === "inside"
+                            ? "INSIDE DHAKA"
+                            : "OUTSIDE DHAKA"}
                         </h3>
                         <span className="w-1 h-1 bg-gray-300 rounded-full"></span>
                         <span className="text-xs hidden xs:block text-success font-medium">

@@ -25,13 +25,13 @@ const PaymentMobileSummary: React.FC<PaymentMobileSummaryProps> = ({
               </p>
             </div>
             <p className="text-base text-gray-700 font-semibold">
-              ৳{totalAmount.toLocaleString()}
+              ৳{totalAmount?.toLocaleString()}
             </p>
           </div>
           <div className="flex justify-between items-center mt-2 pt-2 border-t border-gray-100">
             <p className="text-lg font-bold text-gray-800">Total Amount:</p>
             <p className="text-xl font-extrabold text-danger">
-              ৳{totalAmount.toLocaleString()}
+              ৳{totalAmount?.toLocaleString()}
             </p>
           </div>
         </div>

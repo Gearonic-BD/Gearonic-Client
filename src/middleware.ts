@@ -5,7 +5,7 @@ export function middleware(req: NextRequest) {
   const token = req.cookies.get("token")?.value;
 
   // Paths that require auth
-  const protectedPaths = ["/profile", "/cart", "/payment"];
+  const protectedPaths = ["/profile", "/cart", "/payment", "/checkout"];
 
   if (protectedPaths.some((path) => req.nextUrl.pathname.startsWith(path))) {
     if (!token) {
@@ -20,5 +20,11 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/profile/:path*", "/cart/:path*", "/payment/:path*", "/login"],
+  matcher: [
+    "/profile/:path*",
+    "/cart/:path*",
+    "/payment/:path*",
+    "/login",
+    "/checkout/:path*",
+  ],
 };

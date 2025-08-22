@@ -3,9 +3,10 @@
 import { useState } from "react";
 import { Mail, Lock, User, ArrowLeft, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import axios from "axios";
 import axiosInstance from "../../utils/axiosInstance";
+import { useCartStore } from "@/store/cart";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -19,42 +20,27 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const { fetchCart } = useCartStore();
 
-  // Check if user is already authenticated
-  // useEffect(() => {
-  //   const checkAuth = async () => {
-  //     const {
-  //       data: { user },
-  //     } = await supabase.auth.getUser();
-  //     console.log("Current user:", user);
-
-  //     if (user) {
-  //       const redirectTo = searchParams.get("redirect") || "/";
-  //       console.log("User authenticated, redirecting to:", redirectTo);
-  //       router.push(redirectTo);
-  //     }
-  //   };
-
-  //   checkAuth();
-  // }, [router, searchParams]);
+  const searchParams = useSearchParams();
+  const redirect = searchParams.get("redirect") || "/";
 
   const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Email submit started...");
+
     setLoading(true);
     setError("");
 
     try {
       // Replace with your actual backend API URL or proxy path
       const response = await axios.post(
-        "http://localhost:5000/api/check-email",
+        "http://localhost:5000/auth/api/check-email",
         {
           email,
         }
       );
 
       if (response.data.exists && response.data.hasPassword) {
-        console.log("User exists. Going to login step.");
         setCheckedName(response?.data?.name);
         setStep("login");
       } else {
@@ -69,24 +55,25 @@ export default function LoginPage() {
     }
   };
 
-  const handleGoogleLogin = async () => {
-    window.location.href = `${process.env.NEXT_PUBLIC_SERVER_URL}/api/google`;
+  const handleGoogleLogin = () => {
+    const redirect = encodeURIComponent(window.location.pathname); // current page
+    window.location.href = `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/api/google?redirect=${redirect}`;
   };
 
   const handleFacebookLogin = async () => {
-    window.location.href = `${process.env.NEXT_PUBLIC_SERVER_URL}/api/facebook`;
+    window.location.href = `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/api/facebook`;
   };
 
   const handleLogin = async () => {
     setLoading(true);
     try {
-      const res = await axiosInstance.post(`/api/login`, {
+      const res = await axiosInstance.post(`/auth/api/login`, {
         email,
         password,
       });
 
       if (res.status === 200) {
-        router.push("/");
+        router.push(redirect); // use redirect here
       }
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
@@ -95,6 +82,7 @@ export default function LoginPage() {
         console.error("Unexpected error:", error);
       }
     } finally {
+      fetchCart();
       setLoading(false);
     }
   };
@@ -102,13 +90,13 @@ export default function LoginPage() {
   const handleSignup = async () => {
     setLoading(true);
     try {
-      const res = await axiosInstance.post(`/api/create-user`, {
+      const res = await axiosInstance.post(`/auth/api/create-user`, {
         email,
         password,
         name,
       });
       if (res.status === 201) {
-        router.push("/");
+        router.push(redirect);
       }
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {

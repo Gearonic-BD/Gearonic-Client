@@ -65,3 +65,24 @@ export type Variant = {
   image?: string;
   size?: string | null;
 };
+
+export type BackendCartItem = {
+  id: number;
+  productId: string;
+  variantId: string | null;
+  quantity: number;
+  price: number;
+  originalPrice: number;
+  product: {
+    title: string;
+    brand: string;
+    images: string[];
+    slug: string;
+  };
+  variant: {
+    id: string;
+    price: number;
+    stock: number;
+    image: string;
+  } | null;
+};

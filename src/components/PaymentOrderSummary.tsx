@@ -25,7 +25,7 @@ const PaymentOrderSummary: React.FC<PaymentOrderSummaryProps> = ({
               included)
             </span>
             <span className="font-medium text-gray-900">
-              ৳{totalAmount.toLocaleString()}
+              ৳{totalAmount?.toLocaleString()}
             </span>
           </div>
           <div className="border-t border-gray-200 pt-4">
@@ -34,7 +34,7 @@ const PaymentOrderSummary: React.FC<PaymentOrderSummaryProps> = ({
                 Total Amount
               </span>
               <span className="text-2xl font-bold text-danger">
-                ৳{totalAmount.toLocaleString()}
+                ৳{totalAmount?.toLocaleString()}
               </span>
             </div>
           </div>

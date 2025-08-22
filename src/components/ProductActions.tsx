@@ -1,14 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import { Heart, Minus, Plus, ShoppingCart } from "lucide-react";
+import { Heart, Loader2, Minus, Plus, ShoppingCart } from "lucide-react";
 import { CartItem, useCartStore } from "@/store/cart";
 import { Product, Variant } from "@/types/types";
+import useAuth from "@/hooks/useAuth";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 interface ProductActionsProps {
   currentStock: number;
   selectedVariant: Variant | null;
-  onBuyNow: () => void;
+  onShopNow: () => void;
   isWishlisted: boolean;
   currentPrice: number;
   onWishlistToggle: () => void;
@@ -19,13 +22,16 @@ const ProductActions = ({
   currentStock,
   selectedVariant,
   currentPrice,
-  onBuyNow,
+  onShopNow,
   isWishlisted,
   onWishlistToggle,
+
   product,
 }: ProductActionsProps) => {
   const [quantity, setQuantity] = useState(1);
-  const addToCart = useCartStore((state) => state.addToCart);
+  const [isLoading, setIsLoading] = useState(false);
+  const { loading, checkAuth } = useAuth();
+  const router = useRouter();
 
   const handleQuantityChange = (action: "increase" | "decrease") => {
     if (action === "increase" && quantity < currentStock) {
@@ -35,21 +41,37 @@ const ProductActions = ({
     }
   };
 
-  const handleAddToCart = () => {
-    //TODO: Only save the product ID and Cart Id and fetch the whole info from the backend.
-    //also add the href to check or navigate through the product.
-    const cartObject: CartItem = {
-      id: product.id,
+  const handleAddToCart = async () => {
+    const authOk = await checkAuth();
+    if (!authOk) {
+      toast.error("Please log in to add product");
+      router.push(
+        `/login?redirect=${encodeURIComponent(window.location.pathname)}`
+      );
+      setIsLoading(false);
+      return;
+    }
+    setIsLoading(true);
+
+    const cartObject: Omit<CartItem, "id"> = {
+      productId: product.id,
       title: product.title,
       brand: product.brand,
       image: selectedVariant?.image || product.images[0],
-      productId: product.id,
       variant: selectedVariant || undefined,
-      quantity: quantity,
+      slug: product.slug,
+      quantity,
       originalPrice: product.originalPrice,
       price: currentPrice,
     };
-    addToCart(cartObject);
+    const { addToCart } = useCartStore.getState();
+
+    try {
+      const res = await addToCart(cartObject);
+      console.log(res);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -58,21 +80,21 @@ const ProductActions = ({
       <div className="items-center gap-4 md:flex hidden">
         <h3 className="text-lg text-gray-900">Quantity</h3>
         <div className="flex items-center gap-3">
-          <div className="flex items-center border border-gray-300 rounded-lg">
+          <div className="flex items-center p-1 border border-gray-300 rounded-full">
             <button
               onClick={() => handleQuantityChange("decrease")}
-              disabled={quantity <= 1}
-              className="p-2 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={quantity <= 1 || isLoading}
+              className="p-2 rounded-full bg-black text-white  cursor-pointer disabled:cursor-not-allowed"
             >
-              <Minus size={16} />
+              <Minus size={20} />
             </button>
             <span className="px-4 py-2 font-medium">{quantity}</span>
             <button
               onClick={() => handleQuantityChange("increase")}
-              disabled={quantity >= currentStock}
-              className="p-2 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={quantity >= currentStock || isLoading}
+              className="p-2 rounded-full bg-black text-white cursor-pointer disabled:cursor-not-allowed"
             >
-              <Plus size={16} />
+              <Plus size={20} />
             </button>
           </div>
         </div>
@@ -81,20 +103,29 @@ const ProductActions = ({
       <div className="space-y-3 md:block hidden">
         <div className="flex gap-3">
           <button
-            onClick={onBuyNow}
-            disabled={currentStock === 0}
-            className="h-12 w-2/5 cursor-pointer bg-info text-white hover:bg-info/90 font-medium rounded-xs disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            onClick={onShopNow}
+            disabled={currentStock === 0 || isLoading || loading}
+            className="h-12 w-2/5 cursor-pointer bg-info text-white hover:bg-info/90 font-medium rounded-xs disabled:opacity-80 disabled:cursor-not-allowed transition-colors"
           >
-            Buy Now
+            Shop Now
           </button>
           <button
             onClick={handleAddToCart}
-            disabled={currentStock === 0}
+            disabled={currentStock === 0 || isLoading || loading}
             className="w-2/5 h-12 bg-primary hover:bg-primary/90 text-white font-medium rounded-xs cursor-pointer
-             flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+             flex items-center justify-center gap-2 disabled:opacity-80 disabled:cursor-not-allowed transition-colors"
           >
-            <ShoppingCart className="w-5 h-5" />
-            Add to Cart
+            {isLoading ? (
+              <>
+                <span className="text-sm font-medium">Adding...</span>
+                <Loader2 className="w-4 h-4 animate-spin" />
+              </>
+            ) : (
+              <>
+                <ShoppingCart className="w-4 h-4" />
+                Add To Cart
+              </>
+            )}
           </button>
           <button
             onClick={onWishlistToggle}
@@ -119,7 +150,7 @@ const ProductActions = ({
               <div className="flex items-center border border-gray-300 rounded-lg">
                 <button
                   onClick={() => handleQuantityChange("decrease")}
-                  disabled={quantity <= 1}
+                  disabled={quantity <= 1 || isLoading}
                   className="p-2 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Minus size={14} />
@@ -129,7 +160,7 @@ const ProductActions = ({
                 </span>
                 <button
                   onClick={() => handleQuantityChange("increase")}
-                  disabled={quantity >= currentStock}
+                  disabled={quantity >= currentStock || isLoading}
                   className="p-2 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Plus size={14} />
@@ -138,6 +169,7 @@ const ProductActions = ({
             </div>
             <button
               onClick={onWishlistToggle}
+              disabled={isLoading}
               className="h-10 w-10 border border-gray-300 hover:border-gray-400 rounded-lg flex items-center justify-center transition-colors"
             >
               <Heart
@@ -152,20 +184,29 @@ const ProductActions = ({
           <div className="flex gap-3">
             <button
               onClick={handleAddToCart}
-              disabled={currentStock === 0}
+              disabled={currentStock === 0 || isLoading}
               className="flex-1 h-12 bg-primary hover:bg-primary/90 text-white font-medium rounded-lg
-       flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+       flex items-center justify-center gap-2 disabled:opacity-80 disabled:cursor-not-allowed transition-colors"
             >
-              <ShoppingCart className="w-4 h-4" />
-              Add to Cart
+              {isLoading ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Adding...
+                </>
+              ) : (
+                <>
+                  <ShoppingCart className="w-4 h-4" />
+                  Add to Cart
+                </>
+              )}
             </button>
             <button
-              onClick={onBuyNow}
-              disabled={currentStock === 0}
+              onClick={onShopNow}
+              disabled={currentStock === 0 || isLoading}
               className="flex-1 h-12 bg-info text-white hover:bg-info/90 font-medium rounded-lg 
-       disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+       disabled:opacity-80 disabled:cursor-not-allowed transition-colors"
             >
-              Buy Now
+              Shop Now
             </button>
           </div>
         </div>

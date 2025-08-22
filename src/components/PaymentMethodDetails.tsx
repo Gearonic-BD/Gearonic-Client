@@ -9,9 +9,16 @@ interface PaymentMethodDetailsProps {
   accountNumber?: string;
   trxId?: string;
   onInputChange?: (field: string, value: string) => void;
+  paymentData: {
+    bkash: string;
+    nagad: string;
+    bkashQr: string;
+    nagadQr: string;
+  };
 }
 
 const PaymentMethodDetails: React.FC<PaymentMethodDetailsProps> = ({
+  paymentData,
   method,
   totalAmount,
   onConfirm,
@@ -56,7 +63,9 @@ const PaymentMethodDetails: React.FC<PaymentMethodDetailsProps> = ({
               <div className="text-gray-700">
                 <p>
                   Account Number:{" "}
-                  <span className="text-gray-600 font-bold">01928316192</span>
+                  <span className="text-gray-600 font-bold">
+                    {paymentData[method]}
+                  </span>
                 </p>
                 <p>
                   Account Type:{" "}
@@ -72,11 +81,7 @@ const PaymentMethodDetails: React.FC<PaymentMethodDetailsProps> = ({
             </div>
             <div className="w-full md:w-auto flex items-center justify-center">
               <img
-                src={
-                  method === "bkash"
-                    ? "https://bdflixbazaar.com/wp-content/uploads/2023/12/002.jpg"
-                    : "/qr.png"
-                }
+                src={paymentData[`${method}Qr`]}
                 alt="QR Code"
                 className="w-48 h-48 object-contain rounded-md border border-gray-200"
               />
