@@ -6,7 +6,6 @@ import { useState } from "react";
 import NavCategoryLink from "./NavbarCategories";
 import useCartTotalItems from "@/hooks/useCartTotalItems";
 
-
 const Navbar = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [showMobileSearch, setShowMobileSearch] = useState(false);
@@ -105,8 +104,8 @@ const Navbar = () => {
         </div>
 
         {/* Desktop category bar (visible on medium+) */}
-        <div className="container max-w-[1280px] mx-auto px-4 hidden ml:flex items-center justify-center border-t border-gray-50 bg-gray-50/50">
-          <div className="flex items-center gap-6 py-2 overflow-x-auto scrollbar-hide">
+        <div className=" container max-w-[1280px] bg-white/50 mx-auto px-4 hidden ml:flex items-center justify-center border-none">
+          <div className="flex bg-white items-center gap-6 py-2 overflow-x-auto scrollbar-hide">
             <NavCategoryLink href="/categories/mobile" text="Mobiles" />
             <NavCategoryLink href="/categories/airpods" text="Airpods" />
             <NavCategoryLink href="/categories/powerbanks" text="Powerbanks" />

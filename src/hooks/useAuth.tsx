@@ -1,15 +1,16 @@
-
 import { useState } from "react";
 import axiosInstance from "@/utils/axiosInstance";
+import { User } from "@/types/types";
 
 export default function useAuth() {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const checkAuth = async () => {
     setLoading(true);
     try {
       const res = await axiosInstance.get("/auth/me");
+      console.log(res.data);
       setUser(res.data);
       return true;
     } catch {
@@ -20,5 +21,5 @@ export default function useAuth() {
     }
   };
 
-  return { user, loading, isAuthenticated: !!user, checkAuth };
+  return { user, loading, setLoading, isAuthenticated: !!user, checkAuth };
 }

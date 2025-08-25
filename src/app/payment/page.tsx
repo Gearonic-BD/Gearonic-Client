@@ -7,14 +7,16 @@ import PaymentMethodSelector from "@/components/PaymentMethodSelector";
 import PaymentMethodDetails from "@/components/PaymentMethodDetails";
 import PaymentOrderSummary from "@/components/PaymentOrderSummary";
 import PaymentMobileSummary from "@/components/PaymentMobileSummary";
-import useCartTotalPrice from "@/hooks/useCartTotalPrice";
 import axiosInstance from "@/utils/axiosInstance";
+import { toast } from "sonner";
 
 interface OrderData {
   id: string;
   status: string;
   total: number;
   totalQuantity: number;
+  paymentStatus: string;
+  paymentMethod: string | null;
 }
 export interface PaymentData {
   bkash: string;
@@ -62,7 +64,6 @@ export default function PaymentPage() {
   const searchParams = useSearchParams();
   const orderId = searchParams.get("orderId");
   const shipping = useCartStore((state) => state.cart.shipping);
-  const totalAmount = useCartTotalPrice();
   const [paymentInformation, setPaymentInformation] = useState<PaymentData>({
     bkash: "",
     nagad: "",
@@ -81,7 +82,15 @@ export default function PaymentPage() {
     const fetchOrder = async () => {
       try {
         const res = await axiosInstance.get(`/api/orders/${orderId}`);
-        setOrderData(res.data);
+        const data: OrderData = res.data;
+
+        // 🚨 Redirect immediately if already paid
+        if (data.paymentStatus === "success" || data.paymentMethod) {
+          router.push("/");
+          return;
+        }
+
+        setOrderData(data);
       } catch (err) {
         console.error(err);
         router.push("/");
@@ -97,7 +106,6 @@ export default function PaymentPage() {
     const fetchPaymentMethods = async () => {
       try {
         const res = await axiosInstance.get("/api/orders/payment-methods");
-
         if (!res.data || !res.data.bkash || !res.data.nagad) {
           throw new Error("Payment methods not available");
         }
@@ -120,25 +128,51 @@ export default function PaymentPage() {
   }, []);
   const isLoading = isOrderLoading || isPaymentLoading;
 
-  const handlePayment = () => {
-    // // Handle payment logic here
-    // if (selectedMethod === "bkash" || selectedMethod === "nagad") {
-    //   // Validate input fields
-    //   if (!accountNumber || !trxId) {
-    //     alert("Please provide your account number and TrxID.");
-    //     return;
-    //   }
-    // }
-    console.log(orderData);
-    // Payment processing logic here
-    console.log(
-      "Processing payment with method:",
-      selectedMethod,
-      "for order:",
-      orderId,
-      accountNumber,
-      trxId
-    );
+  const handlePayment = async () => {
+    // Validate payment details
+    if (selectedMethod === "bkash" || selectedMethod === "nagad") {
+      const phoneRegex = /^(?:\+88)?01[3-9]\d{8}$/;
+      if (!accountNumber || !phoneRegex.test(accountNumber)) {
+        toast.error("Please provide a valid Bangladeshi mobile number.");
+        return;
+      }
+
+      if (!trxId) {
+        toast.error("Please provide a valid Transaction ID.");
+        return;
+      }
+    }
+
+    if (selectedMethod === "cod") {
+      setAccountNumber("");
+      setTrxId("");
+    }
+
+    // Frontend total amount validation (optional)
+    if (!orderData?.total || orderData.total <= 0) {
+      toast.error("Invalid order amount.");
+      return;
+    }
+
+    try {
+      const { data } = await axiosInstance.post("/api/orders/payment", {
+        orderId,
+        totalAmount: orderData.total,
+        method: selectedMethod,
+        accountNumber,
+        trxId,
+      });
+
+      toast.success(data.message || "Payment processed successfully!");
+      router.push(
+        `/account/orders/${orderId}?firstOrder=${
+          data.isFirstOrder ? "true" : "false"
+        }`
+      );
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong. Please try again.");
+    }
   };
 
   const handleMethodSelection = (methodId: string) => {
@@ -198,7 +232,7 @@ export default function PaymentPage() {
                   <PaymentMethodDetails
                     paymentData={paymentInformation}
                     method={methodId}
-                    totalAmount={totalAmount}
+                    totalAmount={orderData?.total}
                     onConfirm={handlePayment}
                     accountNumber={accountNumber}
                     trxId={trxId}
@@ -211,7 +245,7 @@ export default function PaymentPage() {
                 <PaymentMethodDetails
                   paymentData={paymentInformation}
                   method={selectedMethod}
-                  totalAmount={totalAmount}
+                  totalAmount={orderData?.total}
                   onConfirm={handlePayment}
                   accountNumber={accountNumber}
                   trxId={trxId}

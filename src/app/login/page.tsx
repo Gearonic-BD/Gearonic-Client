@@ -73,7 +73,7 @@ export default function LoginPage() {
       });
 
       if (res.status === 200) {
-        router.push(redirect); // use redirect here
+        router.replace(redirect); // use redirect here
       }
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
@@ -96,7 +96,7 @@ export default function LoginPage() {
         name,
       });
       if (res.status === 201) {
-        router.push(redirect);
+        router.replace(redirect);
       }
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {

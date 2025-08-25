@@ -27,6 +27,7 @@ export type User = {
   name: string;
   email: string;
   image?: string | null;
+  phone?: string;
 };
 
 export type Product = {
@@ -85,4 +86,44 @@ export type BackendCartItem = {
     stock: number;
     image: string;
   } | null;
+};
+
+export type OrderItem = {
+  id: string;
+  productTitle: string;
+  productBrand: string;
+  productImage: string;
+  variantColor?: string;
+  variantImage?: string;
+  quantity: number;
+  price: number;
+  originalPrice: number;
+};
+
+export type Payment = {
+  method: "bkash" | "nagad" | "cod" | "card"; // extend as needed
+  transactionId?: string;
+  accountNumber?: string;
+  amount: number;
+  status: "pending" | "completed" | "failed";
+};
+
+export type Shipping = {
+  address: string;
+  mobile: string;
+  name: string;
+  zone: "outside" | "inside";
+};
+
+export type Order = {
+  id: string;
+  status: "pending" | "processing" | "shipped" | "delivered" | "cancelled";
+  total: number;
+  totalQuantity: number;
+  paymentStatus: "pending" | "completed" | "failed";
+  paymentMethod: "bkash" | "nagad" | "cod" | "card"; // same as in Payment
+  createdAt: string; // ISO timestamp
+  items: OrderItem[];
+  payment: Payment;
+  shipping: Shipping;
 };
