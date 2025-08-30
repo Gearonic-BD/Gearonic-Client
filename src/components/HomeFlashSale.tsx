@@ -8,38 +8,51 @@ import "swiper/css";
 import "swiper/css/navigation";
 import FlashSaleProductCard from "./FlashSaleProductCard";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Swiper as SwiperType } from "swiper";
 import Link from "next/link";
 import SectionHeader from "./SectionHeader";
-
-const product = {
-  id: "2",
-  image: "/assets/iphone.png",
-  title:
-    "Iphone 12 Pro Max Special Edition with Extra Long Product Title to Test Two-Line Limitation",
-  originalPrice: 2400,
-  discountPrice: 2099,
-  sold: 80,
-  totalStock: 100,
-  rating: 4,
-};
-const product2 = {
-  id: "1",
-  image: "/assets/iphone2.png",
-  title:
-    "Iphone 12 Pro Max Special Edition with Extra Long Product Title to Test Two-Line Limitation",
-  originalPrice: 24000,
-  discountPrice: 20199,
-  sold: 40,
-  totalStock: 100,
-  rating: 4,
-};
-
+import { Product } from "@/types/types";
+import { ProductSkeleton } from "@/utils/suspenseLoaders";
 // Calculate discount percentage
 
 const HomeFlashSale = () => {
   const swiperRef = useRef<SwiperType | null>(null);
+  const [flashSaleProducts, setFlashSaleProducts] = useState<Product[] | null>(
+    null
+  );
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchFlashSaleProducts = async () => {
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/api/products/flash-sale`
+        );
+        const data = await res.json();
+        setFlashSaleProducts(data);
+      } catch (error) {
+        console.error("Error fetching flash sale products:", error);
+      } finally {
+        setLoading(false);
+      
+      }
+    };
+
+    fetchFlashSaleProducts();
+  }, []);
+  if (loading) {
+    return (
+      <section className="w-full max-w-[1280px] px-4 sm:px-6 mx-auto my-8 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid grid-cols-6">
+        {Array.from({ length: 8 }, (_, index) => (
+          <ProductSkeleton key={index} />
+        ))}
+      </section>
+    );
+  }
+  if (!flashSaleProducts || flashSaleProducts.length === 0) {
+    return null;
+  }
 
   return (
     <section className="w-full max-w-[1280px] px-4 sm:px-6 mx-auto my-8">
@@ -95,7 +108,7 @@ const HomeFlashSale = () => {
             pauseOnMouseEnter: true,
           }}
         >
-          <SwiperSlide className="py-2">
+          {/* <SwiperSlide className="py-2">
             <FlashSaleProductCard product={product} />
           </SwiperSlide>
           <SwiperSlide className="py-2">
@@ -130,7 +143,12 @@ const HomeFlashSale = () => {
           </SwiperSlide>
           <SwiperSlide className="py-2">
             <FlashSaleProductCard product={product2} />
-          </SwiperSlide>
+          </SwiperSlide> */}
+          {flashSaleProducts.map((product) => (
+            <SwiperSlide className="py-2" key={product.id}>
+              <FlashSaleProductCard product={product} />
+            </SwiperSlide>
+          ))}
         </Swiper>
       </div>
     </section>

@@ -54,22 +54,16 @@ const CheckoutPage = () => {
   useEffect(() => {
     const fetchAddress = async () => {
       try {
-        // Use axiosInstance to make the GET request.
-        // `withCredentials: true` will ensure the HttpOnly cookie is sent.
         const response = await axiosInstance.get("/api/checkout/address");
 
         if (response.data) {
-          // Address found, update the state
           setAddress(response.data);
           setIsAddressSaved(true);
-          // Ensure the shipping zone is correctly set
           changeShipping(response.data.zone === "outside" ? 120 : 60);
         } else {
-          // No address found (backend returns null or an empty object)
           setIsAddressSaved(false);
         }
       } catch (error) {
-        // Handle different error status codes from the backend
         if (axios.isAxiosError(error) && error.response) {
           if (error.response.status === 401) {
             router.push("/login");
@@ -90,7 +84,6 @@ const CheckoutPage = () => {
       }
     };
 
-    // Only run this fetch if the cart is loaded and there are items
     if (isCartLoaded && items.length > 0) {
       fetchAddress();
     }

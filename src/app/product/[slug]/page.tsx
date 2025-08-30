@@ -79,7 +79,10 @@ const ProductPage = async ({
         <ProductDescription html={product.description} />
       </section>
       <section className="container mx-auto max-w-[1280px] px-4 sm:px-6 pb-4 md:pb-8">
-        <ProductQuestions questions={product.questions} />
+        <ProductQuestions
+          questions={product.questions}
+          productId={product.id}
+        />
       </section>
       <section className="container mx-auto max-w-[1280px] px-4 sm:px-6 pb-4 md:pb-8">
         <ProductReviews
@@ -89,7 +92,7 @@ const ProductPage = async ({
         />
       </section>
       <section className="container mx-auto max-w-[1280px] px-4 sm:px-6 pb-4 md:pb-8">
-        <RelatedProducts />
+        <RelatedProducts id={product.id} />
       </section>
     </>
   );

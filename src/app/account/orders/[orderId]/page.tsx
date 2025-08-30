@@ -26,7 +26,7 @@ const OrderPage = () => {
       try {
         const res = await axiosInstance.get(`/api/orders/full/${orderId}`);
         const data = res.data;
-        console.log(data);
+
         setOrderData(data);
       } catch (err) {
         if (axios.isAxiosError(err)) {
@@ -43,6 +43,7 @@ const OrderPage = () => {
         }
       } finally {
         setIsOrderLoading(false);
+        console.log(orderData);
       }
     };
 
@@ -126,15 +127,15 @@ const OrderPage = () => {
       </div>
     );
   }
-if (!orderData) {
-  return (
-    <div className="flex items-center justify-center min-h-[50vh]">
-      <h1 className="text-xl font-semibold text-[color:var(--color-danger)] bg-white px-6 py-4 rounded-xl shadow-md border border-[color:var(--color-danger)]/30">
-        ❌ No order found
-      </h1>
-    </div>
-  );
-}
+  if (!orderData) {
+    return (
+      <div className="flex items-center justify-center min-h-[50vh]">
+        <h1 className="text-xl font-semibold text-[color:var(--color-danger)] bg-white px-6 py-4 rounded-xl shadow-md border border-[color:var(--color-danger)]/30">
+          ❌ No order found
+        </h1>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 py-4 sm:py-8">
@@ -405,12 +406,29 @@ if (!orderData) {
                   </span>
                 </div>
                 <div className="mt-2">
-                  <p className="text-sm text-gray-600">Paid by</p>
-                  <p className="font-medium capitalize">
-                    {orderData.payment?.method === "cod"
-                      ? "Cash On Delivery"
-                      : orderData.payment.method}
-                  </p>
+                  {orderData.payment?.method ? (
+                    <>
+                      <p className="text-sm text-gray-600">Paid by</p>
+                      <p className="font-medium capitalize">
+                        {orderData.payment.method === "cod"
+                          ? "Cash On Delivery"
+                          : orderData.payment.method}
+                      </p>
+                    </>
+                  ) : (
+                    <>
+                      <p className="text-sm text-gray-600">Payment Status</p>
+                      <p className="font-medium">
+                        Payment Pending.{" "}
+                        <a
+                          href={`/payment?orderId=${orderData.id}`}
+                          className="text-blue-600 hover:underline"
+                        >
+                          Pay Now
+                        </a>
+                      </p>
+                    </>
+                  )}
                 </div>
               </div>
             </div>

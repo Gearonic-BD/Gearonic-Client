@@ -30,7 +30,7 @@ const ProductActions = ({
 }: ProductActionsProps) => {
   const [quantity, setQuantity] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
-  const { loading, checkAuth } = useAuth();
+  const { checkAuth } = useAuth();
   const router = useRouter();
 
   const handleQuantityChange = (action: "increase" | "decrease") => {
@@ -104,14 +104,14 @@ const ProductActions = ({
         <div className="flex gap-3">
           <button
             onClick={onShopNow}
-            disabled={currentStock === 0 || isLoading || loading}
+            disabled={currentStock === 0 || isLoading}
             className="h-12 w-2/5 cursor-pointer bg-info text-white hover:bg-info/90 font-medium rounded-xs disabled:opacity-80 disabled:cursor-not-allowed transition-colors"
           >
             Shop Now
           </button>
           <button
             onClick={handleAddToCart}
-            disabled={currentStock === 0 || isLoading || loading}
+            disabled={currentStock === 0 || isLoading}
             className="w-2/5 h-12 bg-primary hover:bg-primary/90 text-white font-medium rounded-xs cursor-pointer
              flex items-center justify-center gap-2 disabled:opacity-80 disabled:cursor-not-allowed transition-colors"
           >

@@ -74,7 +74,7 @@ const PaymentMethodDetails: React.FC<PaymentMethodDetailsProps> = ({
               </div>
               <p className="text-base xs:text-xl font-bold text-gray-900 mt-2">
                 You need to send us{" "}
-                <span className="text-[#f44336] font-extrabold">
+                <span className="text-danger font-extrabold">
                   ৳ {totalAmount.toLocaleString()}
                 </span>
               </p>

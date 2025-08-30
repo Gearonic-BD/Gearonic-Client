@@ -85,7 +85,7 @@ export const SuspenseLoading = ({
 };
 
 // Product Loading Skeleton (for ecommerce)
-const ProductSkeleton = () => (
+export const ProductSkeleton = () => (
   <div className="animate-pulse">
     <div className="bg-gray-200 rounded-lg h-48 w-full mb-4"></div>
     <div className="space-y-2">

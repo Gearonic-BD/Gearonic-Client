@@ -16,56 +16,56 @@ const categories = [
     name: "Smartphones",
     image:
       "https://vinetanextjs.vercel.app/images/cls-categories/electronic/smartphone.png",
-    href: "/category/smartphones",
+    href: "/categories/smartphones",
   },
   {
     id: 2,
     name: "Earphones",
     image:
       "https://vinetanextjs.vercel.app/images/cls-categories/electronic/earphone.png",
-    href: "/category/earphones",
+    href: "/categories/earphones",
   },
   {
     id: 3,
     name: "Cables",
     image:
       "https://vinetanextjs.vercel.app/images/cls-categories/electronic/cable.png",
-    href: "/category/cables",
+    href: "/categories/cables",
   },
   {
     id: 4,
     name: "Smart Watches",
     image:
       "https://vinetanextjs.vercel.app/images/cls-categories/electronic/smart-watch.png",
-    href: "/category/smart-watches",
+    href: "/categories/smart-watches",
   },
   {
     id: 5,
     name: "Chargers",
     image:
       "https://vinetanextjs.vercel.app/images/cls-categories/electronic/charge.png",
-    href: "/category/chargers",
+    href: "/categories/chargers",
   },
   {
     id: 6,
     name: "Screen Protectors",
     image:
       "https://vinetanextjs.vercel.app/images/cls-categories/electronic/keyboard.png",
-    href: "/category/screen-protectors",
+    href: "/categories/screen-protectors",
   },
   {
     id: 7,
     name: "Headphones",
     image:
       "https://vinetanextjs.vercel.app/images/cls-categories/electronic/headphone.png",
-    href: "/category/headphones",
+    href: "/categories/headphones",
   },
   {
     id: 8,
     name: "Keyboards",
     image:
       "https://vinetanextjs.vercel.app/images/cls-categories/electronic/keyboard.png",
-    href: "/category/keyboards",
+    href: "/categories/keyboards",
   },
 ];
 

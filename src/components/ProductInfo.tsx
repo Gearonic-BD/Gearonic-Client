@@ -16,7 +16,6 @@ interface ProductInfoProps {
 const ProductInfo = ({
   title,
   brand,
-  category,
   rating,
   sold,
   originalPrice,
@@ -34,7 +33,7 @@ const ProductInfo = ({
           <span className="text-sm text-gray-600">Brand:</span>
           <Link
             className="text-info hover:underline font-medium"
-            href={`/products/${category}/${brand}`}
+            href={`/brands/${brand.toLowerCase()}`}
           >
             {brand}
           </Link>

@@ -7,7 +7,7 @@ export type Review = {
   rating: number;
   comment?: string | null;
   createdAt: string; // ISO Date string
-  user: string;
+  user: User;
   date: string;
 };
 
@@ -17,9 +17,8 @@ export type Question = {
   productId: string;
   question: string;
   answer?: string | null;
-  createdAt: string; // ISO Date string
-  user: string;
-  date: string;
+  createdAt: string;
+  user: Partial<User> | null;
   answerDate?: string;
 };
 export type User = {
