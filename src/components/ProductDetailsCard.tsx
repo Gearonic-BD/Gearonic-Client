@@ -6,7 +6,7 @@ import ProductInfo from "./ProductInfo";
 import ProductVariants from "./ProductVariants";
 import ProductActions from "./ProductActions";
 
-import { Product, Variant } from "@/types/product";
+import { Product, Variant } from "@/types/types";
 
 interface ProductDetailsCardProps {
   product: Product;
@@ -14,14 +14,14 @@ interface ProductDetailsCardProps {
 
 const ProductDetailsCard = ({ product }: ProductDetailsCardProps) => {
   const [selectedVariant, setSelectedVariant] = useState<Variant | null>(
-    product.hasvariants && product.variants.length > 0
+    product.hasVariants && product.variants.length > 0
       ? product.variants[0]
       : null
   );
   const [isWishlisted, setIsWishlisted] = useState(false);
 
   // Check if product has valid variants
-  const hasValidVariants = product.hasvariants && product.variants.length > 0;
+  const hasValidVariants = product.hasVariants && product.variants.length > 0;
 
   // Get current price based on variant or product pricing
   const getCurrentPrice = () => {
@@ -82,7 +82,7 @@ const ProductDetailsCard = ({ product }: ProductDetailsCardProps) => {
     setSelectedVariant(variant);
   };
 
-  const handleBuyNow = () => {
+  const handleShopNow = () => {
     console.log("Buy now:", {
       product: product.id,
       variant: selectedVariant?.id || null,
@@ -134,7 +134,7 @@ const ProductDetailsCard = ({ product }: ProductDetailsCardProps) => {
             currentStock={currentStock}
             selectedVariant={selectedVariant}
             currentPrice={currentPrice}
-            onBuyNow={handleBuyNow}
+            onShopNow={handleShopNow}
             isWishlisted={isWishlisted}
             onWishlistToggle={handleWishlistToggle}
             product={product}

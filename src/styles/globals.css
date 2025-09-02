@@ -1,7 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
-
-  @import "tailwindcss";
- @plugin "@tailwindcss/typography";
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
 html {
   font-family: "Roboto", sans-serif;
@@ -11,7 +10,7 @@ html {
   /* breakpoints */
   --breakpoint-ml: 56rem; /* 896px */
   --breakpoint-xs: 30rem; /* 480px */
-  --breakpoint-2xs: 18.75rem; /* 300px */
+  --breakpoint-2xs: 20rem; /* 320px */
 
   /* text size */
   --text-xsm: 0.8125rem; /* 13px */
@@ -23,21 +22,20 @@ html {
   --color-success: #01d676;
   --color-info: #2196f3;
   --color-danger: #f44336;
-
-  --color-offblack: #222222
+  --color-offblack: #222222;
   --color-text-light: #666666;
 }
 /* #FED700 #EF262C */
 
-body{
-  background-color: #f5f5f5;
+body {
+  background-color: #f4f4f4;
 }
 
 /* Hide scrollbar for category navigation */
 .scrollbar-hide {
-  -ms-overflow-style: none;  /* Internet Explorer 10+ */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+  scrollbar-width: none; /* Firefox */
 }
 .scrollbar-hide::-webkit-scrollbar {
-  display: none;  /* Safari and Chrome */
+  display: none; /* Safari and Chrome */
 }

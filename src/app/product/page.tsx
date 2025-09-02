@@ -10,6 +10,9 @@ import RelatedProducts from "@/components/RelatedProducts";
 
 const product = {
   id: "1",
+  title: "Blue Gean Shark L4S Sport Smart Watch",
+  featuredImage:
+    "https://www.startech.com.bd/image/cache/catalog/smart-watch/black-shark/gs3-sport/gs3-sport-lava-black-official-500x500.webp",
   images: [
     "https://www.startech.com.bd/image/cache/catalog/smart-watch/black-shark/gs3-sport/gs3-sport-lava-black-official-500x500.webp",
     "https://www.startech.com.bd/image/cache/catalog/smart-watch/black-shark/gs3-sport/gs3-sport-mist-black-02-500x500.webp",
@@ -17,49 +20,12 @@ const product = {
   ],
   category: "Mobiles",
   brand: "Apple",
-  title: "Blue Gean Shark L4S Sport Smart Watch",
   originalPrice: 24000,
   discountPrice: 21220,
-  hasvariants: true,
   sold: 50,
+  hasVariants: true,
   totalStock: 200,
   rating: 4.5,
-  variants: [
-    {
-      id: "44",
-      color: "black",
-      price: 21250,
-      stock: 100,
-      image:
-        "https://www.startech.com.bd/image/cache/catalog/smart-watch/black-shark/gs3-sport/gs3-sport-mist-black-01-500x500.webp",
-    },
-    {
-      id: "45",
-      color: "white",
-      price: 21350,
-      stock: 30,
-      image:
-        "https://vinetanextjs.vercel.app/images/cls-categories/electronic/charge.png",
-    },
-  ],
-  features: ["128GB Storage", "5G Support", "iOS 15", "A14 Bionic Chip"],
-  specifications: {
-    "Basic Information": {
-      display: "1.32inch AMOLED (454×454) Capacitive Full Touch Screen",
-      memory: "Flash Memory: RAM:578KB+ROM 640KB \nExternal flash memory: 1Gb",
-      battery:
-        "3.8V 260mAh Lithium Polymer Battery\nCharging Method: Magnetic Charging\nStandby time: 15-25 days\nUsage time: 7-15 days",
-      connectivity: "Bluetooth 5.0",
-    },
-    Exterior: {
-      dimention: "45*45*12mm",
-      weights: "65g",
-      color: "black",
-    },
-    "Warranty Information": {
-      warranty: "6 Month Brand Warranty",
-    },
-  },
   description: `<h2>Blue Gean Shark L4S Sport Smart Watch</h2>
 
   <img
@@ -92,6 +58,42 @@ const product = {
 <h4>Price of Blue Gean Shark L4S in Bangladesh</h4>
 <p>The current price of the <strong>Blue Gean Shark L4S</strong> in Bangladesh is <strong>৳21,220</strong>. Place your order now and enjoy the latest in smart wearable technology.</p>
 `,
+  features: ["128GB Storage", "5G Support", "iOS 15", "A14 Bionic Chip"],
+  variants: [
+    {
+      id: "44",
+      color: "black",
+      price: 21250,
+      stock: 100,
+      image:
+        "https://www.startech.com.bd/image/cache/catalog/smart-watch/black-shark/gs3-sport/gs3-sport-mist-black-01-500x500.webp",
+    },
+    {
+      id: "45",
+      color: "white",
+      price: 21350,
+      stock: 30,
+      image:
+        "https://vinetanextjs.vercel.app/images/cls-categories/electronic/charge.png",
+    },
+  ],
+  specifications: {
+    "Basic Information": {
+      display: "1.32inch AMOLED (454×454) Capacitive Full Touch Screen",
+      memory: "Flash Memory: RAM:578KB+ROM 640KB \nExternal flash memory: 1Gb",
+      battery:
+        "3.8V 260mAh Lithium Polymer Battery\nCharging Method: Magnetic Charging\nStandby time: 15-25 days\nUsage time: 7-15 days",
+      connectivity: "Bluetooth 5.0",
+    },
+    Exterior: {
+      dimention: "45*45*12mm",
+      weights: "65g",
+      color: "black",
+    },
+    "Warranty Information": {
+      warranty: "6 Month Brand Warranty",
+    },
+  },
   questions: [
     {
       id: "q1",

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Product } from "@/types/types";
-import { renderStars } from "@/app/utils/ratings";
+import { renderStars } from "@/utils/ratings";
 
 const FeaturedProductCard = ({ product }: { product: Product }) => {
   const discountPercentage = product.discountPrice
@@ -11,14 +11,13 @@ const FeaturedProductCard = ({ product }: { product: Product }) => {
       )
     : 0;
 
-
   return (
     <div className="rounded-lg bg-white active:scale-98 shadow-sm overflow-hidden group transition-all duration-300 active:shadow-lg active:-translate-y-1 hover:shadow-lg hover:-translate-y-1 h-full flex flex-col">
-      <Link href={"/product/iphone"} className="flex flex-col h-full">
+      <Link href={`/product/${product.slug}`} className="flex flex-col h-full">
         {/* Image Container */}
         <div className="p-4 relative flex-shrink-0">
           <img
-            src={product.image}
+            src={product.featuredImage}
             alt={product.title}
             className="w-full object-contain transition-transform duration-300 group-hover:scale-105"
           />
@@ -35,8 +34,8 @@ const FeaturedProductCard = ({ product }: { product: Product }) => {
             </h3>
 
             {/* Rating and Sold Section - Always show sold info on the right */}
-            <div className="flex items-center justify-between">
-              {product.rating > 0 ? (
+            <div className="flex items-center flex-wrap gap-2 justify-between">
+              {product.rating && product.rating > 0 ? (
                 <div className="flex items-center gap-.5">
                   <div className="flex items-center">
                     {renderStars(product.rating)}

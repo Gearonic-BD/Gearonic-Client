@@ -1,10 +1,9 @@
 import { Product } from "@/types/types";
 import Link from "next/link";
-type DiscountedProduct = Product & { discountPrice: number };
 
-const FlashSaleProductCard = ({ product }: { product: DiscountedProduct }) => {
+const FlashSaleProductCard = ({ product }: { product: Product }) => {
   const discountPercentage = Math.round(
-    ((product.originalPrice - product.discountPrice) / product.originalPrice) *
+    ((product.originalPrice - product.discountPrice!) / product.originalPrice) *
       100
   );
   const soldPercentage = (product.sold / product.totalStock) * 100;
@@ -15,7 +14,7 @@ const FlashSaleProductCard = ({ product }: { product: DiscountedProduct }) => {
         <div className="p-4 relative">
           {/* Make this relative */}
           <img
-            src={product.image}
+            src={product.featuredImage}
             alt={product.title}
             className="w-full  object-contain transition-transform duration-300 group-hover:scale-105"
           />

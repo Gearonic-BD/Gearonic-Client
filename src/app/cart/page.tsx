@@ -7,13 +7,15 @@ import OrderSummary from "@/components/OrderSummary";
 import MobileOrderSummary from "@/components/MobileOrderSummary";
 import { useCartStore } from "@/store/cart";
 import { useState } from "react";
+import { SuspenseLoading } from "@/utils/suspenseLoaders";
 
 const CartPage = () => {
   const items = useCartStore((state) => state.cart.items);
   const removeItem = useCartStore((state) => state.removeFromCart);
-  const increaseQty = useCartStore((state) => state.increaseQty);
-  const decreaseQty = useCartStore((state) => state.decreaseQty);
+
   const shipping = useCartStore((state) => state.cart.shipping);
+  const isCartLoaded = useCartStore((state) => state.isCartLoaded);
+
   const subtotal = items.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
@@ -36,16 +38,19 @@ const CartPage = () => {
     console.log("Proceeding to checkout...");
   };
 
+  if (!isCartLoaded) {
+    return (
+      <div className="min-h-[80vh]">
+        <SuspenseLoading />;
+      </div>
+    );
+  }
+
   if (items.length === 0) {
     return (
       <div className="min-h-screen bg-gray-50">
         <div className="container mx-auto px-4 py-8">
-          <CartItemsList
-            items={items}
-            removeItem={removeItem}
-            increaseQty={increaseQty}
-            decreaseQty={decreaseQty}
-          />
+          <CartItemsList items={items} removeItem={removeItem} />
         </div>
       </div>
     );
@@ -65,12 +70,7 @@ const CartPage = () => {
                     Cart Items
                   </h2>
                 </div>
-                <CartItemsList
-                  items={items}
-                  removeItem={removeItem}
-                  increaseQty={increaseQty}
-                  decreaseQty={decreaseQty}
-                />
+                <CartItemsList items={items} removeItem={removeItem} />
                 <div className="px-4 py-3 md:px-6 md:py-4 md:hidden border-b border-gray-200">
                   <CartVoucherInput
                     voucherCode={voucherCode}

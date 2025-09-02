@@ -5,11 +5,15 @@ import SideNavbar from "./SideNavbar";
 import { useState } from "react";
 import NavCategoryLink from "./NavbarCategories";
 import useCartTotalItems from "@/hooks/useCartTotalItems";
+import NavbarSearch from "./NavbarSearch";
+import MobileNavbarSearch from "./MobileNavbar";
 
 const Navbar = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [showMobileSearch, setShowMobileSearch] = useState(false);
+
   const itemsLen = useCartTotalItems();
+
   return (
     <>
       <nav className="w-full h-fit shadow-sm border-b border-gray-100 fixed top-0 left-0 z-50 bg-white/95 backdrop-blur-sm">
@@ -31,16 +35,7 @@ const Navbar = () => {
 
           {/* Search (hidden on mobile) */}
           <div className="flex-1 hidden sm:block max-w-lg lg:max-w-xl xl:max-w-2xl mx-4">
-            <div className="flex items-stretch rounded-lg overflow-hidden shadow-sm border border-gray-200 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20 transition-all">
-              <input
-                className="w-full text-sm px-4 py-2.5 outline-none placeholder:text-gray-400"
-                type="text"
-                placeholder="Search for products..."
-              />
-              <button className="bg-primary hover:bg-primary/90 cursor-pointer px-4 flex items-center justify-center transition-colors">
-                <SearchIcon className="text-white" size={18} />
-              </button>
-            </div>
+            <NavbarSearch />
           </div>
 
           {/* Icons */}
@@ -93,6 +88,7 @@ const Navbar = () => {
                 size={18}
                 className="group-hover:text-primary transition-colors"
               />
+
               <span className="hidden md:block text-sm font-medium">
                 Account
               </span>
@@ -101,7 +97,7 @@ const Navbar = () => {
         </div>
 
         {/* Desktop category bar (visible on medium+) */}
-        <div className="container max-w-[1280px] mx-auto px-4 hidden ml:flex items-center justify-center border-t border-gray-50 bg-gray-50/50">
+        <div className=" container max-w-[1280px] mx-auto px-4 hidden ml:flex items-center justify-center border-none">
           <div className="flex items-center gap-6 py-2 overflow-x-auto scrollbar-hide">
             <NavCategoryLink href="/categories/mobile" text="Mobiles" />
             <NavCategoryLink href="/categories/airpods" text="Airpods" />
@@ -123,21 +119,7 @@ const Navbar = () => {
           </div>
         </div>
 
-        {showMobileSearch && (
-          <div className="block sm:hidden bg-white border-t border-gray-100 px-4 py-3 w-full absolute top-full z-40 shadow-sm">
-            <div className="flex items-stretch rounded-lg overflow-hidden shadow-sm border border-gray-200 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20 transition-all">
-              <input
-                className="w-full text-sm px-4 py-2.5 outline-none placeholder:text-gray-400"
-                type="text"
-                placeholder="Search products..."
-                autoFocus
-              />
-              <button className="bg-primary hover:bg-primary/90 cursor-pointer px-4 flex items-center justify-center transition-colors">
-                <SearchIcon className="text-white" size={18} />
-              </button>
-            </div>
-          </div>
-        )}
+        {showMobileSearch && <MobileNavbarSearch />}
       </nav>
       <div className="h-[65px] sm:h-[90px] md:h-[145px]" />
 

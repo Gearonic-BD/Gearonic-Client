@@ -1,52 +1,110 @@
 "use client";
 
 import type React from "react";
-
 import { useState } from "react";
 import { MessageCircle } from "lucide-react";
-
-interface Question {
-  id: string;
-  user: string;
-  question: string;
-  answer?: string;
-
-  date: string;
-  answerDate?: string;
-}
+import { Question } from "@/types/types";
+import useAuth from "@/hooks/useAuth";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import axiosInstance from "@/utils/axiosInstance";
 
 interface ProductQuestionsProps {
   questions: Question[];
+  productId: string; // pass productId from parent page
 }
 
-const ProductQuestions = ({ questions }: ProductQuestionsProps) => {
+const ProductQuestions = ({ questions, productId }: ProductQuestionsProps) => {
   const [showQuestionForm, setShowQuestionForm] = useState(false);
   const [newQuestion, setNewQuestion] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [localQuestions, setLocalQuestions] = useState<Question[]>(
+    questions || []
+  );
+  console.log(questions);
 
-  const handleSubmitQuestion = (e: React.FormEvent) => {
+  const router = useRouter();
+  const { checkAuth, user } = useAuth();
+
+  const handleAskQuestionToggle = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (newQuestion.trim()) {
-     
-      // Here you would typically send the question to your backend
-      setNewQuestion("");
+    if (showQuestionForm) {
       setShowQuestionForm(false);
-      // Show success message
-      alert("Your question has been submitted successfully!");
+      return;
+    }
+    try {
+      setLoading(true);
+      const authOk = await checkAuth();
+      if (!authOk) {
+        toast.error("Please log in to ask a question");
+        router.push(
+          `/login?redirect=${encodeURIComponent(window.location.pathname)}`
+        );
+        return;
+      }
+      setShowQuestionForm(true);
+    } catch {
+      toast.error("Cannot ask question at this moment");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSubmitQuestion = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newQuestion.trim()) return;
+
+    const tempId = `temp-${Date.now()}`;
+    const optimisticQuestion: Question = {
+      id: tempId,
+      productId,
+      userId: user?.id ?? "me",
+      question: newQuestion,
+      answer: null,
+      createdAt: new Date().toISOString(),
+      user: user,
+    };
+
+    // Optimistic update
+    setLocalQuestions((prev) => [optimisticQuestion, ...prev]);
+
+    setNewQuestion("");
+    setShowQuestionForm(false);
+
+    try {
+      const { data } = await axiosInstance.post("/api/products/questions", {
+        productId,
+        userId: user?.id,
+        question: optimisticQuestion.question,
+      });
+
+      console.log(data);
+
+      // Replace tempId with real question from backend
+      setLocalQuestions((prev) =>
+        prev.map((q) => (q.id === tempId ? { ...q, ...data.question } : q))
+      );
+      toast.success("Question submitted!");
+    } catch {
+      setLocalQuestions((prev) => prev.filter((q) => q.id !== tempId));
+      toast.error("Failed to submit question");
     }
   };
 
   return (
     <div className="bg-white rounded-lg shadow-sm p-3 sm:p-6">
+      {/* Header & Ask button */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0 mb-4 sm:mb-6">
         <h2 className="text-lg sm:text-2xl font-bold text-gray-900">
           Questions & Answers
         </h2>
         <button
-          onClick={() => setShowQuestionForm(!showQuestionForm)}
-          className="bg-info hover:bg-info/90 text-white px-3 sm:px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm sm:text-base"
+          onClick={handleAskQuestionToggle}
+          disabled={loading}
+          className="bg-info disabled:bg-info/95 cursor-pointer hover:bg-info/90 text-white px-3 sm:px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm sm:text-base"
         >
           <MessageCircle size={14} className="sm:w-4 sm:h-4" />
-          <span className="">Ask Question</span>
+          <span>Ask Question</span>
         </button>
       </div>
 
@@ -87,7 +145,7 @@ const ProductQuestions = ({ questions }: ProductQuestionsProps) => {
               <button
                 type="button"
                 onClick={() => setShowQuestionForm(false)}
-                className="bg-gray-300 hover:bg-gray-400 text-gray-700 px-3 sm:px-4 py-2 rounded-lg transition-colors text-sm sm:text-base"
+                className="bg-danger text-white hover:bg-danger/90 px-3 sm:px-4 py-2 rounded-lg transition-colors text-sm sm:text-base"
               >
                 Cancel
               </button>
@@ -98,7 +156,7 @@ const ProductQuestions = ({ questions }: ProductQuestionsProps) => {
 
       {/* Questions List */}
       <div className="space-y-4">
-        {questions.length === 0 ? (
+        {localQuestions && localQuestions.length === 0 ? (
           <div className="text-center py-6 sm:py-8 text-gray-500">
             <MessageCircle
               size={28}
@@ -109,19 +167,24 @@ const ProductQuestions = ({ questions }: ProductQuestionsProps) => {
             </p>
           </div>
         ) : (
-          questions.map((question) => (
+          localQuestions.map((question) => (
             <div
               key={question.id}
               className="border border-gray-200 rounded-lg p-3 sm:p-4 space-y-2"
             >
-              {/* Question block */}
+              {/* Question */}
               <div className="space-y-1">
                 <div className="flex flex-col sm:flex-row sm:items-center gap-0.5 sm:gap-2">
                   <span className="font-medium text-gray-900 text-sm sm:text-base">
-                    {question.user}
+                    {question.user ? question.user.name : "Unknown"}
                   </span>
                   <span className="text-xs sm:text-sm text-gray-500">
-                    asked on {question.date}
+                    asked on{" "}
+                    {new Date(question.createdAt).toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "short",
+                      day: "numeric",
+                    })}
                   </span>
                 </div>
                 <p className="text-gray-700 text-sm sm:text-base leading-relaxed">
@@ -129,7 +192,7 @@ const ProductQuestions = ({ questions }: ProductQuestionsProps) => {
                 </p>
               </div>
 
-              {/* Answer block (no side margin) */}
+              {/* Answer */}
               {question.answer && (
                 <div className="border-t border-gray-200 pt-2 mt-2">
                   <div className="text-xs sm:text-sm font-medium text-blue-700 mb-1">

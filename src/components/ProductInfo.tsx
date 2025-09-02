@@ -1,11 +1,11 @@
 import Link from "next/link";
-import { renderStars } from "@/app/utils/ratings";
+import { renderStars } from "@/utils/ratings";
 
 interface ProductInfoProps {
   title: string;
   brand: string;
   category: string;
-  rating: number;
+  rating?: number;
   sold: number;
   originalPrice: number;
   currentPrice: number;
@@ -16,7 +16,6 @@ interface ProductInfoProps {
 const ProductInfo = ({
   title,
   brand,
-  category,
   rating,
   sold,
   originalPrice,
@@ -34,14 +33,17 @@ const ProductInfo = ({
           <span className="text-sm text-gray-600">Brand:</span>
           <Link
             className="text-info hover:underline font-medium"
-            href={`/products/${category}/${brand}`}
+            href={`/brands/${brand.toLowerCase()}`}
           >
             {brand}
           </Link>
         </div>
         <div className="flex items-center gap-2">
-          <div className="flex items-center">{renderStars(rating, 16)}</div>
-          <span className="text-sm font-medium text-gray-700">{rating}</span>
+          {rating ? (
+            <div className="flex items-center">{renderStars(rating, 16)}</div>
+          ) : (
+            <div className="flex items-center">{renderStars(0, 16)}</div>
+          )}
           {sold > 10 && (
             <span className="text-sm text-gray-500">({sold} sold)</span>
           )}

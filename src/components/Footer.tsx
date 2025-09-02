@@ -54,7 +54,7 @@ const Footer = () => {
 
           {/* Customer Service */}
           <FooterLinkList
-            title="Customer Service"
+            title="Information"
             links={footerLinks.customerService}
           />
 

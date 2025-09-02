@@ -1,26 +1,24 @@
 "use client";
 
 import Breadcrumb from "@/components/Breadcrumb";
-import CartVoucherInput from "@/components/CartVoucherInput";
-import CheckoutItemCard from "@/components/CheckoutItemCard";
-import Input from "@/components/Input";
+import CheckoutSummary from "@/components/MobileCheckoutSummary";
 import useCartTotalItems from "@/hooks/useCartTotalItems";
 import { useCartStore } from "@/store/cart";
-import { MapPin, Phone, User } from "lucide-react";
-import { redirect } from "next/navigation";
-import React, { useState } from "react";
-
-const dummyAddress = {
-  name: "John Doe",
-  mobile: "01717171717",
-  zone: "inside-dhaka",
-  address: "123, Main Road, Dhaka",
-  comment: "Please deliver to the main gate",
-};
+import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import CheckoutShippingAddress from "@/components/CheckoutShippingAddress";
+import CheckoutOrderSummary from "@/components/CheckoutOrderSummary";
+import CheckoutOrderInfoSidebar from "@/components/CheckoutOrderInfoSidebar";
+import { SuspenseLoading } from "@/utils/suspenseLoaders";
+import { toast } from "sonner";
+import axiosInstance from "@/utils/axiosInstance";
+import axios from "axios";
 
 const CheckoutPage = () => {
   const items = useCartStore((state) => state.cart.items);
   const shipping = useCartStore((state) => state.cart.shipping);
+  const isCartLoaded = useCartStore((state) => state.isCartLoaded);
+  const clearCart = useCartStore((state) => state.clearCart);
   const subtotal = items.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
@@ -29,333 +27,335 @@ const CheckoutPage = () => {
   const finalTotal = subtotal - discount + shipping;
   const changeShipping = useCartStore((state) => state.changeShipping);
   const totalItems = useCartTotalItems();
+  const [orderPlaced, setOrderPlaced] = useState(false);
 
   const totalSavings = 110;
   const [voucherCode, setVoucherCode] = useState("");
-  const [error, setError] = useState("");
+  const [error, setError] = useState({
+    name: "",
+    mobile: "",
+    address: "",
+  });
+  const [voucherError, setVoucherError] = useState("");
   const [openAddressBar, setOpenAddressBar] = useState(false);
-  // const [address, setAddress] = useState({
-  //   name: "",
-  //   mobile: "",
-  //   zone: shipping === 120 ? "outside-dhaka" : "inside-dhaka",
-  //   address: "",
-  //   comment: "",
-  // });
+  const [address, setAddress] = useState({
+    name: "",
+    mobile: "",
+    zone: shipping === 120 ? "outside" : "inside",
+    address: "",
+    comment: "",
+  });
+  const [isAddressSaved, setIsAddressSaved] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const router = useRouter();
 
-  const [address, setAddress] = useState(dummyAddress);
+  const [isAddressLoading, setIsAddressLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchAddress = async () => {
+      try {
+        const response = await axiosInstance.get("/api/checkout/address");
+
+        if (response.data) {
+          setAddress(response.data);
+          setIsAddressSaved(true);
+          changeShipping(response.data.zone === "outside" ? 120 : 60);
+        } else {
+          setIsAddressSaved(false);
+        }
+      } catch (error) {
+        if (axios.isAxiosError(error) && error.response) {
+          if (error.response.status === 401) {
+            router.push("/login");
+            toast.error("Please log in to continue checkout.");
+          } else {
+            console.error(
+              "Failed to fetch address with status:",
+              error.response.status
+            );
+            toast.error("Failed to load your saved address.");
+          }
+        } else {
+          console.error("Error fetching address:", error);
+          toast.error("An error occurred while fetching your address.");
+        }
+      } finally {
+        setIsAddressLoading(false);
+      }
+    };
+
+    if (isCartLoaded && items.length > 0) {
+      fetchAddress();
+    }
+  }, [
+    changeShipping,
+    isCartLoaded,
+    items.length,
+    router,
+    setAddress,
+    setIsAddressSaved,
+  ]);
+  useEffect(() => {
+    if (isCartLoaded && items.length === 0 && !orderPlaced) {
+      router.replace("/");
+    }
+  }, [isCartLoaded, items, orderPlaced, router]);
+
+  // Bangladeshi mobile number validation
+  const validateBangladeshiMobile = (mobile: string) => {
+    const cleanMobile = mobile.replace(/[\s\-\+]/g, "");
+
+    const patterns = [/^8801[1-9]\d{8}$/, /^01[1-9]\d{8}$/, /^1[1-9]\d{8}$/];
+
+    return patterns.some((pattern) => pattern.test(cleanMobile));
+  };
+
+  // Comprehensive form validation
+  const validateForm = () => {
+    const newErrors = {
+      name: "",
+      mobile: "",
+      zone: "",
+      address: "",
+      voucher: "",
+    };
+
+    let isValid = true;
+
+    // Name validation
+    if (!address.name.trim()) {
+      newErrors.name = "Name is required";
+      isValid = false;
+    } else if (address.name.trim().length < 2) {
+      newErrors.name = "Name must be at least 2 characters long";
+      isValid = false;
+    }
+
+    // Mobile validation
+    if (!address.mobile.trim()) {
+      newErrors.mobile = "Mobile number is required";
+      isValid = false;
+    } else if (!validateBangladeshiMobile(address.mobile)) {
+      newErrors.mobile =
+        "Please enter a valid Bangladeshi mobile number (e.g., 01712345678)";
+      isValid = false;
+    }
+
+    // Zone validation
+    if (!address.zone) {
+      newErrors.zone = "Delivery zone is required";
+      isValid = false;
+    }
+
+    // Address validation
+    if (!address.address.trim()) {
+      newErrors.address = "Delivery address is required";
+      isValid = false;
+    } else if (address.address.trim().length < 10) {
+      newErrors.address =
+        "Please provide a detailed address (minimum 10 characters)";
+      isValid = false;
+    }
+
+    setError(newErrors);
+    return isValid;
+  };
 
   const handleApplyVoucher = () => {
     //TODO: write the apply voucher code here
-    setError("Invalid Voucher Used");
+    setVoucherError("Invalid Voucher given");
   };
 
   const handleCancelAddressBar = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setOpenAddressBar(false);
+    // Reset errors when canceling
+    setError({
+      name: "",
+      mobile: "",
+      address: "",
+    });
   };
 
-  const handleSaveAddress = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleSaveAddress = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    setOpenAddressBar(false);
+
+    const isFormValid = validateForm();
+    if (!isFormValid) {
+      return;
+    }
+
+    setIsSaving(true);
+
+    try {
+      const response = await axiosInstance.post("/api/checkout/address", {
+        name: address.name,
+        mobile: address.mobile,
+        address: address.address,
+        zone: address.zone === "outside" ? "outside" : "inside",
+        comment: address.comment,
+      });
+
+      if (response.status === 200) {
+        setIsAddressSaved(true);
+        setOpenAddressBar(false);
+
+        // Update the local state with the saved address from the backend response
+        setAddress(response.data);
+
+        // Clear any existing errors
+        setError({
+          name: "",
+          mobile: "",
+          address: "",
+        });
+
+        // Show a success toast
+        toast.success("Address saved successfully!");
+      } else {
+        // Handle non-200 responses if needed
+        toast.error("Failed to save address. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error saving address:", error);
+      if (axios.isAxiosError(error) && error.response) {
+        if (error.response.status === 401) {
+          toast.error("You must be logged in to save an address.");
+          router.push("/login");
+        } else {
+          toast.error(
+            error.response.data.message ||
+              "Failed to save address. Please try again."
+          );
+        }
+      } else {
+        toast.error("An unexpected error occurred.");
+      }
+    } finally {
+      setIsSaving(false);
+    }
   };
 
-  if (items.length === 0) {
-    return redirect("/");
+  const [placingOrder, setPlacingOrder] = useState(false);
+
+  const handlePaymentClick = async () => {
+    if (placingOrder) return;
+
+    if (!isAddressSaved) {
+      toast.error("Please save your shipping address first.");
+      setOpenAddressBar(true);
+      return;
+    }
+
+    if (!items.length) {
+      toast.error("Your cart is empty.");
+      return;
+    }
+
+    try {
+      setPlacingOrder(true);
+
+      const payload = {
+        address: {
+          name: address.name,
+          mobile: address.mobile,
+          zone: address.zone, // "inside" or "outside"
+          address: address.address,
+          comment: address.comment || "",
+        },
+        shipping, // 60 or 120
+      };
+
+      const res = await axiosInstance.post(
+        "/api/checkout/create-order",
+        payload
+      );
+
+      if (res.status === 200 && res.data?.orderId) {
+        setOrderPlaced(true);
+        router.push(`/payment?orderId=${res.data.orderId}`);
+        clearCart();
+        toast.success("Order created! Redirecting to payment...");
+      } else {
+        toast.error("Failed to create order.");
+      }
+    } catch (err) {
+      if (axios.isAxiosError(err) && err.response?.status === 401) {
+        toast.error("Please log in to continue.");
+        router.push("/login");
+      } else {
+        toast.error("Failed to create order.");
+      }
+    } finally {
+      setPlacingOrder(false);
+    }
+  };
+
+  if (!isCartLoaded || isAddressLoading) {
+    return (
+      <div className="min-h-[60vh]">
+        <SuspenseLoading message="Loading cart..." />
+      </div>
+    );
+  }
+
+  if (placingOrder) {
+    return (
+      <div className="min-h-[80vh] opacity-40">
+        <SuspenseLoading message="Placing order..." />
+      </div>
+    );
   }
 
   return (
-    <div className="container px-4 xl:px-0 mx-auto max-w-[1280px]">
-      <Breadcrumb items={[{ label: "Checkout", href: "/checkout" }]} />
-      {/* below will be the billing information form */}
-      <div className="grid grid-cols-1 sm:grid-cols-5 gap-4 lg:gap-8">
-        <div className="sm:col-span-3 flex flex-col gap-4">
-          <div className="bg-white p-4 ml:p-6 h-fit rounded-md shadow-sm">
-            <h2 className="text-lg font-medium">Shipping Address</h2>
-            {openAddressBar ? (
-              <>
-                <div className="w-full h-[1px] bg-gray-200 my-2" />
-                <form action="" className="space-y-2">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <Input
-                        type="text"
-                        name="name"
-                        placeholder="Recipient's Full Name"
-                        label="Name"
-                        className="w-full"
-                        required
-                        error="Name is required"
-                        value={address.name}
-                        onChange={(e) =>
-                          setAddress({ ...address, name: e.target.value })
-                        }
-                      />
-                    </div>
-                    <div>
-                      <Input
-                        type="tel"
-                        name="mobile"
-                        placeholder="Mobile Number"
-                        label="Mobile"
-                        className="w-full"
-                        required
-                        value={address.mobile}
-                        onChange={(e) =>
-                          setAddress({ ...address, mobile: e.target.value })
-                        }
-                      />
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-3 gap-4">
-                    <div>
-                      <label
-                        className="block text-sm font-medium text-gray-700 mb-1"
-                        htmlFor="zone"
-                      >
-                        Zone
-                        <span className="text-red-500 ml-1">*</span>
-                      </label>
-                      <select
-                        name="zone"
-                        id="zone"
-                        className="w-full border border-gray-300 outline-none rounded-xs text-sb px-3 py-2"
-                        value={address.zone}
-                        onChange={(e) => {
-                          setAddress({ ...address, zone: e.target.value });
-                          changeShipping(
-                            e.target.value === "outside-dhaka" ? 120 : 60
-                          );
-                        }}
-                      >
-                        <option value="inside-dhaka">Inside Dhaka City</option>
-                        <option value="outside-dhaka">
-                          Outside Dhaka City
-                        </option>
-                      </select>
-                    </div>
-                    <div className="col-span-2">
-                      <Input
-                        type="text"
-                        name="address"
-                        placeholder="Full Address"
-                        label="Address"
-                        className="w-full"
-                        required
-                        value={address.address}
-                        onChange={(e) =>
-                          setAddress({ ...address, address: e.target.value })
-                        }
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <Input
-                      type="text"
-                      name="address"
-                      placeholder="Special Instructions (Optional)"
-                      label="Comment"
-                      className="w-full"
-                      required={false}
-                      value={address.comment}
-                      onChange={(e) =>
-                        setAddress({ ...address, comment: e.target.value })
-                      }
-                    />
-                  </div>
-                  <div className="flex gap-4 justify-end">
-                    <button
-                      onClick={handleCancelAddressBar}
-                      className="w-fit block text-center bg-danger hover:bg-danger/90 cursor-pointer text-white font-medium py-3 px-8 rounded-sm transition-colors"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      onClick={handleSaveAddress}
-                      className="w-fit block text-center bg-primary hover:bg-primary/90 cursor-pointer text-white font-medium py-3 px-8 rounded-sm transition-colors"
-                    >
-                      Save Address
-                    </button>
-                  </div>
-                </form>
-              </>
-            ) : (
-              <div className="w-full flex mt-1">
-                {address.name && address.mobile && address.address ? (
-                  <div className="bg-white border border-gray-200 rounded-xl p-4 w-full shadow-xs hover:shadow-sm transition-shadow duration-200">
-                    <div className="flex items-start justify-between">
-                      <div className="flex gap-4 w-full">
-                        <div className="w-10 h-10 bg-blue-50 rounded-full flex items-center justify-center">
-                          <MapPin size={20} className="text-info" />
-                        </div>
+    <>
+      <div className="container px-4 xl:px-0 mx-auto max-w-[1280px]">
+        <Breadcrumb items={[{ label: "Checkout", href: "/checkout" }]} />
 
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-2 w-full">
-                            <div className="flex items-center gap-1 flex-1">
-                              <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wide">
-                                {address.zone.replace("-", " ")}
-                              </h3>
-                              <span className="w-1 h-1 bg-gray-300 rounded-full"></span>
-                              <span className="text-xs text-success font-medium">
-                                Delivery Available
-                              </span>
-                            </div>
-                            <div>
-                              <button
-                                onClick={() => setOpenAddressBar(true)}
-                                className="cursor-pointer text-info hover:underline flex items-center rounded-lg transition-colors duration-200 group"
-                              >
-                                Edit
-                              </button>
-                            </div>
-                          </div>
-
-                          <h2 className="text-lg font-semibold text-gray-900 mb-2 leading-tight">
-                            {address.address}
-                          </h2>
-
-                          <div className="flex gap-4">
-                            <div className="flex items-center gap-1">
-                              <User size={16} className="text-gray-400" />
-                              <span className="text-sm font-medium text-gray-700">
-                                {address.name}
-                              </span>
-                            </div>
-
-                            <div className="flex items-center gap-1">
-                              <Phone size={16} className="text-gray-400" />
-                              <span className="text-sm text-gray-600">
-                                {address.mobile}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <button
-                    onClick={() => setOpenAddressBar(true)}
-                    className="w-fit block text-center text-primary border border-primary transition-all hover:-translate-y-1 cursor-pointer font-medium py-3 px-8 rounded-sm "
-                  >
-                    + Add Shipping Address
-                  </button>
-                )}
-              </div>
-            )}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 lg:gap-8">
+          <div className="sm:col-span-2 flex flex-col gap-4">
+            <CheckoutShippingAddress
+              address={address}
+              setAddress={setAddress}
+              openAddressBar={openAddressBar}
+              setOpenAddressBar={setOpenAddressBar}
+              handleSaveAddress={handleSaveAddress}
+              handleCancelAddressBar={handleCancelAddressBar}
+              changeShipping={changeShipping}
+              error={error}
+              isSaving={isSaving}
+              isAddressSaved={isAddressSaved}
+            />
+            <CheckoutOrderSummary
+              items={items}
+              voucherCode={voucherCode}
+              setVoucherCode={setVoucherCode}
+              error={voucherError}
+              setError={setVoucherError}
+              handleApplyVoucher={handleApplyVoucher}
+            />
           </div>
-          <div className="bg-white p-3 lg:p-6 md:col-span-2 rounded-md shadow-sm h-fit">
-            <h2 className="text-lg font-medium">Order Summary</h2>
-            <div className="w-full h-[1px] bg-gray-200 my-2" />
-            <div className="flex flex-col">
-              {items.map((item, index) => (
-                <CheckoutItemCard
-                  key={item.id}
-                  index={index}
-                  item={item}
-                  items={items}
-                />
-              ))}
-            </div>
-            {/* <div className="mt-4 px-2">
-              <div className="space-y-2 mt-3 flex flex-col ml:hidden">
-                <div className="space-y-2 flex-1">
-                  <div className="grid grid-cols-4 gap-4 border-b border-b-gray-200 pb-1 text-sm">
-                    <span className="text-gray-700 col-span-3 text-right">
-                      Subtotal ({totalItems} items):
-                    </span>
-                    <span className="font-medium text-right">
-                      ৳{subtotal.toLocaleString()}
-                    </span>
-                  </div>
-
-                  <div className="grid grid-cols-4 gap-4 border-b border-b-gray-200 pb-1 text-sm">
-                    <span className="text-sm col-span-3 text-right text-gray-500">
-                      Shipping:
-                    </span>
-                    <span className="font-medium text-sm text-right">
-                      ৳{shipping.toLocaleString()}
-                    </span>
-                  </div>
-
-                  {totalSavings > 0 && (
-                    <div className="grid grid-cols-4 gap-4 border-b border-b-gray-200 pb-1 text-sm">
-                      <span className="text-gray-500 col-span-3 text-right">
-                        Total Savings:
-                      </span>
-                      <span className="font-medium text-success text-right">
-                        -৳{totalSavings.toLocaleString()}
-                      </span>
-                    </div>
-                  )}
-                </div>
-
-                <div className="grid grid-cols-4 text-lg gap-2">
-                  <span className="col-span-3 text-right">Total:</span>
-                  <span className="text-right text-danger">
-                    ৳{finalTotal.toLocaleString()}
-                  </span>
-                </div>
-
-                <div className="w-full flex justify-end">
-                  <button className="w-fit block text-center bg-primary hover:bg-primary/90 cursor-pointer text-white font-medium py-3 px-8 rounded-sm transition-colors">
-                    Proceed to Pay
-                  </button>
-                </div>
-              </div>
-            </div> */}
-          </div>
-        </div>
-        <div className=" hidden sm:block sm:col-span-2 bg-white p-3 lg:p-6 sticky top md:top-36 rounded-md shadow-sm h-fit">
-          <h2 className="text-lg font-medium">Order information</h2>
-          <div className="w-full h-[1px] bg-gray-200 my-2" />
-          <div className="space-y-4 flex flex-col">
-            <div className="space-y-3 flex-1">
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-600">
-                  Subtotal ({totalItems} items)
-                </span>
-                <span className="font-medium">
-                  ৳{subtotal.toLocaleString()}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <h2 className="text-sm text-gray-500">Shipping</h2>
-                <span className="font-medium text-sm">
-                  ৳{shipping.toLocaleString()}
-                </span>
-              </div>
-              <div>
-                <CartVoucherInput
-                  voucherCode={voucherCode}
-                  setVoucherCode={setVoucherCode}
-                  error={error}
-                  setError={setError}
-                  onApply={handleApplyVoucher}
-                />
-              </div>
-              {totalSavings > 0 && (
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-500 ">Total Savings</span>
-                  <span className="font-medium text-success">
-                    -৳{totalSavings.toLocaleString()}
-                  </span>
-                </div>
-              )}
-            </div>
-            <hr className="border-gray-200" />
-            <div className="flex flex-col text-lg gap-2">
-              <div className="flex justify-between">
-                <span className="">Total</span>
-                <span className="">৳{finalTotal.toLocaleString()}</span>
-              </div>
-            </div>
-            <button className="w-full block text-center bg-primary hover:bg-primary/90 cursor-pointer text-white font-medium py-3 px-4 rounded-sm transition-colors">
-              Proceed to Pay
-            </button>
-          </div>
+          <CheckoutOrderInfoSidebar
+            totalItems={totalItems}
+            subtotal={subtotal}
+            shipping={shipping}
+            voucherCode={voucherCode}
+            setVoucherCode={setVoucherCode}
+            error={voucherError}
+            setError={setVoucherError}
+            handleApplyVoucher={handleApplyVoucher}
+            totalSavings={totalSavings}
+            finalTotal={finalTotal}
+            onProceedToPay={handlePaymentClick}
+          />
         </div>
       </div>
-    </div>
+      <CheckoutSummary
+        total={finalTotal}
+        shipping={shipping}
+        onPaymentClick={handlePaymentClick}
+      />
+    </>
   );
 };
 

@@ -2,20 +2,14 @@ import CartItemCard from "@/components/CartItemCard";
 import { ShoppingCart } from "lucide-react";
 import React from "react";
 import type { CartItem } from "@/store/cart";
+import Link from "next/link";
 
 interface CartItemsListProps {
   items: CartItem[];
   removeItem: (id: string) => void;
-  increaseQty: (id: string) => void;
-  decreaseQty: (id: string) => void;
 }
 
-const CartItemsList: React.FC<CartItemsListProps> = ({
-  items,
-  removeItem,
-  increaseQty,
-  decreaseQty,
-}) => {
+const CartItemsList: React.FC<CartItemsListProps> = ({ items, removeItem }) => {
   if (items.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
@@ -26,9 +20,12 @@ const CartItemsList: React.FC<CartItemsListProps> = ({
           Your cart is empty
         </h1>
         <p className="text-gray-600 mb-6">Add some items to get started</p>
-        <button className="bg-info hover:bg-info/90 text-white font-medium py-3 px-6 rounded-lg transition-colors">
+        <Link
+          href={"/"}
+          className="bg-info hover:bg-info/90 text-white font-medium py-3 px-6 rounded-lg transition-colors"
+        >
           Continue Shopping
-        </button>
+        </Link>
       </div>
     );
   }
@@ -39,10 +36,8 @@ const CartItemsList: React.FC<CartItemsListProps> = ({
           key={item.id}
           index={index}
           removeItem={() => removeItem(item.id)}
-           item={item}
+          item={item}
           cartLen={items.length}
-          increaseQty={() => increaseQty(item.id)}
-          decreaseQty={() => decreaseQty(item.id)}
         />
       ))}
     </div>

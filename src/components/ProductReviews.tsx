@@ -1,17 +1,10 @@
 import { Star, MessageSquare } from "lucide-react";
-import { renderStars } from "@/app/utils/ratings";
-
-interface Review {
-  id: string;
-  user: string;
-  rating: number;
-  comment: string;
-  date: string;
-}
+import { renderStars } from "@/utils/ratings";
+import { Review } from "@/types/types";
 
 interface ProductReviewsProps {
   reviews: Review[];
-  averageRating: number;
+  averageRating?: number;
   totalReviews: number;
 }
 
@@ -22,7 +15,7 @@ const ProductReviews = ({
 }: ProductReviewsProps) => {
   const getRatingDistribution = () => {
     const distribution = [0, 0, 0, 0, 0];
-    reviews.forEach((review) => {
+    reviews?.forEach((review) => {
       distribution[review.rating - 1]++;
     });
     return distribution.reverse(); // 5 stars first
@@ -40,17 +33,19 @@ const ProductReviews = ({
 
       {/* Review Summary */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
-        <div className="text-center">
-          <div className="text-2xl sm:text-4xl font-bold text-gray-900 mb-1 sm:mb-2">
-            {averageRating.toFixed(1)}
+        {averageRating && (
+          <div className="text-center">
+            <div className="text-2xl sm:text-4xl font-bold text-gray-900 mb-1 sm:mb-2">
+              {averageRating.toFixed(1)}
+            </div>
+            <div className="flex items-center justify-center mb-1 sm:mb-2">
+              {renderStars(Math.round(averageRating), 16)}
+            </div>
+            <p className="text-gray-600 text-sm sm:text-base">
+              {totalReviews} reviews
+            </p>
           </div>
-          <div className="flex items-center justify-center mb-1 sm:mb-2">
-            {renderStars(Math.round(averageRating), 16)}
-          </div>
-          <p className="text-gray-600 text-sm sm:text-base">
-            {totalReviews} reviews
-          </p>
-        </div>
+        )}
 
         <div className="space-y-1 sm:space-y-2">
           {[5, 4, 3, 2, 1].map((stars, index) => (
@@ -84,7 +79,7 @@ const ProductReviews = ({
 
       {/* Reviews List */}
       <div className="space-y-4 sm:space-y-6">
-        {reviews.length === 0 ? (
+        {reviews && reviews.length === 0 ? (
           <div className="text-center py-6 sm:py-8 text-gray-500">
             <MessageSquare
               size={32}
@@ -95,7 +90,7 @@ const ProductReviews = ({
             </p>
           </div>
         ) : (
-          reviews.map((review) => (
+          reviews?.map((review) => (
             <div
               key={review.id}
               className="border-b border-gray-200 pb-2 sm:pb-3 last:border-b-0"
