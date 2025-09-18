@@ -10,12 +10,12 @@ export default function useAuth() {
     setLoading(true);
     try {
       const res = await axiosInstance.get("/auth/me");
-      console.log(res.data);
-      setUser(res.data);
-      return true;
+      const userData = res.data;
+      setUser(userData);
+      return { success: true, user: userData }; // Return user data
     } catch {
       setUser(null);
-      return false;
+      return { success: false, user: null };
     } finally {
       setLoading(false);
     }

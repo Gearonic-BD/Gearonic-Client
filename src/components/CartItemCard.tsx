@@ -1,8 +1,9 @@
 "use client";
 
 import { CartItem, useCartStore } from "@/store/cart";
+import { slugify } from "@/utils/slugify";
 import { debounce } from "lodash";
-import { Heart, Minus, Plus, Trash2 } from "lucide-react";
+import { Minus, Plus, Trash2 } from "lucide-react";
 import Link from "next/link";
 import React, { useCallback, useEffect, useState } from "react";
 
@@ -64,7 +65,11 @@ const CartItemCard = ({
             <div className="flex xs:flex-row flex-col justify-between items-start gap-1 xs:gap-4">
               <div className="flex-1">
                 <Link
-                  href={`/product/${item.slug}`}
+                  href={`${
+                    item.slug
+                      ? `/product/${item.slug}`
+                      : `/product/${slugify(item.title)}`
+                  }`}
                   className=" text-sm xs:text-base text-sb font-medium text-gray-900"
                 >
                   {item.title}
@@ -139,11 +144,11 @@ const CartItemCard = ({
 
           {/* Action Buttons */}
           <div className="flex items-center gap-2">
-            <button className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors">
+            {/* <button className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors">
               <Heart size={14} />
               <span className="ml:block lg:hidden hidden">Wishlist</span>
               <span className="lg:block hidden">Add to Wishlist</span>
-            </button>
+            </button> */}
             <button
               className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-danger bg-white border border-gray-300 rounded-md hover:bg-red-50 transition-colors"
               onClick={removeItem}

@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useCartStore } from "@/store/cart";
 import PaymentMethodSelector from "@/components/PaymentMethodSelector";
 import PaymentMethodDetails from "@/components/PaymentMethodDetails";
 import PaymentOrderSummary from "@/components/PaymentOrderSummary";
@@ -17,6 +16,9 @@ interface OrderData {
   totalQuantity: number;
   paymentStatus: string;
   paymentMethod: string | null;
+  shipping: {
+    zone: string;
+  };
 }
 export interface PaymentData {
   bkash: string;
@@ -54,6 +56,9 @@ const paymentMethods = [
       "https://ik.imagekit.io/otbgrtfsy/logos/nagad.png?updatedAt=1752682856158",
   },
 ];
+const paymentMethodWithoutCod = paymentMethods.map((method) =>
+  method.id === "cod" ? { ...method, enabled: false } : method
+);
 
 export default function PaymentPage() {
   const [selectedMethod, setSelectedMethod] = useState("");
@@ -63,7 +68,6 @@ export default function PaymentPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const orderId = searchParams.get("orderId");
-  const shipping = useCartStore((state) => state.cart.shipping);
   const [paymentInformation, setPaymentInformation] = useState<PaymentData>({
     bkash: "",
     nagad: "",
@@ -83,6 +87,8 @@ export default function PaymentPage() {
       try {
         const res = await axiosInstance.get(`/api/orders/${orderId}`);
         const data: OrderData = res.data;
+
+        console.log(res.data);
 
         // 🚨 Redirect immediately if already paid
         if (data.paymentStatus === "success" || data.paymentMethod) {
@@ -110,7 +116,6 @@ export default function PaymentPage() {
           throw new Error("Payment methods not available");
         }
 
-        console.log(res.data);
         setPaymentInformation({
           bkash: res.data?.bkash,
           nagad: res.data?.nagad,
@@ -175,8 +180,10 @@ export default function PaymentPage() {
     }
   };
 
-  const handleMethodSelection = (methodId: string) => {
-    setSelectedMethod(methodId);
+  const handleMethodSelection = (methodId: string, enabled: boolean) => {
+    if (enabled) {
+      setSelectedMethod(methodId);
+    }
     if (window.innerWidth < 475) {
       window.scrollTo(0, 0);
     }
@@ -220,12 +227,21 @@ export default function PaymentPage() {
               Select Payment Method
             </h1>
             <p className="text-sm text-gray-600 mt-1">Order ID: {orderId}</p>
+            {orderData.total > 3000 && (
+              <div className=" py-2 px-2 my-1 text-danger rounded-lg w-fit text-sm bg-danger/10">
+                Cash on Delivery is not available for orders above ৳3000
+              </div>
+            )}
           </div>
           <div className="grid grid-cols-1 ml:grid-cols-3 gap-4 lg:gap-8">
             {/* Payment Methods and Form */}
             <div className="ml:col-span-2 space-y-4">
               <PaymentMethodSelector
-                paymentMethods={paymentMethods}
+                paymentMethods={
+                  orderData.total < 3000
+                    ? paymentMethods
+                    : paymentMethodWithoutCod
+                }
                 selectedMethod={selectedMethod}
                 onSelect={handleMethodSelection}
                 renderDetails={(methodId) => (
@@ -257,7 +273,7 @@ export default function PaymentPage() {
             <div className="ml:block hidden">
               <PaymentOrderSummary
                 totalItems={orderData?.totalQuantity}
-                shipping={shipping}
+                shipping={orderData.shipping.zone === "inside" ? 60 : 120}
                 totalAmount={orderData?.total}
               />
             </div>
@@ -266,9 +282,8 @@ export default function PaymentPage() {
       </div>
       <PaymentMobileSummary
         totalItems={orderData?.totalQuantity}
-        shipping={shipping}
+        shipping={orderData.shipping.zone === "inside" ? 60 : 120}
         totalAmount={orderData?.total}
-        onPay={handlePayment}
       />
     </>
   );

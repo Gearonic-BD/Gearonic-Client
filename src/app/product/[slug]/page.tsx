@@ -52,14 +52,14 @@ const ProductPage = async ({
     return notFound();
   }
   const breadcrumbItems = [
-    { label: "Products", href: "/products" },
+    { label: "Products", href: "/" },
     {
       label: product.category,
-      href: `/products/${product.category.toLowerCase()}`,
+      href: `/categories/${product.category.toLowerCase()}`,
     },
     {
       label: product.brand,
-      href: `/products/${product.category.toLowerCase()}/${product.brand.toLowerCase()}`,
+      href: `/brands/${product.brand.toLowerCase()}`,
     },
     { label: product.title },
   ];
@@ -68,7 +68,6 @@ const ProductPage = async ({
       <section className="container mx-auto max-w-[1280px] px-4 sm:px-6">
         <Breadcrumb items={breadcrumbItems} />
       </section>
-
       <section className="container mx-auto max-w-[1280px] px-4 sm:px-6 pb-4 md:pb-8">
         <ProductDetailsCard product={product} />
       </section>

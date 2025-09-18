@@ -195,7 +195,6 @@ export const useCartStore = create<CartState>((set, get) => ({
       return true;
     } catch (error) {
       if (axios.isAxiosError(error) && error.response?.status === 401) {
-
         // Rollback the optimistic update
         set({ cart: { ...get().cart, items: prevItems } });
 
@@ -231,7 +230,12 @@ export const useCartStore = create<CartState>((set, get) => ({
 
     try {
       // 3. Make the API call to delete the item from the backend
-      await axiosInstance.delete(`/api/cart/delete/${itemToRemove.id}`);
+      await axiosInstance.delete(`/api/cart/delete`, {
+        data: {
+          productId: itemToRemove.productId,
+          variantId: itemToRemove.variant?.id ?? null,
+        },
+      });
 
       // 4. On success, show a toast notification
       toast.success("Product removed from cart");
@@ -268,12 +272,11 @@ export const useCartStore = create<CartState>((set, get) => ({
         throw new Error("Item not found in cart");
       }
 
-      const res = await axiosInstance.put(
-        `/api/cart/update/${itemToUpdate.id}`,
-        {
-          quantity: newQuantity,
-        }
-      );
+      const res = await axiosInstance.put(`/api/cart/update`, {
+        quantity: newQuantity,
+        productId: itemToUpdate.productId,
+        variantId: itemToUpdate.variant?.id || null,
+      });
 
       if (res.status === 200) {
         // You can update the store with the response if it returns the full item

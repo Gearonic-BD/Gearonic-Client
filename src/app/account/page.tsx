@@ -3,14 +3,33 @@
 import Link from "next/link";
 import { ShoppingBag, MapPin, Heart, User } from "lucide-react";
 import useAuth from "@/hooks/useAuth";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Loading from "../loading";
+import axiosInstance from "@/utils/axiosInstance";
+import { useRouter } from "next/navigation";
+import { useCartStore } from "@/store/cart";
 
 const AccountPage = () => {
   const { user, loading, checkAuth } = useAuth();
   useEffect(() => {
     checkAuth();
   }, []);
+  const [logoutLoading, setLogoutLoading] = useState(false);
+  const router = useRouter();
+  const clearCart = useCartStore((state) => state.clearCart);
+
+  const handleLogout = async () => {
+    setLogoutLoading(true);
+    try {
+      await axiosInstance.post("/auth/api/logout");
+      clearCart();
+      router.push("/login"); // redirect to login
+    } catch (err) {
+      console.error("Logout failed", err);
+    } finally {
+      setLogoutLoading(false);
+    }
+  };
 
   const navigationItems = [
     {
@@ -21,10 +40,10 @@ const AccountPage = () => {
     },
 
     {
-      title: "Edit Profile",
+      title: "Your Profile",
       icon: User,
       href: "/account/profile",
-      description: "Update your profile",
+      description: "Your Information",
     },
 
     {
@@ -60,11 +79,20 @@ const AccountPage = () => {
                 </h1>
               </div>
             </div>
+
+            {/* Logout Button */}
+            <button
+              onClick={handleLogout}
+              disabled={logoutLoading}
+              className="px-4 py-2 bg-danger text-white rounded-lg hover:bg-danger/90 cursor-pointer transition"
+            >
+              Logout
+            </button>
           </div>
         </div>
 
         {/* Navigation Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {navigationItems.map((item) => {
             const IconComponent = item.icon;
             return (
@@ -75,7 +103,7 @@ const AccountPage = () => {
               >
                 <div className="flex flex-col items-center text-center">
                   <div className="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center mb-4 group-hover:bg-blue-100 transition-colors duration-200">
-                    <IconComponent className="w-6 h-6 text-[var(--color-info)]" />
+                    <IconComponent className="w-6 h-6 text-info" />
                   </div>
                   <h3 className="font-semibold text-gray-900 mb-2">
                     {item.title}

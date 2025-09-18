@@ -2,7 +2,7 @@
 
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import type { Swiper as SwiperType } from "swiper";
 
 import "swiper/css";
@@ -11,16 +11,33 @@ import "swiper/css/pagination";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 
+type Banner = {
+  id: string;
+  imageUrl: string;
+  link?: string;
+};
+
 const HomeSwiper = () => {
   const swiperRef = useRef<SwiperType | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [slides, setSlides] = useState<Banner[]>([]);
 
-  const slides = [
-    "/assets/sale.png",
-    "/assets/chargers.png",
-    "/assets/earbuds.png",
-    "/assets/headphone.png",
-  ];
+  useEffect(() => {
+    const fetchBanners = async () => {
+      try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/banners`);
+        const data = await res.json();
+        setSlides(data);
+      } catch (err) {
+        console.error("Failed to fetch banners", err);
+      }
+    };
+    fetchBanners();
+  }, []);
+
+  // split slides → all except last 2 + last 2
+  const mainSlides = slides.slice(0, -2);
+  const bottomSlides = slides.slice(-2);
 
   return (
     <section className="max-w-[1280px] h-fit px-3 sm:px-6 container grid grid-cols-2 sm:grid-cols-3 sm:grid-rows-2 gap-4 gap-y-2 mx-auto relative pt-5 sm:pt-8">
@@ -36,10 +53,10 @@ const HomeSwiper = () => {
             disableOnInteraction: false,
           }}
         >
-          {slides.map((src, index) => (
-            <SwiperSlide key={index}>
-              <Link href="/home">
-                <img src={src} alt={`Slide ${index + 1}`} />
+          {mainSlides.map((banner, index) => (
+            <SwiperSlide key={banner.id}>
+              <Link href={banner.link || "#"}>
+                <img src={banner.imageUrl} alt={`Slide ${index + 1}`} />
               </Link>
             </SwiperSlide>
           ))}
@@ -61,7 +78,7 @@ const HomeSwiper = () => {
 
         {/* Custom Pagination */}
         <div className="flex absolute bottom-4 left-1/2 -translate-x-1/2 z-40 justify-center mt-4 gap-2">
-          {slides.map((_, index) => (
+          {mainSlides.map((_, index) => (
             <div
               key={index}
               onClick={() => swiperRef.current?.slideTo(index)}
@@ -72,16 +89,22 @@ const HomeSwiper = () => {
           ))}
         </div>
       </div>
-      <div className="h-fit">
-        <Link href={"/flash-sale"}>
-          <img src="/assets/flash.png" alt="" />
-        </Link>
-      </div>
-      <div className="h-fit">
-        <Link href={"/deals"}>
-          <img src="/assets/deals.png" alt="" />
-        </Link>
-      </div>
+
+      {/* bottom 2 banners */}
+      {bottomSlides[0] && (
+        <div className="h-fit">
+          <Link href={bottomSlides[0].link || "#"}>
+            <img src={bottomSlides[0].imageUrl} alt="Banner" />
+          </Link>
+        </div>
+      )}
+      {bottomSlides[1] && (
+        <div className="h-fit">
+          <Link href={bottomSlides[1].link || "#"}>
+            <img src={bottomSlides[1].imageUrl} alt="Banner" />
+          </Link>
+        </div>
+      )}
     </section>
   );
 };
