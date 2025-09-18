@@ -143,7 +143,7 @@ const CheckoutShippingAddress: React.FC<CheckoutShippingAddressProps> = ({
                 disabled={isSaving}
                 className="w-fit block text-center disabled:opacity-80 bg-primary hover:bg-primary/90 cursor-pointer text-white font-medium py-2 xs:py-3 px-4 xs:px-8 rounded-sm transition-colors"
               >
-                {isSaving ? "Saving Address..." : "Save Address"}
+                {isSaving ? "Saving Address..." : "Confirm Address"}
               </button>
             </div>
           </form>

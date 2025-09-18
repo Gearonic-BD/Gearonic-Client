@@ -4,14 +4,12 @@ interface PaymentMobileSummaryProps {
   totalItems: number;
   shipping: number;
   totalAmount: number;
-  onPay: () => void;
 }
 
 const PaymentMobileSummary: React.FC<PaymentMobileSummaryProps> = ({
   totalItems,
   shipping,
   totalAmount,
-  onPay,
 }) => {
   return (
     <div className="ml:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-70 p-4">
@@ -35,12 +33,6 @@ const PaymentMobileSummary: React.FC<PaymentMobileSummaryProps> = ({
             </p>
           </div>
         </div>
-        <button
-          onClick={onPay}
-          className="ml-4 bg-primary hover:bg-primary/90 text-white font-semibold py-3 px-6 rounded-sm transition-colors"
-        >
-          Pay Now
-        </button>
       </div>
     </div>
   );

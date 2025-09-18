@@ -82,15 +82,6 @@ const ProductDetailsCard = ({ product }: ProductDetailsCardProps) => {
     setSelectedVariant(variant);
   };
 
-  const handleShopNow = () => {
-    console.log("Buy now:", {
-      product: product.id,
-      variant: selectedVariant?.id || null,
-      quantity: 1, // This will be handled by ProductActions component
-      price: currentPrice,
-    });
-  };
-
   const handleWishlistToggle = () => {
     setIsWishlisted(!isWishlisted);
   };
@@ -133,8 +124,8 @@ const ProductDetailsCard = ({ product }: ProductDetailsCardProps) => {
           <ProductActions
             currentStock={currentStock}
             selectedVariant={selectedVariant}
+            totalStock={product.totalStock}
             currentPrice={currentPrice}
-            onShopNow={handleShopNow}
             isWishlisted={isWishlisted}
             onWishlistToggle={handleWishlistToggle}
             product={product}

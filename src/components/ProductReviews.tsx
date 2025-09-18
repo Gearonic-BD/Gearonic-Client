@@ -33,19 +33,17 @@ const ProductReviews = ({
 
       {/* Review Summary */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
-        {averageRating && (
-          <div className="text-center">
-            <div className="text-2xl sm:text-4xl font-bold text-gray-900 mb-1 sm:mb-2">
-              {averageRating.toFixed(1)}
-            </div>
-            <div className="flex items-center justify-center mb-1 sm:mb-2">
-              {renderStars(Math.round(averageRating), 16)}
-            </div>
-            <p className="text-gray-600 text-sm sm:text-base">
-              {totalReviews} reviews
-            </p>
+        <div className="text-center">
+          <div className="text-2xl sm:text-4xl font-bold text-gray-900 mb-1 sm:mb-2">
+            {averageRating ? averageRating.toFixed(1) : 0}
           </div>
-        )}
+          <div className="flex items-center justify-center mb-1 sm:mb-2">
+            {renderStars(Math.round(averageRating ? averageRating : 0), 16)}
+          </div>
+          <p className="text-gray-600 text-sm sm:text-base">
+            {totalReviews} reviews
+          </p>
+        </div>
 
         <div className="space-y-1 sm:space-y-2">
           {[5, 4, 3, 2, 1].map((stars, index) => (
@@ -99,7 +97,7 @@ const ProductReviews = ({
                 <div>
                   <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 mb-1">
                     <span className="font-medium text-gray-900 text-sm sm:text-base">
-                      {review.user}
+                      {review.user ? review.user.name : "Unknown"}
                     </span>
                   </div>
                   <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">

@@ -13,7 +13,6 @@ interface CheckoutOrderInfoSidebarProps {
   totalSavings: number;
   finalTotal: number;
   onProceedToPay: () => void;
- 
 }
 
 const CheckoutOrderInfoSidebar: React.FC<CheckoutOrderInfoSidebarProps> = ({
@@ -28,7 +27,6 @@ const CheckoutOrderInfoSidebar: React.FC<CheckoutOrderInfoSidebarProps> = ({
   totalSavings,
   finalTotal,
   onProceedToPay,
-  
 }) => {
   return (
     <div className="hidden sm:block bg-white p-3 lg:p-6 sticky top md:top-36 rounded-md shadow-sm h-fit">
@@ -41,7 +39,9 @@ const CheckoutOrderInfoSidebar: React.FC<CheckoutOrderInfoSidebarProps> = ({
             <span className="font-medium">৳{subtotal.toLocaleString()}</span>
           </div>
           <div className="flex justify-between">
-            <h2 className="text-sm text-gray-500">Shipping</h2>
+            <h2 className="text-sm text-gray-500">
+              Shipping({shipping === 120 ? "Outside Dhaka" : "Inside Dhaka"})
+            </h2>
             <span className="font-medium text-sm">
               ৳{shipping.toLocaleString()}
             </span>

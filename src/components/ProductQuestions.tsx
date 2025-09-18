@@ -21,7 +21,6 @@ const ProductQuestions = ({ questions, productId }: ProductQuestionsProps) => {
   const [localQuestions, setLocalQuestions] = useState<Question[]>(
     questions || []
   );
-  console.log(questions);
 
   const router = useRouter();
   const { checkAuth, user } = useAuth();

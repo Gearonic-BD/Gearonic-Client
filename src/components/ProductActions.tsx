@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Heart, Loader2, Minus, Plus, ShoppingCart } from "lucide-react";
+import { Loader2, Minus, Plus, ShoppingCart } from "lucide-react";
 import { CartItem, useCartStore } from "@/store/cart";
 import { Product, Variant } from "@/types/types";
 import useAuth from "@/hooks/useAuth";
@@ -11,26 +11,23 @@ import { toast } from "sonner";
 interface ProductActionsProps {
   currentStock: number;
   selectedVariant: Variant | null;
-  onShopNow: () => void;
   isWishlisted: boolean;
   currentPrice: number;
   onWishlistToggle: () => void;
   product: Product;
+  totalStock: number;
 }
 
 const ProductActions = ({
   currentStock,
   selectedVariant,
   currentPrice,
-  onShopNow,
-  isWishlisted,
-  onWishlistToggle,
-
+  totalStock,
   product,
 }: ProductActionsProps) => {
   const [quantity, setQuantity] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
-  const { checkAuth } = useAuth();
+  const { checkAuth, user } = useAuth();
   const router = useRouter();
 
   const handleQuantityChange = (action: "increase" | "decrease") => {
@@ -41,15 +38,31 @@ const ProductActions = ({
     }
   };
 
+  const handleShopNow = () => {
+    console.log("Buy now:", {
+      product: product.id,
+      variant: selectedVariant?.id || null,
+      quantity: 1, // This will be handled by ProductActions component
+      price: currentPrice,
+    });
+    router.push(
+      `/checkout?mode=buyNow&productId=${product.id}&quantity=${quantity}`
+    );
+  };
+
   const handleAddToCart = async () => {
-    const authOk = await checkAuth();
-    if (!authOk) {
-      toast.error("Please log in to add product");
-      router.push(
-        `/login?redirect=${encodeURIComponent(window.location.pathname)}`
-      );
-      setIsLoading(false);
-      return;
+    let currentUser = user;
+    if (!currentUser) {
+      const authResult = await checkAuth();
+      if (!authResult.success) {
+        toast.error("Please log in to add product");
+        router.push(
+          `/login?redirect=${encodeURIComponent(window.location.pathname)}`
+        );
+        setIsLoading(false);
+        return;
+      }
+      currentUser = authResult.user;
     }
     setIsLoading(true);
 
@@ -101,33 +114,42 @@ const ProductActions = ({
       </div>
 
       <div className="space-y-3 md:block hidden">
-        <div className="flex gap-3">
-          <button
-            onClick={onShopNow}
-            disabled={currentStock === 0 || isLoading}
-            className="h-12 w-2/5 cursor-pointer bg-info text-white hover:bg-info/90 font-medium rounded-xs disabled:opacity-80 disabled:cursor-not-allowed transition-colors"
-          >
-            Shop Now
-          </button>
-          <button
-            onClick={handleAddToCart}
-            disabled={currentStock === 0 || isLoading}
-            className="w-2/5 h-12 bg-primary hover:bg-primary/90 text-white font-medium rounded-xs cursor-pointer
-             flex items-center justify-center gap-2 disabled:opacity-80 disabled:cursor-not-allowed transition-colors"
-          >
-            {isLoading ? (
-              <>
-                <span className="text-sm font-medium">Adding...</span>
-                <Loader2 className="w-4 h-4 animate-spin" />
-              </>
-            ) : (
-              <>
-                <ShoppingCart className="w-4 h-4" />
-                Add To Cart
-              </>
-            )}
-          </button>
-          <button
+        {totalStock === 0 ? (
+          <div className="flex items-center justify-center h-12 w-full rounded-xs bg-danger/10 text-danger font-medium text-[15px] tracking-wide border border-danger/20">
+            Out of Stock
+          </div>
+        ) : (
+          <div className="flex gap-3">
+            <button
+              onClick={handleShopNow}
+              disabled={currentStock === 0 || isLoading}
+              className="h-12 w-2/5 cursor-pointer bg-info text-white hover:bg-info/90 font-medium rounded-xs disabled:opacity-80 disabled:cursor-not-allowed transition-colors"
+            >
+              Shop Now
+            </button>
+            <button
+              onClick={handleAddToCart}
+              disabled={currentStock === 0 || isLoading}
+              className="w-2/5 h-12 bg-primary hover:bg-primary/90 text-white font-medium rounded-xs cursor-pointer
+         flex items-center justify-center gap-2 disabled:opacity-80 disabled:cursor-not-allowed transition-colors"
+            >
+              {isLoading ? (
+                <>
+                  <span className="text-sm font-medium">Adding...</span>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                </>
+              ) : (
+                <>
+                  <ShoppingCart className="w-4 h-4" />
+                  Add To Cart
+                </>
+              )}
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* <button
             onClick={onWishlistToggle}
             className="h-12 w-12 border border-gray-300 hover:border-gray-400 rounded-lg flex items-center justify-center transition-colors"
           >
@@ -136,9 +158,7 @@ const ProductActions = ({
                 isWishlisted ? "fill-red-500 text-red-500" : "text-gray-600"
               }`}
             />
-          </button>
-        </div>
-      </div>
+          </button> */}
 
       {/* Mobile Bottom Fixed Action Buttons */}
       <div className="fixed xs:bottom-0 bottom-18 left-0 right-0 bg-white border-t border-gray-200 px-4 pt-2 pb-3 shadow-lg md:hidden z-40">
@@ -167,7 +187,7 @@ const ProductActions = ({
                 </button>
               </div>
             </div>
-            <button
+            {/* <button
               onClick={onWishlistToggle}
               disabled={isLoading}
               className="h-10 w-10 border border-gray-300 hover:border-gray-400 rounded-lg flex items-center justify-center transition-colors"
@@ -177,37 +197,45 @@ const ProductActions = ({
                   isWishlisted ? "fill-danger text-danger" : "text-gray-600"
                 }`}
               />
-            </button>
+            </button> */}
           </div>
 
           {/* Action Buttons Row */}
-          <div className="flex gap-3">
-            <button
-              onClick={handleAddToCart}
-              disabled={currentStock === 0 || isLoading}
-              className="flex-1 h-12 bg-primary hover:bg-primary/90 text-white font-medium rounded-lg
-       flex items-center justify-center gap-2 disabled:opacity-80 disabled:cursor-not-allowed transition-colors"
-            >
-              {isLoading ? (
-                <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  Adding...
-                </>
-              ) : (
-                <>
-                  <ShoppingCart className="w-4 h-4" />
-                  Add to Cart
-                </>
-              )}
-            </button>
-            <button
-              onClick={onShopNow}
-              disabled={currentStock === 0 || isLoading}
-              className="flex-1 h-12 bg-info text-white hover:bg-info/90 font-medium rounded-lg 
-       disabled:opacity-80 disabled:cursor-not-allowed transition-colors"
-            >
-              Shop Now
-            </button>
+          <div className="space-y-3">
+            {totalStock === 0 ? (
+              <div className="flex items-center justify-center h-12 w-full rounded-lg bg-danger/10 text-danger font-medium text-[15px] tracking-wide border border-danger/20">
+                Out of Stock
+              </div>
+            ) : (
+              <div className="flex flex-col gap-3 md:flex-row">
+                <button
+                  onClick={handleAddToCart}
+                  disabled={currentStock === 0 || isLoading}
+                  className="flex-1 h-12 bg-primary hover:bg-primary/90 text-white font-medium rounded-lg
+          flex items-center justify-center gap-2 disabled:opacity-80 disabled:cursor-not-allowed transition-colors"
+                >
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Adding...
+                    </>
+                  ) : (
+                    <>
+                      <ShoppingCart className="w-4 h-4" />
+                      Add to Cart
+                    </>
+                  )}
+                </button>
+                <button
+                  onClick={handleShopNow}
+                  disabled={currentStock === 0 || isLoading}
+                  className="flex-1 h-12 bg-info text-white hover:bg-info/90 font-medium rounded-lg 
+          disabled:opacity-80 disabled:cursor-not-allowed transition-colors"
+                >
+                  Shop Now
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>

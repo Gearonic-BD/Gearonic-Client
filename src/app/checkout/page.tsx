@@ -3,8 +3,8 @@
 import Breadcrumb from "@/components/Breadcrumb";
 import CheckoutSummary from "@/components/MobileCheckoutSummary";
 import useCartTotalItems from "@/hooks/useCartTotalItems";
-import { useCartStore } from "@/store/cart";
-import { useRouter } from "next/navigation";
+import { CartItem, useCartStore } from "@/store/cart";
+import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import CheckoutShippingAddress from "@/components/CheckoutShippingAddress";
 import CheckoutOrderSummary from "@/components/CheckoutOrderSummary";
@@ -15,21 +15,23 @@ import axiosInstance from "@/utils/axiosInstance";
 import axios from "axios";
 
 const CheckoutPage = () => {
-  const items = useCartStore((state) => state.cart.items);
+  const cartItems = useCartStore((state) => state.cart.items);
   const shipping = useCartStore((state) => state.cart.shipping);
   const isCartLoaded = useCartStore((state) => state.isCartLoaded);
   const clearCart = useCartStore((state) => state.clearCart);
-  const subtotal = items.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0
-  );
-  const discount = useCartStore((state) => state.cart.discount);
-  const finalTotal = subtotal - discount + shipping;
+
   const changeShipping = useCartStore((state) => state.changeShipping);
   const totalItems = useCartTotalItems();
   const [orderPlaced, setOrderPlaced] = useState(false);
 
-  const totalSavings = 110;
+  const searchParams = useSearchParams();
+  const mode = searchParams.get("mode");
+  const productId = searchParams.get("productId");
+  const quantity = Number(searchParams.get("quantity")) || 1;
+  const variantId = searchParams.get("variantId");
+  const [buyNowProduct, setBuyNowProduct] = useState<CartItem | null>(null);
+
+  const totalSavings = 0;
   const [voucherCode, setVoucherCode] = useState("");
   const [error, setError] = useState({
     name: "",
@@ -50,6 +52,22 @@ const CheckoutPage = () => {
   const router = useRouter();
 
   const [isAddressLoading, setIsAddressLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      if (mode === "buyNow" && productId) {
+        try {
+          const res = await axiosInstance.get(
+            `/api/checkout/product/${productId}`
+          );
+          setBuyNowProduct({ ...res.data, quantity });
+        } catch {
+          toast.error("Failed to load product for checkout");
+        }
+      }
+    };
+    fetchProduct();
+  }, [mode, productId, quantity]);
 
   useEffect(() => {
     const fetchAddress = async () => {
@@ -84,22 +102,37 @@ const CheckoutPage = () => {
       }
     };
 
-    if (isCartLoaded && items.length > 0) {
+    if (isCartLoaded && (cartItems.length > 0 || mode === "buyNow")) {
       fetchAddress();
     }
   }, [
     changeShipping,
     isCartLoaded,
-    items.length,
+    cartItems.length,
     router,
     setAddress,
     setIsAddressSaved,
   ]);
   useEffect(() => {
-    if (isCartLoaded && items.length === 0 && !orderPlaced) {
+    if (
+      isCartLoaded &&
+      cartItems.length === 0 &&
+      mode !== "buyNow" &&
+      !orderPlaced
+    ) {
       router.replace("/");
     }
-  }, [isCartLoaded, items, orderPlaced, router]);
+  }, [isCartLoaded, cartItems, orderPlaced, router]);
+
+  const items =
+    mode === "buyNow" && buyNowProduct ? [buyNowProduct] : cartItems;
+
+  const subtotal = items.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0
+  );
+
+  const finalTotal = subtotal + shipping;
 
   // Bangladeshi mobile number validation
   const validateBangladeshiMobile = (mobile: string) => {
@@ -241,14 +274,19 @@ const CheckoutPage = () => {
   const handlePaymentClick = async () => {
     if (placingOrder) return;
 
+    if (openAddressBar) {
+      toast.error("Please confirm address first.");
+      return;
+    }
+
     if (!isAddressSaved) {
       toast.error("Please save your shipping address first.");
       setOpenAddressBar(true);
       return;
     }
 
-    if (!items.length) {
-      toast.error("Your cart is empty.");
+    if (!items.length && !buyNowProduct) {
+      toast.error("No items to checkout.");
       return;
     }
 
@@ -263,18 +301,34 @@ const CheckoutPage = () => {
           address: address.address,
           comment: address.comment || "",
         },
-        shipping, // 60 or 120
+        shipping,
       };
 
-      const res = await axiosInstance.post(
-        "/api/checkout/create-order",
-        payload
-      );
+      let res;
+
+      if (mode === "buyNow" && buyNowProduct) {
+        // Buy Now flow
+        res = await axiosInstance.post("/api/checkout/buy-now", {
+          ...payload,
+          item: {
+            productId: buyNowProduct.id,
+            quantity: buyNowProduct.quantity || 1,
+            variantId: variantId || null,
+          },
+        });
+      } else {
+        // Normal cart flow
+        res = await axiosInstance.post("/api/checkout/create-order", payload);
+      }
 
       if (res.status === 200 && res.data?.orderId) {
         setOrderPlaced(true);
         router.push(`/payment?orderId=${res.data.orderId}`);
-        clearCart();
+
+        if (mode !== "buyNow") {
+          clearCart();
+        }
+
         toast.success("Order created! Redirecting to payment...");
       } else {
         toast.error("Failed to create order.");
@@ -336,7 +390,7 @@ const CheckoutPage = () => {
             />
           </div>
           <CheckoutOrderInfoSidebar
-            totalItems={totalItems}
+            totalItems={buyNowProduct ? quantity : totalItems}
             subtotal={subtotal}
             shipping={shipping}
             voucherCode={voucherCode}

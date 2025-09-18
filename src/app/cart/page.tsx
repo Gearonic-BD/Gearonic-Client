@@ -11,6 +11,7 @@ import { SuspenseLoading } from "@/utils/suspenseLoaders";
 
 const CartPage = () => {
   const items = useCartStore((state) => state.cart.items);
+  console.log(items);
   const removeItem = useCartStore((state) => state.removeFromCart);
 
   const shipping = useCartStore((state) => state.cart.shipping);
@@ -21,21 +22,16 @@ const CartPage = () => {
     0
   );
   const discount = useCartStore((state) => state.cart.discount);
-  const finalTotal = subtotal - discount + shipping;
+  const finalTotal = subtotal - discount;
   const changeShipping = useCartStore((state) => state.changeShipping);
 
-  const totalSavings = 10;
+  const totalSavings = 0;
   const [voucherCode, setVoucherCode] = useState("");
   const [error, setError] = useState("");
 
   const handleApplyVoucher = () => {
     //TODO: write the apply voucher code here
     setError("Invalid Voucher Used");
-  };
-
-  const handleCheckout = () => {
-    //TODO: implement checkout logic
-    console.log("Proceeding to checkout...");
   };
 
   if (!isCartLoaded) {
@@ -88,7 +84,7 @@ const CartPage = () => {
               <OrderSummary
                 subtotal={subtotal}
                 shipping={shipping}
-                finalTotal={finalTotal}
+                total={finalTotal}
                 totalSavings={totalSavings}
                 voucherCode={voucherCode}
                 setVoucherCode={setVoucherCode}
@@ -104,12 +100,7 @@ const CartPage = () => {
       </div>
 
       {/* Mobile Order Summary */}
-      <MobileOrderSummary
-        subtotal={subtotal}
-        shipping={shipping}
-        changeShipping={changeShipping}
-        onCheckout={handleCheckout}
-      />
+      <MobileOrderSummary subtotal={subtotal} totalSavings={totalSavings} />
     </>
   );
 };

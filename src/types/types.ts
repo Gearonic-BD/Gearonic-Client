@@ -29,6 +29,11 @@ export type User = {
   phone?: string;
 };
 
+export type Specification = {
+  name: string;
+  specs: { key: string; value: string }[];
+};
+
 export type Product = {
   id: string;
   title: string;
@@ -45,7 +50,7 @@ export type Product = {
   rating?: number;
   description: string;
   features: string[];
-  specifications: Record<string, Record<string, string>>;
+  specifications: Specification[];
   createdAt: string;
   updatedAt: string;
   isFlashSale: boolean;

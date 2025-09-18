@@ -23,7 +23,7 @@ const CheckoutSummary: React.FC<CheckoutSummaryProps> = ({
           </div>
           <div className="flex justify-start items-center gap-2">
             <p className="text-xs text-gray-500">
-              Including Shipping Charge ({shipping}) and vat
+              Including Shipping Charge (৳{shipping}) and vat
             </p>
           </div>
         </div>
