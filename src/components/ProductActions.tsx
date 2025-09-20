@@ -38,13 +38,20 @@ const ProductActions = ({
     }
   };
 
-  const handleShopNow = () => {
-    console.log("Buy now:", {
-      product: product.id,
-      variant: selectedVariant?.id || null,
-      quantity: 1, // This will be handled by ProductActions component
-      price: currentPrice,
-    });
+  const handleShopNow = async () => {
+    let currentUser = user;
+    if (!currentUser) {
+      const authResult = await checkAuth();
+      if (!authResult.success) {
+        toast.error("Please log in to add product");
+        router.push(
+          `/login?redirect=${encodeURIComponent(window.location.pathname)}`
+        );
+        setIsLoading(false);
+        return;
+      }
+      currentUser = authResult.user;
+    }
     router.push(
       `/checkout?mode=buyNow&productId=${product.id}&quantity=${quantity}`
     );
@@ -207,12 +214,12 @@ const ProductActions = ({
                 Out of Stock
               </div>
             ) : (
-              <div className="flex flex-col gap-3 md:flex-row">
+              <div className="flex gap-3">
                 <button
                   onClick={handleAddToCart}
                   disabled={currentStock === 0 || isLoading}
                   className="flex-1 h-12 bg-primary hover:bg-primary/90 text-white font-medium rounded-lg
-          flex items-center justify-center gap-2 disabled:opacity-80 disabled:cursor-not-allowed transition-colors"
+       flex items-center justify-center gap-2 disabled:opacity-80 disabled:cursor-not-allowed transition-colors"
                 >
                   {isLoading ? (
                     <>
@@ -230,7 +237,7 @@ const ProductActions = ({
                   onClick={handleShopNow}
                   disabled={currentStock === 0 || isLoading}
                   className="flex-1 h-12 bg-info text-white hover:bg-info/90 font-medium rounded-lg 
-          disabled:opacity-80 disabled:cursor-not-allowed transition-colors"
+       disabled:opacity-80 disabled:cursor-not-allowed transition-colors"
                 >
                   Shop Now
                 </button>
