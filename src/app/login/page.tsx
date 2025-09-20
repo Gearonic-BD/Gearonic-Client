@@ -55,10 +55,12 @@ export default function LoginPage() {
     }
   };
 
-  const handleGoogleLogin = () => {
-    const redirect = encodeURIComponent(window.location.pathname); // current page
-    window.location.href = `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/api/google?redirect=${redirect}`;
-  };
+const handleGoogleLogin = () => {
+  const redirect = searchParams.get("redirect") || window.location.pathname;
+  // Use OAuth state parameter to store redirect URL
+  const state = encodeURIComponent(redirect);
+  window.location.href = `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/api/google?state=${state}`;
+};
 
   const handleFacebookLogin = async () => {
     window.location.href = `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/api/facebook`;
