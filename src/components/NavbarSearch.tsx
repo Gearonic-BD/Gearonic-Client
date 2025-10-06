@@ -72,11 +72,11 @@ const NavbarSearch = () => {
 
       {/* Dropdown suggestions */}
       {showDropdown && suggestions.length > 0 && (
-        <div className="absolute group top-full left-0 w-full bg-white border border-gray-200 rounded-lg shadow-lg mt-1 z-50">
+        <div className="absolute top-full left-0 w-full bg-white border border-gray-200 rounded-lg shadow-lg mt-1 z-50">
           {suggestions.map((s) => (
             <div
               key={s.id}
-              className="flex items-center gap-3 px-4 py-2 cursor-pointer"
+              className="flex group items-center gap-3 px-4 py-2 cursor-pointer"
               onClick={() => router.push(`/product/${s.slug}`)}
             >
               <img
@@ -84,7 +84,9 @@ const NavbarSearch = () => {
                 alt={s.title}
                 className="w-10 h-10 object-cover rounded"
               />
-              <span className="text-sm text-gray-700 transition-all group-hover:text-primary">{s.title}</span>
+              <span className="text-sm text-gray-700 transition-all group-hover:text-primary">
+                {s.title}
+              </span>
             </div>
           ))}
         </div>

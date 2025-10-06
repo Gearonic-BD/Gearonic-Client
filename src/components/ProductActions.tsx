@@ -52,6 +52,12 @@ const ProductActions = ({
       }
       currentUser = authResult.user;
     }
+    if (product.hasVariants && selectedVariant) {
+      router.push(
+        `/checkout?mode=buyNow&productId=${product.id}&variantId=${selectedVariant.id}&quantity=${quantity}`
+      );
+      return;
+    }
     router.push(
       `/checkout?mode=buyNow&productId=${product.id}&quantity=${quantity}`
     );
@@ -121,7 +127,9 @@ const ProductActions = ({
       </div>
 
       <div className="space-y-3 md:block hidden">
-        {totalStock === 0 ? (
+        {totalStock === 0 ||
+        currentStock === 0 ||
+        (product.isFlashSale && product.sold === product?.flashSaleStock) ? (
           <div className="flex items-center justify-center h-12 w-full rounded-xs bg-danger/10 text-danger font-medium text-[15px] tracking-wide border border-danger/20">
             Out of Stock
           </div>
@@ -209,7 +217,9 @@ const ProductActions = ({
 
           {/* Action Buttons Row */}
           <div className="space-y-3">
-            {totalStock === 0 ? (
+            {totalStock === 0 ||
+            currentStock === 0 ||
+            (product.isFlashSale && product.sold === product?.flashSaleStock) ? (
               <div className="flex items-center justify-center h-12 w-full rounded-lg bg-danger/10 text-danger font-medium text-[15px] tracking-wide border border-danger/20">
                 Out of Stock
               </div>

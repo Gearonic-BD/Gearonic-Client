@@ -70,7 +70,7 @@ const ProductDetailsCard = ({ product }: ProductDetailsCardProps) => {
         return [selectedVariant.image, ...product.images];
       }
     }
-    return product.images;
+    return [product.featuredImage, ...product.images];
   };
 
   const carouselImages = getCarouselImages();

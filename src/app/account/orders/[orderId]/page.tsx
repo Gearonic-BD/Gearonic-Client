@@ -280,16 +280,8 @@ const OrderPage = () => {
                   Order Cancelled
                 </h2>
                 <p className="text-gray-600 mb-3">
-                  This order has been cancelled and will not be processed.
+                Unfortunately This order has been cancelled and will not be processed.
                 </p>
-                <div className="flex flex-col sm:flex-row gap-3">
-                  <button className="px-4 py-2 bg-[var(--color-danger)] text-white rounded-lg hover:bg-red-600 transition-colors">
-                    View Cancellation Details
-                  </button>
-                  <button className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
-                    Reorder Items
-                  </button>
-                </div>
               </div>
             </div>
           </div>
@@ -332,7 +324,9 @@ const OrderPage = () => {
                         {orderData.status.charAt(0).toUpperCase() +
                           orderData.status.slice(1)}
                       </span>
-                      <button className="text-sm text-[var(--color-info)] hover:underline">
+                      <button onClick={()=>{
+                        console.log(orderData)
+                      }} className="text-sm text-[var(--color-info)] hover:underline">
                         MORE DETAILS
                       </button>
                     </div>

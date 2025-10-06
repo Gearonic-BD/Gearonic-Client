@@ -58,6 +58,7 @@ export type Product = {
   variants: Variant[] | [];
   questions: Question[] | [];
   reviews: Review[] | [];
+  flashSaleStock?: number;
 };
 
 export type Variant = {

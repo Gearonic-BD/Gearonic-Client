@@ -14,18 +14,18 @@ const FeaturedProductCard = ({ product }: { product: Product }) => {
   return (
     <div className="rounded-lg bg-white active:scale-98 shadow-sm overflow-hidden group transition-all duration-300 active:shadow-lg active:-translate-y-1 hover:shadow-lg hover:-translate-y-1 h-full flex flex-col">
       <Link href={`/product/${product.slug}`} className="flex flex-col h-full">
-        {/* Image Container */}
-        <div className="p-4 relative flex-shrink-0">
+        {/* Image Container - Fixed height for consistency */}
+        <div className="p-4 relative flex-shrink-0 h-48 flex items-center justify-center">
           <img
             src={product.featuredImage}
             alt={product.title}
-            className="w-full object-contain transition-transform duration-300 group-hover:scale-105"
+            className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105"
           />
         </div>
 
         {/* Content Container */}
         <div className="px-4 pb-4 flex flex-col flex-grow justify-between space-y-3">
-          <div className="space-y-3">
+          <div className="space-y-3 flex-grow">
             <h3
               className="text-sm group-active:text-danger group-hover:text-danger transition-all font-semibold text-gray-800 line-clamp-2"
               title={product.title}
@@ -47,14 +47,18 @@ const FeaturedProductCard = ({ product }: { product: Product }) => {
               ) : (
                 <div></div>
               )}
-              <div className="text-xs text-gray-500 font-medium">
-                {product.sold} sold
-              </div>
+              {product.sold > 0 ? (
+                <div className="text-xs text-gray-500 font-medium">
+                  {product.sold} sold
+                </div>
+              ) : (
+                <div></div>
+              )}
             </div>
           </div>
 
           {/* Price Section - Conditional based on discount */}
-          <div className="flex items-center  mt-auto gap-1">
+          <div className="flex items-center mt-auto gap-1 flex-shrink-0">
             <div className="flex items-baseline space-x-2">
               {product.discountPrice ? (
                 <>

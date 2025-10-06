@@ -65,6 +65,7 @@ const ProductPage = async ({
   ];
   return (
     <>
+   
       <section className="container mx-auto max-w-[1280px] px-4 sm:px-6">
         <Breadcrumb items={breadcrumbItems} />
       </section>

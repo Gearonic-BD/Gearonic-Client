@@ -60,6 +60,22 @@ const CheckoutPage = () => {
           const res = await axiosInstance.get(
             `/api/checkout/product/${productId}`
           );
+          if (variantId) {
+            const variant = res.data.variants.find(
+              (v: { id: string }) => v.id === variantId
+            );
+            if (variant) {
+              const variantImage = variant?.image;
+              setBuyNowProduct({
+                ...res.data,
+                variant: variant,
+                image: variantImage,
+                price: variant.price,
+                quantity,
+              });
+              return;
+            }
+          }
           setBuyNowProduct({ ...res.data, quantity });
         } catch {
           toast.error("Failed to load product for checkout");
@@ -365,6 +381,13 @@ const CheckoutPage = () => {
     <>
       <div className="container px-4 xl:px-0 mx-auto max-w-[1280px]">
         <Breadcrumb items={[{ label: "Checkout", href: "/checkout" }]} />
+        <button
+          onClick={() => {
+            console.log(items);
+          }}
+        >
+          See me
+        </button>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 lg:gap-8">
           <div className="sm:col-span-2 flex flex-col gap-4">

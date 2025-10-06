@@ -6,10 +6,11 @@ const FlashSaleProductCard = ({ product }: { product: Product }) => {
     ((product.originalPrice - product.discountPrice!) / product.originalPrice) *
       100
   );
-  const soldPercentage = (product.sold / product.totalStock) * 100;
+  const soldPercentage =
+    (product.sold / (product?.flashSaleStock || 100)) * 100;
   return (
     <div className="rounded-lg bg-white active:scale-98 shadow-sm overflow-hidden group transition-all duration-300 active:shadow-lg active:-translate-y-1 hover:shadow-lg hover:-translate-y-1">
-      <Link href={"/product/iphone"} className="block ">
+      <Link href={`/product/${product.slug}`} className="block ">
         {/* Image Container */}
         <div className="p-4 relative">
           {/* Make this relative */}
@@ -54,7 +55,7 @@ const FlashSaleProductCard = ({ product }: { product: Product }) => {
               ></div>
             </div>
             <p className="text-[11px] text-gray-500 font-medium flex-shrink-0">
-              {product.sold}/{product.totalStock} Sold
+              {product.sold}/{product.flashSaleStock || 100} Sold
             </p>
           </div>
         </div>

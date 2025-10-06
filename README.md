@@ -1,6 +1,6 @@
-# Gearonic BD Client-Side
+# Gadget City BD Client-Side
 
-This is the Client repo of **Gearonic Website** By Gearonic BD
+This is the Client repo of **Gadget City BD Website** By Gadget City BD
 
 ### ✅ Requirements
 
