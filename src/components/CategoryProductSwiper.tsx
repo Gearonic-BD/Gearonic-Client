@@ -24,7 +24,7 @@ const CategoryProductSwiper = async ({
   }
   return (
     <section className="w-full max-w-[1280px] px-4 sm:px-6 mx-auto my-12">
-      <div className=" relative ">
+      <div className="relative">
         <div className="flex items-center justify-between w-full mb-2">
           <div className="flex items-center justify-center">
             <h2 className="text-2xl md:text-3xl font-bold text-gray-900">

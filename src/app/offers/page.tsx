@@ -1,4 +1,5 @@
 import { Product } from "@/types/types";
+import Link from "next/link";
 import React from "react";
 
 // Utility function to calculate time remaining
@@ -31,7 +32,8 @@ export default async function FlashSaleProducts() {
 
   try {
     // Fetch flash sale products from your API
-    const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:3000";
+    const baseUrl =
+      process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:3000";
     const response = await fetch(`${baseUrl}/api/products/flash-sale`, {
       cache: "no-store", // Always fetch fresh data for flash sales
     });
@@ -80,7 +82,7 @@ export default async function FlashSaleProducts() {
 
   // Success state with products
   return (
-    <div className="w-full">
+    <div className="max-w-7xl mx-auto">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
@@ -92,36 +94,76 @@ export default async function FlashSaleProducts() {
       </div>
 
       {/* Products Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-        {products.map((product) => (
-          <div
-            key={product.id}
-            className="bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden"
-          >
-            {/* Product Image */}
-            <div className="relative">
-              <img
-                src={product.featuredImage}
-                alt={product.title}
-                className="w-full h-48 object-cover"
-                loading="lazy"
-              />
-
-              {/* Discount Badge */}
-              {product.discountPrice && (
-                <div className="absolute top-2 left-2">
-                  <span className="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">
+      <div className="grid  grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+        {products.map((product) => {
+          // const discountPercentage = Math.round(
+          //   ((product.originalPrice - product.discountPrice!) /
+          //     product.originalPrice) *
+          //     100
+          // );
+          const soldPercentage =
+            (product.sold / (product?.flashSaleStock || 100)) * 100;
+          return (
+            <div
+              key={product.slug}
+              className="rounded-lg relative bg-white active:scale-98 shadow-sm overflow-hidden group transition-all duration-300 active:shadow-lg active:-translate-y-1 hover:shadow-lg hover:-translate-y-1"
+            >
+              <Link href={`/product/${product.slug}`} className="block ">
+                {/* Image Container */}
+                <div className="p-4 relative">
+                  {/* Make this relative */}
+                  <img
+                    src={product.featuredImage}
+                    alt={product.title}
+                    className="w-full  object-contain transition-transform duration-300 group-hover:scale-105"
+                  />
+                  {/* Discount Badge */}
+                  <span className="absolute top-2 left-2 bg-primary text-white text-xs font-semibold px-1.5 py-1 rounded">
                     -
-                    {getDiscountPercentage(
-                      product.originalPrice,
-                      product.discountPrice
-                    )}
+                    {product.discountPrice &&
+                      getDiscountPercentage(
+                        product.originalPrice,
+                        product.discountPrice
+                      )}
                     %
                   </span>
                 </div>
-              )}
 
-              {/* Timer Badge */}
+                {/* Content Container */}
+                <div className="px-4 pb-4 flex flex-col space-y-3">
+                  <h3
+                    className="text-sm group-active:text-danger group-hover:text-danger transition-all font-semibold text-gray-800 line-clamp-2"
+                    title={product.title}
+                  >
+                    {product.title}
+                  </h3>
+
+                  {/* Price & Discount Section */}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-baseline space-x-2">
+                      <p className="text-xl font-bold text-danger">
+                        ৳{product.discountPrice}
+                      </p>
+                      <p className="text-xs text-gray-400 line-through">
+                        ৳{product.originalPrice}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* --- REVISED: Progress bar BESIDE sold text --- */}
+                  <div className="flex items-center gap-2">
+                    <div className="w-full bg-gray-200 rounded-full h-1">
+                      <div
+                        className="bg-danger h-1 rounded-full"
+                        style={{ width: `${soldPercentage}%` }}
+                      ></div>
+                    </div>
+                    <p className="text-[11px] text-gray-500 font-medium flex-shrink-0">
+                      {product.sold}/{product.flashSaleStock || 100} Sold
+                    </p>
+                  </div>
+                </div>
+              </Link>
               {product.flashSaleEnd && (
                 <div className="absolute top-2 right-2">
                   <span className="bg-orange-500 text-white text-xs font-semibold px-2 py-1 rounded">
@@ -130,52 +172,8 @@ export default async function FlashSaleProducts() {
                 </div>
               )}
             </div>
-
-            {/* Product Info */}
-            <div className="p-4">
-              {/* Product Title */}
-              <h3 className="font-semibold text-gray-900 text-sm mb-2 line-clamp-2">
-                {product.title}
-              </h3>
-
-              {/* Rating and Sold */}
-              <div className="flex items-center gap-2 mb-2">
-                {product.rating && (
-                  <div className="flex items-center text-xs text-gray-600">
-                    <span className="text-yellow-400">★</span>
-                    <span className="ml-1">{product.rating.toFixed(1)}</span>
-                  </div>
-                )}
-                <span className="text-xs text-gray-500">
-                  {product.sold} sold
-                </span>
-              </div>
-
-              {/* Price */}
-              <div className="flex items-center gap-2">
-                {product.discountPrice ? (
-                  <>
-                    <span className="text-lg font-bold text-red-600">
-                      ${product.discountPrice}
-                    </span>
-                    <span className="text-sm text-gray-500 line-through">
-                      ${product.originalPrice}
-                    </span>
-                  </>
-                ) : (
-                  <span className="text-lg font-bold text-gray-900">
-                    ${product.originalPrice}
-                  </span>
-                )}
-              </div>
-
-              {/* Action Button */}
-              <button className="w-full mt-3 bg-red-500 hover:bg-red-600 text-white text-sm font-semibold py-2 px-4 rounded transition-colors duration-200">
-                Add to Cart
-              </button>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {/* Show more link if there might be more products */}
@@ -192,3 +190,4 @@ export default async function FlashSaleProducts() {
     </div>
   );
 }
+

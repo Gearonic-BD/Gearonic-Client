@@ -17,7 +17,7 @@ const Navbar = () => {
   return (
     <>
       <nav className="w-full h-fit shadow-sm border-b border-gray-100 fixed top-0 left-0 z-50 bg-white/95 backdrop-blur-sm">
-        <div className="container max-w-[1280px] sm:py-3 mx-auto flex items-center justify-between px-4 gap-4 lg:gap-8">
+        <div className="container max-w-[1280px] sm:pt-3 mx-auto flex items-center justify-between px-4 gap-4 lg:gap-8">
           <div className="flex items-center gap-3">
             {/* Sidebar Toggle (visible on small screens) */}
             <button

@@ -109,10 +109,10 @@ const HomeAllCategories = () => {
       <h1 className="text-center text-3xl md:text-4xl mb-12 font-bold uppercase">
         Shop by categories
       </h1>
-      <CategoryProductSwiper title="Smart Band" categoryName={"band"} />
+      <CategoryProductSwiper title="Mobile Phones" categoryName={"mobile"} />
       <CategoryProductSwiper title="Watches" categoryName={"watches"} />
       <CategoryProductSwiper title="Earbuds" categoryName={"earbuds"} />
-      <CategoryProductSwiper title="Routers" categoryName={"routers"} />
+      <CategoryProductSwiper title="Routers" categoryName={"router"} />
       <CategoryProductSwiper title="Chargers" categoryName={"chargers"} />
     </>
   );

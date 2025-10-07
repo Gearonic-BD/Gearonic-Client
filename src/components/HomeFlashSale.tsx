@@ -14,7 +14,6 @@ import Link from "next/link";
 import SectionHeader from "./SectionHeader";
 import { Product } from "@/types/types";
 import { ProductSkeleton } from "@/utils/suspenseLoaders";
-// Calculate discount percentage
 
 const HomeFlashSale = () => {
   const swiperRef = useRef<SwiperType | null>(null);
@@ -63,7 +62,7 @@ const HomeFlashSale = () => {
           <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
             <div className="text-center sm:text-right">
               <Link
-                href="/all-sale-products"
+                href="/offers"
                 className="inline-block uppercase active:scale-95 text-primary border hover:-translate-y-1 transition-all font-semibold px-4 py-2 rounded-md text-sm sm:text-base hover:bg-primary-dark"
               >
                 Shop All
