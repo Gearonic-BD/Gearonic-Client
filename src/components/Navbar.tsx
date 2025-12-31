@@ -29,7 +29,7 @@ const Navbar = () => {
 
             {/* Logo */}
             <Link href={"/"} className="flex-shrink-0">
-              <img className="w-28 lg:w-32" src="/logo.svg" alt="Gearonic BD" />
+              <img className="w-28 lg:w-32" src="/logo2.svg" alt="Gearonic BD" />
             </Link>
           </div>
 
