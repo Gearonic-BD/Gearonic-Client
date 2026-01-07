@@ -82,6 +82,7 @@ export type BackendCartItem = {
   product: {
     title: string;
     brand: string;
+    totalStock: number;
     images: string[];
     slug: string;
   };

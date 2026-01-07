@@ -44,7 +44,7 @@ const SideNavbar = ({ open, onClose }: SidebarProps) => {
         }`}
       >
         <div className="flex justify-between items-center p-4 border-b border-gray-100">
-          <img src="/logo.svg" className="w-28" alt="Gearonic BD" />
+          <img src="/logo.svg" className="w-28" alt="Gadget City BD" />
           <button
             onClick={onClose}
             className="p-2 hover:bg-gray-100 rounded-lg transition-colors"

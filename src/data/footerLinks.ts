@@ -4,7 +4,7 @@ export const footerLinks = {
       "Your trusted destination for premium electronics and gadgets. Quality products, competitive prices, and exceptional service.",
     contact: {
       phone: "+880 1234-567890",
-      email: "support@gearonic.com",
+      email: "gadgetcitybangladesh@gmail.com",
       address: "House #123, Road #12, Banani, Dhaka-1213, Bangladesh",
     },
   },

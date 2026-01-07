@@ -1,11 +1,14 @@
 "use client";
 
 import { CartItem, useCartStore } from "@/store/cart";
+import { useWishlistStore } from "@/store/wishlist";
 import { slugify } from "@/utils/slugify";
 import { debounce } from "lodash";
-import { Minus, Plus, Trash2 } from "lucide-react";
+import { Minus, Plus, Trash2, Heart } from "lucide-react";
 import Link from "next/link";
 import React, { useCallback, useEffect, useState } from "react";
+import useAuth from "@/hooks/useAuth";
+import { useRouter } from "next/navigation";
 
 const CartItemCard = ({
   item,
@@ -19,10 +22,29 @@ const CartItemCard = ({
   cartLen: number;
 }) => {
   const updateQty = useCartStore((state) => state.updateQty);
+  const addToWishlist = useWishlistStore((state) => state.addToWishlist);
+  const removeFromWishlist = useWishlistStore(
+    (state) => state.removeFromWishlist
+  );
+  const isProductWishlisted = useWishlistStore(
+    (state) => state.isProductWishlisted
+  );
+  const { checkAuth, user } = useAuth();
+  const router = useRouter();
+
+  const isOutOfStock = item.stock === 0 || item.stock < item.quantity;
+  const [isWishlisted, setIsWishlisted] = useState(
+    isProductWishlisted(item.productId)
+  );
+  const [isWishlisting, setIsWishlisting] = useState(false);
+
+  useEffect(() => {
+    setIsWishlisted(isProductWishlisted(item.productId));
+  }, [item.productId, isProductWishlisted]);
 
   // Create a debounced version of updateQty
   const debouncedUpdateQty = useCallback(
-    debounce((id, quantity) => {
+    debounce((id: string, quantity: number) => {
       updateQty(id, quantity);
     }, 300),
     [updateQty]
@@ -36,7 +58,9 @@ const CartItemCard = ({
   }, [item.quantity]);
 
   const handleIncrease = () => {
+    if (isOutOfStock) return;
     const newQuantity = localQuantity + 1;
+    if (newQuantity > item.stock) return;
     setLocalQuantity(newQuantity);
     debouncedUpdateQty(item.id, newQuantity);
   };
@@ -47,17 +71,68 @@ const CartItemCard = ({
     debouncedUpdateQty(item.id, newQuantity);
   };
 
+  const handleWishlist = async () => {
+    let currentUser = user;
+    if (!currentUser) {
+      const authResult = await checkAuth();
+      if (!authResult.success) {
+        router.push(
+          `/login?redirect=${encodeURIComponent(window.location.pathname)}`
+        );
+        return;
+      }
+      currentUser = authResult.user;
+    }
+
+    setIsWishlisting(true);
+    if (isWishlisted) {
+      const success = await removeFromWishlist(item.productId);
+      if (success) {
+        setIsWishlisted(false);
+      }
+    } else {
+      const success = await addToWishlist(item.productId);
+      if (success) {
+        setIsWishlisted(true);
+        // Remove from cart after adding to wishlist
+        removeItem();
+      }
+    }
+    setIsWishlisting(false);
+  };
+
   return (
     <div>
-      <div className="px-4 sm:px-6 py-4 md:py-6">
+      <div
+        className={`px-4 sm:px-6 py-4 md:py-6 ${
+          isOutOfStock ? "bg-red-50/50" : ""
+        }`}
+      >
+        {isOutOfStock && (
+          <div className="mb-3 p-2 bg-danger/10 border border-danger/20 rounded-md">
+            <p className="text-sm font-medium text-danger">
+              This item is out of stock. Please remove it or add it to your
+              wishlist to proceed with checkout.
+            </p>
+          </div>
+        )}
         <div className="flex gap-4">
           {/* Product Image */}
-          <div className="flex-shrink-0">
+          <div className="flex-shrink-0 relative">
             <img
               src={item.image || "/placeholder.svg"}
               alt={item.title}
-              className="w-20 h-20 object-cover rounded-sm border border-gray-200"
+              className={`w-20 h-20 object-cover rounded-sm border border-gray-200 ${
+                isOutOfStock ? "opacity-60" : ""
+              }`}
             />
+            {isOutOfStock && (
+              <div className="absolute inset-0 flex items-center justify-center bg-black/40 rounded-sm">
+                <span className="text-xs font-semibold text-white px-2 py-1 bg-danger rounded">
+                  Out of Stock
+                </span>
+              </div>
+            )}
           </div>
 
           {/* Product Details */}
@@ -70,7 +145,9 @@ const CartItemCard = ({
                       ? `/product/${item.slug}`
                       : `/product/${slugify(item.title)}`
                   }`}
-                  className=" text-sm xs:text-base text-sb font-medium text-gray-900"
+                  className={`text-sm xs:text-base text-sb font-medium ${
+                    isOutOfStock ? "text-gray-500" : "text-gray-900"
+                  }`}
                 >
                   {item.title}
                 </Link>
@@ -99,7 +176,11 @@ const CartItemCard = ({
 
               {/* Price */}
               <div className="xs:text-right">
-                <div className="text-lg sm:text-xl font-bold text-danger">
+                <div
+                  className={`text-lg sm:text-xl font-bold ${
+                    isOutOfStock ? "text-gray-400" : "text-danger"
+                  }`}
+                >
                   ৳{item.price.toLocaleString()}
                 </div>
                 {item.originalPrice > item.price && (
@@ -115,40 +196,58 @@ const CartItemCard = ({
         </div>
         <div className="flex justify-end items-center gap-4 mt-2">
           {/* Quantity Controls */}
-          <div className="flex items-center gap-3">
-            <span className="text-sm hidden ml:block font-medium text-gray-700">
-              Quantity:
-            </span>
-            <span className="text-sm ml:hidden block font-medium text-gray-700">
-              Qty:
-            </span>
-            <div className="flex items-center border border-gray-300 rounded-lg">
-              <button
-                className="h-8 w-8 flex items-center justify-center hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                onClick={handleDecrease}
-                disabled={item.quantity <= 1}
-              >
-                <Minus size={14} />
-              </button>
-              <span className="px-3 py-1 text-sm font-medium min-w-[40px] text-center">
-                {localQuantity}
+          {!isOutOfStock && (
+            <div className="flex items-center gap-3">
+              <span className="text-sm hidden ml:block font-medium text-gray-700">
+                Quantity:
               </span>
-              <button
-                className="h-8 w-8 flex items-center justify-center hover:bg-gray-100 transition-colors"
-                onClick={handleIncrease}
-              >
-                <Plus size={14} />
-              </button>
+              <span className="text-sm ml:hidden block font-medium text-gray-700">
+                Qty:
+              </span>
+              <div className="flex items-center border border-gray-300 rounded-lg">
+                <button
+                  className="h-8 w-8 flex items-center justify-center hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  onClick={handleDecrease}
+                  disabled={item.quantity <= 1}
+                >
+                  <Minus size={14} />
+                </button>
+                <span className="px-3 py-1 text-sm font-medium min-w-[40px] text-center">
+                  {localQuantity}
+                </span>
+                <button
+                  className="h-8 w-8 flex items-center justify-center hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  onClick={handleIncrease}
+                  disabled={localQuantity >= item.stock}
+                >
+                  <Plus size={14} />
+                </button>
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Action Buttons */}
           <div className="flex items-center gap-2">
-            {/* <button className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors">
-              <Heart size={14} />
-              <span className="ml:block lg:hidden hidden">Wishlist</span>
-              <span className="lg:block hidden">Add to Wishlist</span>
-            </button> */}
+            {isOutOfStock && (
+              <button
+                className={`flex items-center gap-2 px-3 py-2 text-sm font-medium bg-white border rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
+                  isWishlisted
+                    ? "text-danger border-danger/30 hover:bg-red-50"
+                    : "text-danger border-danger/30 hover:bg-red-50"
+                }`}
+                onClick={handleWishlist}
+                disabled={isWishlisting}
+              >
+                <Heart
+                  size={14}
+                  className={isWishlisting ? "animate-pulse" : ""}
+                  fill={isWishlisted ? "currentColor" : "none"}
+                />
+                <span className="ml:block hidden">
+                  {isWishlisted ? "Wishlisted" : "Wishlist"}
+                </span>
+              </button>
+            )}
             <button
               className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-danger bg-white border border-gray-300 rounded-md hover:bg-red-50 transition-colors"
               onClick={removeItem}

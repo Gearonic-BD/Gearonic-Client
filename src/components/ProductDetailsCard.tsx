@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ProductImageGallery from "./ProductImageGallery";
 import ProductInfo from "./ProductInfo";
 import ProductVariants from "./ProductVariants";
 import ProductActions from "./ProductActions";
-
+import { useWishlistStore } from "@/store/wishlist";
 import { Product, Variant } from "@/types/types";
 
 interface ProductDetailsCardProps {
@@ -18,7 +18,19 @@ const ProductDetailsCard = ({ product }: ProductDetailsCardProps) => {
       ? product.variants[0]
       : null
   );
+  const isProductWishlisted = useWishlistStore(
+    (state) => state.isProductWishlisted
+  );
+  const fetchWishlist = useWishlistStore((state) => state.fetchWishlist);
   const [isWishlisted, setIsWishlisted] = useState(false);
+
+  useEffect(() => {
+    fetchWishlist();
+  }, [fetchWishlist]);
+
+  useEffect(() => {
+    setIsWishlisted(isProductWishlisted(product.id));
+  }, [product.id, isProductWishlisted]);
 
   // Check if product has valid variants
   const hasValidVariants = product.hasVariants && product.variants.length > 0;

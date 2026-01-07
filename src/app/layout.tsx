@@ -8,7 +8,7 @@ import CartFetcher from "@/components/CartFetcher";
 
 
 export const metadata: Metadata = {
-  title: "Gearonic BD",
+  title: "Gadget City BD",
   description: "The largest ecommerce platform for electronics in Bangladesh",
   icons: {
     icon: "/fav.svg",

@@ -15,7 +15,7 @@ import axiosInstance from "@/utils/axiosInstance";
 import axios from "axios";
 
 const CheckoutPage = () => {
-  const cartItems = useCartStore((state) => state.cart.items);
+  const items = useCartStore((state) => state.cart.items);
   const shipping = useCartStore((state) => state.cart.shipping);
   const isCartLoaded = useCartStore((state) => state.isCartLoaded);
   const clearCart = useCartStore((state) => state.clearCart);
@@ -118,13 +118,13 @@ const CheckoutPage = () => {
       }
     };
 
-    if (isCartLoaded && (cartItems.length > 0 || mode === "buyNow")) {
+    if (isCartLoaded && (items.length > 0 || mode === "buyNow")) {
       fetchAddress();
     }
   }, [
     changeShipping,
     isCartLoaded,
-    cartItems.length,
+    items.length,
     router,
     setAddress,
     setIsAddressSaved,
@@ -132,18 +132,18 @@ const CheckoutPage = () => {
   useEffect(() => {
     if (
       isCartLoaded &&
-      cartItems.length === 0 &&
+      items.length === 0 &&
       mode !== "buyNow" &&
       !orderPlaced
     ) {
       router.replace("/");
     }
-  }, [isCartLoaded, cartItems, orderPlaced, router]);
+  }, [isCartLoaded, items, orderPlaced, router, mode]);
 
-  const items =
-    mode === "buyNow" && buyNowProduct ? [buyNowProduct] : cartItems;
+  const displayItems =
+    mode === "buyNow" && buyNowProduct ? [buyNowProduct] : items;
 
-  const subtotal = items.reduce(
+  const subtotal = displayItems.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
   );
@@ -306,6 +306,17 @@ const CheckoutPage = () => {
       return;
     }
 
+    // Check for out-of-stock items
+    const hasOutOfStockItems = items.some(
+      (item) => item.stock === 0 || item.stock < item.quantity
+    );
+    if (hasOutOfStockItems) {
+      toast.error(
+        "Please remove out-of-stock items or add them to your wishlist to proceed."
+      );
+      return;
+    }
+
     try {
       setPlacingOrder(true);
 
@@ -404,7 +415,7 @@ const CheckoutPage = () => {
               isAddressSaved={isAddressSaved}
             />
             <CheckoutOrderSummary
-              items={items}
+              items={displayItems}
               voucherCode={voucherCode}
               setVoucherCode={setVoucherCode}
               error={voucherError}

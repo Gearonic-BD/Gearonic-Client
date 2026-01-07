@@ -46,4 +46,4 @@ All developers are expected to use VS Code with specific extensions and configur
 
 ## 📄 License
 
-This project is © Gearonic BD All rights reserved.
+This project is © Gadget City BD All rights reserved.

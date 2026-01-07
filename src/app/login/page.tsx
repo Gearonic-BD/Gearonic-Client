@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Mail, Lock, User, ArrowLeft, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -10,7 +10,9 @@ import { useCartStore } from "@/store/cart";
 
 export default function LoginPage() {
   const router = useRouter();
-  const [step, setStep] = useState<"initial" | "login" | "signup">("initial");
+  const [step, setStep] = useState<
+    "initial" | "login" | "signup" | "verify-otp"
+  >("initial");
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [checkedName, setCheckedName] = useState("");
@@ -20,10 +22,23 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [userId, setUserId] = useState<string>("");
+  const [otp, setOtp] = useState<string[]>(["", "", "", "", "", ""]);
+  const [resendTimer, setResendTimer] = useState(0);
+  const otpInputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const { fetchCart } = useCartStore();
 
   const searchParams = useSearchParams();
   const redirect = searchParams.get("redirect") || "/";
+  const resetSuccess = searchParams.get("reset") === "success";
+
+  // Show success message if password was reset
+  useEffect(() => {
+    if (resetSuccess) {
+      setError(""); // Clear any errors
+      // You could set a success message here if you have a success state
+    }
+  }, [resetSuccess]);
 
   const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -55,12 +70,12 @@ export default function LoginPage() {
     }
   };
 
-const handleGoogleLogin = () => {
-  const redirect = searchParams.get("redirect") || window.location.pathname;
-  // Use OAuth state parameter to store redirect URL
-  const state = encodeURIComponent(redirect);
-  window.location.href = `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/api/google?state=${state}`;
-};
+  const handleGoogleLogin = () => {
+    const redirect = searchParams.get("redirect") || window.location.pathname;
+    // Use OAuth state parameter to store redirect URL
+    const state = encodeURIComponent(redirect);
+    window.location.href = `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/api/google?state=${state}`;
+  };
 
   const handleFacebookLogin = async () => {
     window.location.href = `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/api/facebook`;
@@ -68,6 +83,7 @@ const handleGoogleLogin = () => {
 
   const handleLogin = async () => {
     setLoading(true);
+    setError("");
     try {
       const res = await axiosInstance.post(`/auth/api/login`, {
         email,
@@ -75,22 +91,39 @@ const handleGoogleLogin = () => {
       });
 
       if (res.status === 200) {
-        router.replace(redirect); // use redirect here
+        // Check if OTP verification is required
+        if (res.data.requiresVerification && res.data.userId) {
+          setUserId(res.data.userId);
+          setStep("verify-otp");
+          setResendTimer(60); // Start 60 second countdown
+          // Focus first OTP input
+          setTimeout(() => {
+            otpInputRefs.current[0]?.focus();
+          }, 100);
+        } else {
+          // User is already verified, redirect
+          router.replace(redirect);
+          fetchCart();
+        }
       }
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
+        const errorMessage =
+          error.response?.data?.error || error.message || "Login failed";
+        setError(errorMessage);
         console.error("Login error:", error.response?.data || error.message);
       } else {
+        setError("An unexpected error occurred");
         console.error("Unexpected error:", error);
       }
     } finally {
-      fetchCart();
       setLoading(false);
     }
   };
 
   const handleSignup = async () => {
     setLoading(true);
+    setError("");
     try {
       const res = await axiosInstance.post(`/auth/api/create-user`, {
         email,
@@ -99,17 +132,151 @@ const handleGoogleLogin = () => {
       });
       if (res.status === 201) {
         router.replace(redirect);
+        fetchCart();
       }
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
+        const errorMessage =
+          err.response?.data?.message || err.message || "Signup failed";
+        setError(errorMessage);
         console.error("Signup error:", err.response?.data || err.message);
       } else {
+        setError("An unexpected error occurred");
         console.error("Unexpected error:", err);
       }
     } finally {
       setLoading(false);
     }
   };
+
+  // Handle OTP input change
+  const handleOtpChange = (index: number, value: string) => {
+    // Only allow numbers
+    if (value && !/^\d$/.test(value)) return;
+
+    const newOtp = [...otp];
+    newOtp[index] = value;
+    setOtp(newOtp);
+    setError("");
+
+    // Auto-focus next input
+    if (value && index < 5) {
+      otpInputRefs.current[index + 1]?.focus();
+    }
+
+    // Auto-submit when all 6 digits are entered
+    if (newOtp.every((digit) => digit !== "") && newOtp.join("").length === 6) {
+      handleVerifyOtp(newOtp.join(""));
+    }
+  };
+
+  // Handle backspace in OTP input
+  const handleOtpKeyDown = (
+    index: number,
+    e: React.KeyboardEvent<HTMLInputElement>
+  ) => {
+    if (e.key === "Backspace" && !otp[index] && index > 0) {
+      otpInputRefs.current[index - 1]?.focus();
+    }
+  };
+
+  // Handle paste OTP
+  const handleOtpPaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    const pastedData = e.clipboardData.getData("text").trim();
+    if (/^\d{6}$/.test(pastedData)) {
+      const newOtp = pastedData.split("");
+      setOtp(newOtp);
+      setError("");
+      // Focus last input
+      otpInputRefs.current[5]?.focus();
+      // Auto-verify
+      setTimeout(() => {
+        handleVerifyOtp(pastedData);
+      }, 100);
+    }
+  };
+
+  // Verify OTP
+  const handleVerifyOtp = async (otpCode?: string) => {
+    const code = otpCode || otp.join("");
+    if (code.length !== 6) {
+      setError("Please enter a valid 6-digit OTP");
+      return;
+    }
+
+    setLoading(true);
+    setError("");
+
+    try {
+      const res = await axiosInstance.post(`/auth/api/verify-otp`, {
+        userId,
+        code,
+      });
+
+      if (res.status === 200 && res.data.verified) {
+        fetchCart();
+        router.replace(redirect);
+      }
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        const errorMessage =
+          error.response?.data?.error || "Invalid or expired OTP";
+        setError(errorMessage);
+        // Clear OTP on error
+        setOtp(["", "", "", "", "", ""]);
+        otpInputRefs.current[0]?.focus();
+      } else {
+        setError("An unexpected error occurred");
+        console.error("Unexpected error:", error);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Resend OTP
+  const handleResendOtp = async () => {
+    if (resendTimer > 0) return;
+
+    setLoading(true);
+    setError("");
+
+    try {
+      const res = await axiosInstance.post(`/auth/api/resend-otp`, {
+        userId,
+      });
+
+      if (res.status === 200) {
+        setResendTimer(60); // Reset timer to 60 seconds
+        setOtp(["", "", "", "", "", ""]);
+        otpInputRefs.current[0]?.focus();
+        // Show success message (optional)
+        setError(""); // Clear any previous errors
+      }
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        const errorMessage =
+          error.response?.data?.error || "Failed to resend OTP";
+        setError(errorMessage);
+      } else {
+        setError("An unexpected error occurred");
+        console.error("Unexpected error:", error);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Countdown timer for resend OTP
+  useEffect(() => {
+    if (resendTimer > 0) {
+      const timer = setTimeout(() => {
+        setResendTimer(resendTimer - 1);
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [resendTimer]);
 
   return (
     <div className=" min-h-[75vh] flex items-center justify-center px-4 py-8">
@@ -119,10 +286,12 @@ const handleGoogleLogin = () => {
           <h1 className="text-2xl font-bold text-gray-900 mb-2">
             {step === "login" && `Welcome back ${checkedName}`}
             {step === "signup" && "Create your account"}
+            {step === "verify-otp" && "Verify your email"}
           </h1>
           <p className="text-gray-600">
             {step === "login" && "Enter your password to continue"}
             {step === "signup" && "Fill in your details to get started"}
+            {step === "verify-otp" && `We've sent a 6-digit code to ${email}`}
           </p>
         </div>
 
@@ -285,7 +454,13 @@ const handleGoogleLogin = () => {
                 {loading ? "Signing in..." : "Sign in"}
               </button>
 
-              <div className="text-center">
+              <div className="text-center space-y-2">
+                <Link
+                  href="/forgot-password"
+                  className="block text-sm text-primary hover:text-primary/90 transition-colors hover:underline"
+                >
+                  Forgot password?
+                </Link>
                 <button
                   onClick={() => setStep("initial")}
                   className="text-sm text-gray-600 hover:text-primary transition-colors"
@@ -420,6 +595,90 @@ const handleGoogleLogin = () => {
                   Use a different email
                 </button>
               </div>
+            </div>
+          )}
+
+          {step === "verify-otp" && (
+            <div className="space-y-4">
+              <div className="flex items-center gap-3 mb-4">
+                <button
+                  onClick={() => setStep("login")}
+                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                >
+                  <ArrowLeft size={20} />
+                </button>
+                <div>
+                  <p className="text-sm text-gray-600">Verifying</p>
+                  <p className="font-medium text-gray-900">{email}</p>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-3 text-center">
+                  Enter verification code
+                </label>
+                <div className="flex justify-center gap-2 mb-4">
+                  {otp.map((digit, index) => (
+                    <input
+                      key={index}
+                      ref={(el) => {
+                        otpInputRefs.current[index] = el;
+                      }}
+                      type="text"
+                      inputMode="numeric"
+                      maxLength={1}
+                      value={digit}
+                      onChange={(e) => handleOtpChange(index, e.target.value)}
+                      onKeyDown={(e) => handleOtpKeyDown(index, e)}
+                      onPaste={index === 0 ? handleOtpPaste : undefined}
+                      className="w-12 h-14 text-center text-xl font-semibold border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-colors"
+                      disabled={loading}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              <button
+                onClick={() => handleVerifyOtp()}
+                disabled={loading || otp.join("").length !== 6}
+                className="w-full cursor-pointer bg-primary hover:bg-primary/90 disabled:bg-gray-300 text-white font-medium py-3 px-4 rounded-lg transition-colors disabled:cursor-not-allowed"
+              >
+                {loading ? "Verifying..." : "Verify"}
+              </button>
+
+              <div className="text-center space-y-2">
+                <p className="text-sm text-gray-600">
+                  Didn&apos;t receive the code?{" "}
+                  {resendTimer > 0 ? (
+                    <span className="text-gray-500">
+                      Resend in {resendTimer}s
+                    </span>
+                  ) : (
+                    <button
+                      onClick={handleResendOtp}
+                      disabled={loading}
+                      className="text-primary hover:text-primary/90 transition-colors hover:underline disabled:text-gray-400"
+                    >
+                      Resend code
+                    </button>
+                  )}
+                </p>
+                <button
+                  onClick={() => setStep("login")}
+                  className="text-sm text-gray-600 hover:text-primary transition-colors"
+                >
+                  Use a different email
+                </button>
+              </div>
+            </div>
+          )}
+
+          {resetSuccess && (
+            <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+              <p className="text-sm text-green-600">
+                Password reset successfully! You can now login with your new
+                password.
+              </p>
             </div>
           )}
 

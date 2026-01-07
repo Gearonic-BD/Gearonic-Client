@@ -16,6 +16,7 @@ export type CartItem = {
   quantity: number;
   brand: string;
   slug: string;
+  stock: number;
 };
 
 type Voucher = {
@@ -99,6 +100,7 @@ export const useCartStore = create<CartState>((set, get) => ({
     try {
       const res = await axiosInstance.get("/api/cart");
       const backendCart = res.data;
+      console.log(backendCart);
 
       if (backendCart && backendCart.items) {
         // Map the backend data to your frontend CartItem type
@@ -113,6 +115,9 @@ export const useCartStore = create<CartState>((set, get) => ({
           quantity: cartItem.quantity,
           brand: cartItem.product.brand,
           slug: cartItem.product.slug,
+          stock: cartItem.variant
+            ? cartItem.variant.stock
+            : cartItem.product.totalStock,
         }));
 
         // This is the key line: update the store with the fetched items
@@ -184,6 +189,10 @@ export const useCartStore = create<CartState>((set, get) => ({
                 image: cartItem.variant?.image || cartItem.product.images[0],
                 quantity: cartItem.quantity,
                 brand: cartItem.product.brand,
+                slug: cartItem.product.slug,
+                stock: cartItem.variant
+                  ? cartItem.variant.stock
+                  : cartItem.product.totalStock,
               })
             ),
           },

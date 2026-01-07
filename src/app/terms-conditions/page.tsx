@@ -1,8 +1,6 @@
-
 export default function TermsOfService() {
   return (
     <div className="min-h-screen">
-
       {/* Main Content */}
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="">
@@ -23,14 +21,14 @@ export default function TermsOfService() {
                 1. Introduction and Acceptance
               </h2>
               <p className="mb-4" style={{ color: "#666666" }}>
-                Welcome to Gearonic BD. These Terms and Conditions
+                Welcome to Gadget City BD. These Terms and Conditions
                 (&quot;Terms&quot;) govern your use of our website, mobile
                 application, and services. By accessing or using our platform,
                 you agree to be bound by these Terms. If you do not agree with
                 any part of these Terms, you may not use our services.
               </p>
               <p className="mb-4" style={{ color: "#666666" }}>
-                Gearonic BD is a registered business in Bangladesh, operating
+                Gadget City BD is a registered business in Bangladesh, operating
                 under the laws of the People&apos;s Republic of Bangladesh. Our
                 services are primarily intended for users within Bangladesh.
               </p>
@@ -65,8 +63,8 @@ export default function TermsOfService() {
                   and goods sold on our Platform
                 </li>
                 <li>
-                  <strong>&quot;Seller&quot;</strong> refers to Gearonic BD and
-                  authorized third-party vendors
+                  <strong>&quot;Seller&quot;</strong> refers to Gadget City BD
+                  and authorized third-party vendors
                 </li>
               </ul>
             </section>
@@ -425,9 +423,9 @@ export default function TermsOfService() {
               </h2>
               <p className="mb-4" style={{ color: "#666666" }}>
                 All content on our Platform, including text, graphics, logos,
-                images, and software, is owned by Gearonic BD or our licensors
-                and is protected by copyright, trademark, and other intellectual
-                property laws.
+                images, and software, is owned by Gadget City BD or our
+                licensors and is protected by copyright, trademark, and other
+                intellectual property laws.
               </p>
               <ul
                 className="list-disc pl-6 mb-4 space-y-2"
@@ -496,10 +494,10 @@ export default function TermsOfService() {
                 11.2 Limitation of Liability
               </h3>
               <p className="mb-4" style={{ color: "#666666" }}>
-                To the maximum extent permitted by law, Gearonic BD shall not be
-                liable for any indirect, incidental, special, consequential, or
-                punitive damages, including but not limited to loss of profits,
-                data, or business opportunities.
+                To the maximum extent permitted by law, Gadget City BD shall not
+                be liable for any indirect, incidental, special, consequential,
+                or punitive damages, including but not limited to loss of
+                profits, data, or business opportunities.
               </p>
             </section>
 
@@ -614,7 +612,7 @@ export default function TermsOfService() {
               </h2>
               <div className="bg-gray-50 p-6 rounded-lg">
                 <p className="mb-2" style={{ color: "#666666" }}>
-                  <strong>Gearonic BD</strong>
+                  <strong>Gadget City BD</strong>
                 </p>
                 <p className="mb-2" style={{ color: "#666666" }}>
                   Registered Office: House #123, Road #456, Dhanmondi,
@@ -624,10 +622,10 @@ export default function TermsOfService() {
                   Trade License: TRAD/DSCC/123456/2024
                 </p>
                 <p className="mb-2" style={{ color: "#666666" }}>
-                  Email: legal@gearonic.bd
+                  Email: gadgetcitybangladesh@gmail.com
                 </p>
                 <p className="mb-2" style={{ color: "#666666" }}>
-                  Customer Service: +880-1XXX-XXXXXX
+                  Customer Service: +880-19092-61003
                 </p>
                 <p className="mb-2" style={{ color: "#666666" }}>
                   Business Hours: Saturday to Thursday, 9:00 AM - 6:00 PM
@@ -649,7 +647,7 @@ export default function TermsOfService() {
                   Acknowledgment
                 </h3>
                 <p style={{ color: "#666666" }}>
-                  By using Gearonic BD, you acknowledge that you have read,
+                  By using Gadget City BD, you acknowledge that you have read,
                   understood, and agree to be bound by these Terms and
                   Conditions. If you do not agree with these Terms, please
                   discontinue use of our Platform immediately.

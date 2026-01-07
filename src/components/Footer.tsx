@@ -24,7 +24,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Company Info & Logo */}
           <div className="lg:col-span-1">
-            <img src="/logo.svg" alt="Gearonic BD" className="w-28" />
+            <img src="/logo2.svg" alt="Gadget City BD" className="w-28" />
             <p className="text-gray-600 text-sm leading-relaxed mb-4">
               {footerLinks.companyInfo.description}
             </p>
@@ -69,7 +69,7 @@ const Footer = () => {
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
             {/* Copyright */}
             <div className="text-sm text-gray-600">
-              © 2024 Gearonic BD. All rights reserved.
+              © 2024 Gadget City BD. All rights reserved.
             </div>
 
             {/* Social Links */}
