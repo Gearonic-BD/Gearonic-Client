@@ -69,7 +69,7 @@ const Footer = () => {
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
             {/* Copyright */}
             <div className="text-sm text-gray-600">
-              © 2024 Gearonic BD. All rights reserved.
+              © 2024 Gadget City BD. All rights reserved.
             </div>
 
             {/* Social Links */}

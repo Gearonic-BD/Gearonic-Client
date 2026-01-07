@@ -93,6 +93,7 @@ const CartPage = () => {
                 onApplyVoucher={handleApplyVoucher}
                 changeShipping={changeShipping}
                 itemsCount={items.length}
+                items={items}
               />
             </div>
           </div>
@@ -100,7 +101,11 @@ const CartPage = () => {
       </div>
 
       {/* Mobile Order Summary */}
-      <MobileOrderSummary subtotal={subtotal} totalSavings={totalSavings} />
+      <MobileOrderSummary
+        subtotal={subtotal}
+        totalSavings={totalSavings}
+        items={items}
+      />
     </>
   );
 };

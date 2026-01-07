@@ -1,9 +1,6 @@
-
 export default function PrivacyPolicy() {
   return (
     <div className="min-h-screen">
-      
-
       {/* Main Content */}
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="">
@@ -16,9 +13,9 @@ export default function PrivacyPolicy() {
 
           <div className="prose max-w-none space-y-6">
             <p style={{ color: "#666666" }}>
-              Welcome to Gearonic BD, your premier destination for electronics
-              and technology products in Bangladesh. We understand that your
-              privacy is of utmost importance, and we are committed to
+              Welcome to Gadget City BD, your premier destination for
+              electronics and technology products in Bangladesh. We understand
+              that your privacy is of utmost importance, and we are committed to
               protecting and respecting your personal information in accordance
               with the laws of Bangladesh, including the Digital Security Act
               2018, the Information and Communication Technology Act 2006, and
@@ -30,15 +27,15 @@ export default function PrivacyPolicy() {
             </p>
 
             <p style={{ color: "#666666" }}>
-              Gearonic BD operates as a legitimate business entity registered
+              Gadget City BD operates as a legitimate business entity registered
               under the laws of the People&apos;s Republic of Bangladesh, and we
-              are
-              committed to maintaining the highest standards of data protection
-              and privacy. Our business is built on trust, and we believe that
-              transparency about our data practices is essential to maintaining
-              that trust. We collect various types of information from our users
-              to provide better services, improve user experience, and ensure
-              the security and functionality of our platform.
+              are committed to maintaining the highest standards of data
+              protection and privacy. Our business is built on trust, and we
+              believe that transparency about our data practices is essential to
+              maintaining that trust. We collect various types of information
+              from our users to provide better services, improve user
+              experience, and ensure the security and functionality of our
+              platform.
             </p>
 
             <p style={{ color: "#666666" }}>
@@ -216,11 +213,11 @@ export default function PrivacyPolicy() {
               information provided below. We are committed to addressing your
               concerns promptly and working with you to resolve any issues
               related to your privacy and personal information. You can reach us
-              by email at privacy@gearonic.bd, by phone at +880-1XXX-XXXXXX, or
-              by mail at our registered office address. Our customer service
-              team is available Saturday through Thursday from 9:00 AM to 6:00
-              PM Bangladesh Standard Time to assist you with any privacy-related
-              inquiries.
+              by email at gadgetciytbangladesh@gmail.com, by phone at
+              +880-1XXX-XXXXXX, or by mail at our registered office address. Our
+              customer service team is available Saturday through Thursday from
+              9:00 AM to 6:00 PM Bangladesh Standard Time to assist you with any
+              privacy-related inquiries.
             </p>
 
             <div className="bg-gray-50 p-6 rounded-lg mt-8">
@@ -231,14 +228,14 @@ export default function PrivacyPolicy() {
                 Contact Information
               </h3>
               <p className="mb-2" style={{ color: "#666666" }}>
-                <strong>Gearonic BD</strong>
+                <strong>Gadget City BD</strong>
               </p>
               <p className="mb-2" style={{ color: "#666666" }}>
                 Registered Office: House #789, Road #123, Gulshan-2, Dhaka-1212,
                 Bangladesh
               </p>
               <p className="mb-2" style={{ color: "#666666" }}>
-                Email: privacy@gearonic.bd
+                Email: gadgetcitybangladesh@gmail.com
               </p>
               <p className="mb-2" style={{ color: "#666666" }}>
                 Phone: +880-1XXX-XXXXXX
@@ -250,7 +247,6 @@ export default function PrivacyPolicy() {
           </div>
         </div>
       </main>
-
     </div>
   );
 }

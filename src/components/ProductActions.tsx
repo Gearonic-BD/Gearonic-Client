@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { Loader2, Minus, Plus, ShoppingCart } from "lucide-react";
+import { Loader2, Minus, Plus, ShoppingCart, Heart } from "lucide-react";
 import { CartItem, useCartStore } from "@/store/cart";
+import { useWishlistStore } from "@/store/wishlist";
 import { Product, Variant } from "@/types/types";
 import useAuth from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
@@ -24,11 +25,50 @@ const ProductActions = ({
   currentPrice,
   totalStock,
   product,
+  isWishlisted,
+  onWishlistToggle,
 }: ProductActionsProps) => {
   const [quantity, setQuantity] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
+  const [isWishlistLoading, setIsWishlistLoading] = useState(false);
   const { checkAuth, user } = useAuth();
   const router = useRouter();
+  const addToWishlist = useWishlistStore((state) => state.addToWishlist);
+  const removeFromWishlist = useWishlistStore(
+    (state) => state.removeFromWishlist
+  );
+
+  const handleWishlistToggle = async () => {
+    let currentUser = user;
+    if (!currentUser) {
+      const authResult = await checkAuth();
+      if (!authResult.success) {
+        toast.error("Please log in to add to wishlist");
+        router.push(
+          `/login?redirect=${encodeURIComponent(window.location.pathname)}`
+        );
+        return;
+      }
+      currentUser = authResult.user;
+    }
+
+    setIsWishlistLoading(true);
+    try {
+      if (isWishlisted) {
+        const success = await removeFromWishlist(product.id);
+        if (success) {
+          onWishlistToggle();
+        }
+      } else {
+        const success = await addToWishlist(product.id);
+        if (success) {
+          onWishlistToggle();
+        }
+      }
+    } finally {
+      setIsWishlistLoading(false);
+    }
+  };
 
   const handleQuantityChange = (action: "increase" | "decrease") => {
     if (action === "increase" && quantity < currentStock) {
@@ -89,6 +129,7 @@ const ProductActions = ({
       quantity,
       originalPrice: product.originalPrice,
       price: currentPrice,
+      stock: currentStock,
     };
     const { addToCart } = useCartStore.getState();
 
@@ -160,20 +201,26 @@ const ProductActions = ({
                 </>
               )}
             </button>
+            <button
+              onClick={handleWishlistToggle}
+              disabled={isWishlistLoading}
+              className={`h-12 w-12 border rounded-xs flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
+                isWishlisted
+                  ? "border-danger/30 bg-danger/5 hover:bg-danger/10 text-danger"
+                  : "border-gray-300 hover:border-gray-400 text-gray-600"
+              }`}
+            >
+              {isWishlistLoading ? (
+                <Loader2 className="w-5 h-5 animate-spin" />
+              ) : (
+                <Heart
+                  className={`w-5 h-5 ${isWishlisted ? "fill-current" : ""}`}
+                />
+              )}
+            </button>
           </div>
         )}
       </div>
-
-      {/* <button
-            onClick={onWishlistToggle}
-            className="h-12 w-12 border border-gray-300 hover:border-gray-400 rounded-lg flex items-center justify-center transition-colors"
-          >
-            <Heart
-              className={`w-5 h-5 ${
-                isWishlisted ? "fill-red-500 text-red-500" : "text-gray-600"
-              }`}
-            />
-          </button> */}
 
       {/* Mobile Bottom Fixed Action Buttons */}
       <div className="fixed xs:bottom-0 bottom-18 left-0 right-0 bg-white border-t border-gray-200 px-4 pt-2 pb-3 shadow-lg md:hidden z-40">
@@ -202,24 +249,31 @@ const ProductActions = ({
                 </button>
               </div>
             </div>
-            {/* <button
-              onClick={onWishlistToggle}
-              disabled={isLoading}
-              className="h-10 w-10 border border-gray-300 hover:border-gray-400 rounded-lg flex items-center justify-center transition-colors"
+            <button
+              onClick={handleWishlistToggle}
+              disabled={isWishlistLoading || isLoading}
+              className={`h-10 w-10 border rounded-lg flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
+                isWishlisted
+                  ? "border-danger/30 bg-danger/5 hover:bg-danger/10 text-danger"
+                  : "border-gray-300 hover:border-gray-400 text-gray-600"
+              }`}
             >
-              <Heart
-                className={`w-4 h-4 ${
-                  isWishlisted ? "fill-danger text-danger" : "text-gray-600"
-                }`}
-              />
-            </button> */}
+              {isWishlistLoading ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Heart
+                  className={`w-4 h-4 ${isWishlisted ? "fill-current" : ""}`}
+                />
+              )}
+            </button>
           </div>
 
           {/* Action Buttons Row */}
           <div className="space-y-3">
             {totalStock === 0 ||
             currentStock === 0 ||
-            (product.isFlashSale && product.sold === product?.flashSaleStock) ? (
+            (product.isFlashSale &&
+              product.sold === product?.flashSaleStock) ? (
               <div className="flex items-center justify-center h-12 w-full rounded-lg bg-danger/10 text-danger font-medium text-[15px] tracking-wide border border-danger/20">
                 Out of Stock
               </div>

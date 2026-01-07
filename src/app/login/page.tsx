@@ -30,6 +30,15 @@ export default function LoginPage() {
 
   const searchParams = useSearchParams();
   const redirect = searchParams.get("redirect") || "/";
+  const resetSuccess = searchParams.get("reset") === "success";
+
+  // Show success message if password was reset
+  useEffect(() => {
+    if (resetSuccess) {
+      setError(""); // Clear any errors
+      // You could set a success message here if you have a success state
+    }
+  }, [resetSuccess]);
 
   const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -445,7 +454,13 @@ export default function LoginPage() {
                 {loading ? "Signing in..." : "Sign in"}
               </button>
 
-              <div className="text-center">
+              <div className="text-center space-y-2">
+                <Link
+                  href="/forgot-password"
+                  className="block text-sm text-primary hover:text-primary/90 transition-colors hover:underline"
+                >
+                  Forgot password?
+                </Link>
                 <button
                   onClick={() => setStep("initial")}
                   className="text-sm text-gray-600 hover:text-primary transition-colors"
@@ -655,6 +670,15 @@ export default function LoginPage() {
                   Use a different email
                 </button>
               </div>
+            </div>
+          )}
+
+          {resetSuccess && (
+            <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+              <p className="text-sm text-green-600">
+                Password reset successfully! You can now login with your new
+                password.
+              </p>
             </div>
           )}
 
