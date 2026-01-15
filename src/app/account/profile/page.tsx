@@ -4,22 +4,33 @@ import Loading from "@/app/loading";
 import useAuth from "@/hooks/useAuth";
 import { User, Mail, Phone } from "lucide-react";
 import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 const ProfilePage = () => {
   // User data based on the provided structure
   const { user, loading, checkAuth } = useAuth();
+  const router = useRouter();
+
   useEffect(() => {
-    checkAuth();
-  }, []);
+    const verifyAuth = async () => {
+      if (!user) {
+        const authResult = await checkAuth();
+        if (!authResult.success) {
+          router.push("/login?redirect=/account/profile");
+          return;
+        }
+      }
+    };
+    verifyAuth();
+  }, [user, checkAuth, router]);
+
   if (loading) {
     return <Loading />;
   }
+
+  // Redirect if not authenticated (handled in useEffect, but show nothing while redirecting)
   if (!user) {
-    return (
-      <div className="p-6 text-center text-gray-500">
-        No user data available
-      </div>
-    );
+    return <Loading />;
   }
 
   const profileFields = [
