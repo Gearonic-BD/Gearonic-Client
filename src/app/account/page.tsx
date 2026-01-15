@@ -11,12 +11,22 @@ import { useCartStore } from "@/store/cart";
 
 const AccountPage = () => {
   const { user, loading, checkAuth } = useAuth();
-  useEffect(() => {
-    checkAuth();
-  }, []);
-  const [logoutLoading, setLogoutLoading] = useState(false);
   const router = useRouter();
+  const [logoutLoading, setLogoutLoading] = useState(false);
   const clearCart = useCartStore((state) => state.clearCart);
+
+  useEffect(() => {
+    const verifyAuth = async () => {
+      if (!user) {
+        const authResult = await checkAuth();
+        if (!authResult.success) {
+          router.push("/login?redirect=/account");
+          return;
+        }
+      }
+    };
+    verifyAuth();
+  }, [user, checkAuth, router]);
 
   const handleLogout = async () => {
     setLogoutLoading(true);
@@ -61,6 +71,11 @@ const AccountPage = () => {
   ];
 
   if (loading) {
+    return <Loading />;
+  }
+
+  // Redirect if not authenticated (handled in useEffect, but show nothing while redirecting)
+  if (!user) {
     return <Loading />;
   }
 

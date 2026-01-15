@@ -54,10 +54,10 @@ const OrdersPage = () => {
       } catch (err) {
         if (axios.isAxiosError(err)) {
           if (err.response?.status === 401) {
-            router.replace("/");
+            router.replace("/login?redirect=/account/orders");
           } else if (err.response?.status === 403) {
             toast.error("Forbidden Access.");
-            router.replace("/");
+            router.replace("/login?redirect=/account/orders");
           } else {
             console.error("Other error:", err.response?.data || err.message);
           }
