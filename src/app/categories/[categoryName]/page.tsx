@@ -1,8 +1,12 @@
 import FeaturedProductCard from "@/components/FeaturedProductCard";
 import { Product } from "@/types/types";
 
-const Category = async ({ params }: { params: { categoryName: string } }) => {
-  const { categoryName } = params;
+const Category = async ({
+  params,
+}: {
+  params: Promise<{ categoryName: string }>;
+}) => {
+  const { categoryName } = await params;
 
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_SERVER_URL}/api/products/categories/${categoryName}`,
