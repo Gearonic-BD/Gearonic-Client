@@ -6,6 +6,7 @@ import {
   Facebook,
   Twitter,
   Instagram,
+  Linkedin,
 } from "lucide-react";
 import { footerLinks } from "@/data/footerLinks";
 import FooterLinkList from "./FooterLinkList";
@@ -14,6 +15,7 @@ const Footer = () => {
   const socialIcons = {
     Facebook: Facebook,
     Twitter: Twitter,
+    Linkedin: Linkedin,
     Instagram: Instagram,
   };
 
@@ -69,7 +71,7 @@ const Footer = () => {
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
             {/* Copyright */}
             <div className="text-sm text-gray-600">
-              © 2024 Gadget City BD. All rights reserved.
+              © {new Date().getFullYear()} Gadget City BD. All rights reserved.
             </div>
 
             {/* Social Links */}
