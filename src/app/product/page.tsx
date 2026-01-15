@@ -11,6 +11,7 @@ import RelatedProducts from "@/components/RelatedProducts";
 const product = {
   id: "1",
   title: "Blue Gean Shark L4S Sport Smart Watch",
+  slug: "blue-gean-shark-l4s-sport-smart-watch",
   featuredImage:
     "https://www.startech.com.bd/image/cache/catalog/smart-watch/black-shark/gs3-sport/gs3-sport-lava-black-official-500x500.webp",
   images: [
@@ -26,6 +27,9 @@ const product = {
   hasVariants: true,
   totalStock: 200,
   rating: 4.5,
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
+  isFlashSale: false,
   description: `<h2>Blue Gean Shark L4S Sport Smart Watch</h2>
 
   <img
@@ -62,6 +66,8 @@ const product = {
   variants: [
     {
       id: "44",
+      productId: "1",
+      name: "Black",
       color: "black",
       price: 21250,
       stock: 100,
@@ -70,6 +76,8 @@ const product = {
     },
     {
       id: "45",
+      productId: "1",
+      name: "White",
       color: "white",
       price: 21350,
       stock: 30,
@@ -77,84 +85,126 @@ const product = {
         "https://vinetanextjs.vercel.app/images/cls-categories/electronic/charge.png",
     },
   ],
-  specifications: {
-    "Basic Information": {
-      display: "1.32inch AMOLED (454×454) Capacitive Full Touch Screen",
-      memory: "Flash Memory: RAM:578KB+ROM 640KB \nExternal flash memory: 1Gb",
-      battery:
-        "3.8V 260mAh Lithium Polymer Battery\nCharging Method: Magnetic Charging\nStandby time: 15-25 days\nUsage time: 7-15 days",
-      connectivity: "Bluetooth 5.0",
+  specifications: [
+    {
+      name: "Basic Information",
+      specs: [
+        {
+          key: "display",
+          value: "1.32inch AMOLED (454×454) Capacitive Full Touch Screen",
+        },
+        {
+          key: "memory",
+          value:
+            "Flash Memory: RAM:578KB+ROM 640KB \nExternal flash memory: 1Gb",
+        },
+        {
+          key: "battery",
+          value:
+            "3.8V 260mAh Lithium Polymer Battery\nCharging Method: Magnetic Charging\nStandby time: 15-25 days\nUsage time: 7-15 days",
+        },
+        { key: "connectivity", value: "Bluetooth 5.0" },
+      ],
     },
-    Exterior: {
-      dimention: "45*45*12mm",
-      weights: "65g",
-      color: "black",
+    {
+      name: "Exterior",
+      specs: [
+        { key: "dimention", value: "45*45*12mm" },
+        { key: "weights", value: "65g" },
+        { key: "color", value: "black" },
+      ],
     },
-    "Warranty Information": {
-      warranty: "6 Month Brand Warranty",
+    {
+      name: "Warranty Information",
+      specs: [{ key: "warranty", value: "6 Month Brand Warranty" }],
     },
-  },
+  ],
   questions: [
     {
       id: "q1",
-      user: "John Doe",
+      userId: "user1",
+      productId: "1",
       question: "Is this watch compatible with iPhone 14?",
       answer:
         "Yes, this smartwatch is compatible with iOS 10.0 and above, so it works perfectly with iPhone 14.",
-
-      date: "2024-01-15",
+      createdAt: "2024-01-15T00:00:00Z",
+      user: { id: "user1", name: "John Doe", email: "john@example.com" },
+      answerDate: "2024-01-15",
     },
     {
       id: "q2",
-      user: "Sarah Wilson",
+      userId: "user2",
+      productId: "1",
       question: "How long does the battery last with normal usage?",
       answer:
         "With normal usage, the battery lasts 7-15 days. For standby mode, it can last up to 25 days.",
-      date: "2024-01-10",
+      createdAt: "2024-01-10T00:00:00Z",
+      user: { id: "user2", name: "Sarah Wilson", email: "sarah@example.com" },
+      answerDate: "2024-01-10",
     },
     {
       id: "q3",
-      user: "Mike Johnson",
+      userId: "user3",
+      productId: "1",
       question: "Is the watch waterproof for swimming?",
       answer:
         "Yes, it has 3ATM water resistance, making it suitable for swimming and water sports.",
-      date: "2024-01-08",
+      createdAt: "2024-01-08T00:00:00Z",
+      user: { id: "user3", name: "Mike Johnson", email: "mike@example.com" },
+      answerDate: "2024-01-08",
     },
   ],
   reviews: [
     {
       id: "r1",
-      user: "Alex Thompson",
+      userId: "user4",
+      productId: "1",
       rating: 5,
       comment:
         "I've been using this watch for 2 months now and I'm impressed with its performance. The battery easily lasts 10-12 days with regular use, and the display is crisp and bright. Highly recommended!",
+      createdAt: "2024-01-20T00:00:00Z",
+      user: {
+        id: "user4",
+        name: "Alex Thompson",
+        email: "alex@example.com",
+      },
       date: "2024-01-20",
     },
     {
       id: "r2",
-      user: "Emma Davis",
+      userId: "user5",
+      productId: "1",
       rating: 4,
-
       comment:
         "The watch has all the features I need. The build quality is solid and it looks premium. Only minor issue is that the charging cable is a bit short, but overall very satisfied.",
+      createdAt: "2024-01-18T00:00:00Z",
+      user: { id: "user5", name: "Emma Davis", email: "emma@example.com" },
       date: "2024-01-18",
     },
     {
       id: "r3",
-      user: "David Chen",
+      userId: "user6",
+      productId: "1",
       rating: 5,
-
       comment:
         "As a fitness enthusiast, this watch meets all my needs. The heart rate monitoring is accurate, and I love the waterproof feature for swimming. The app connectivity is seamless.",
+      createdAt: "2024-01-15T00:00:00Z",
+      user: { id: "user6", name: "David Chen", email: "david@example.com" },
       date: "2024-01-15",
     },
     {
       id: "r4",
-      user: "Lisa Rodriguez",
+      userId: "user7",
+      productId: "1",
       rating: 4,
-
       comment:
         "The watch looks great and has a premium feel. The AMOLED display is beautiful and easy to read in sunlight. Setup was easy and it pairs quickly with my phone.",
+      createdAt: "2024-01-12T00:00:00Z",
+      user: {
+        id: "user7",
+        name: "Lisa Rodriguez",
+        email: "lisa@example.com",
+      },
       date: "2024-01-12",
     },
   ],
@@ -189,7 +239,10 @@ const ProductPage = () => {
         <ProductDescription html={product.description} />
       </section>
       <section className="container mx-auto max-w-[1280px] px-4 sm:px-6 pb-4 md:pb-8">
-        <ProductQuestions questions={product.questions} />
+        <ProductQuestions
+          questions={product.questions}
+          productId={product.id}
+        />
       </section>
       <section className="container mx-auto max-w-[1280px] px-4 sm:px-6 pb-4 md:pb-8">
         <ProductReviews
@@ -199,7 +252,7 @@ const ProductPage = () => {
         />
       </section>
       <section className="container mx-auto max-w-[1280px] px-4 sm:px-6 pb-4 md:pb-8">
-        <RelatedProducts />
+        <RelatedProducts id={product.id} />
       </section>
     </>
   );

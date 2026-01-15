@@ -34,6 +34,13 @@ export type Specification = {
   specs: { key: string; value: string }[];
 };
 
+export type Category = {
+  id?: string | number;
+  name: string;
+  image?: string;
+  href: string;
+};
+
 export type Product = {
   id: string;
   title: string;
