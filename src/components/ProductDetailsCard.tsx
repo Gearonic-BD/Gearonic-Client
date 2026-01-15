@@ -7,6 +7,7 @@ import ProductVariants from "./ProductVariants";
 import ProductActions from "./ProductActions";
 import { useWishlistStore } from "@/store/wishlist";
 import { Product, Variant } from "@/types/types";
+import useAuth from "@/hooks/useAuth";
 
 interface ProductDetailsCardProps {
   product: Product;
@@ -23,10 +24,35 @@ const ProductDetailsCard = ({ product }: ProductDetailsCardProps) => {
   );
   const fetchWishlist = useWishlistStore((state) => state.fetchWishlist);
   const [isWishlisted, setIsWishlisted] = useState(false);
+  const { user, checkAuth } = useAuth();
 
   useEffect(() => {
-    fetchWishlist();
-  }, [fetchWishlist]);
+    const loadWishlist = async () => {
+      // Only fetch wishlist if user is authenticated
+      if (user) {
+        try {
+          await fetchWishlist();
+        } catch (error) {
+          // Silently handle errors - already handled in the store
+          console.error("Failed to fetch wishlist:", error);
+        }
+      } else {
+        // Check if user is authenticated without forcing a redirect
+        const authResult = await checkAuth();
+        if (authResult.success && authResult.user) {
+          try {
+            await fetchWishlist();
+          } catch (error) {
+            // Silently handle errors
+            console.error("Failed to fetch wishlist:", error);
+          }
+        }
+      }
+    };
+
+    loadWishlist();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.id, fetchWishlist]);
 
   useEffect(() => {
     setIsWishlisted(isProductWishlisted(product.id));

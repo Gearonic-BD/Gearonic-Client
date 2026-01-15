@@ -47,13 +47,10 @@ export default function LoginPage() {
     setError("");
 
     try {
-      // Replace with your actual backend API URL or proxy path
-      const response = await axios.post(
-        "http://localhost:5000/auth/api/check-email",
-        {
-          email,
-        }
-      );
+      // Use axiosInstance to ensure correct baseURL from environment variables
+      const response = await axiosInstance.post("/auth/api/check-email", {
+        email,
+      });
 
       if (response.data.exists && response.data.hasPassword) {
         setCheckedName(response?.data?.name);

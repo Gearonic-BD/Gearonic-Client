@@ -34,7 +34,6 @@ const HomeFlashSale = () => {
         console.error("Error fetching flash sale products:", error);
       } finally {
         setLoading(false);
-      
       }
     };
 

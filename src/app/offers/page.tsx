@@ -25,6 +25,9 @@ function getDiscountPercentage(original: number, discount?: number): number {
   return Math.round(((original - discount) / original) * 100);
 }
 
+// Force dynamic rendering for this route
+export const dynamic = "force-dynamic";
+
 // Server Component
 export default async function FlashSaleProducts() {
   let products: Product[] = [];
@@ -190,4 +193,3 @@ export default async function FlashSaleProducts() {
     </div>
   );
 }
-

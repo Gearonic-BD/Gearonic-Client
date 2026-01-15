@@ -25,7 +25,9 @@ const HomeSwiper = () => {
   useEffect(() => {
     const fetchBanners = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/banners`);
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/api/banners`
+        );
         const data = await res.json();
         setSlides(data);
       } catch (err) {
