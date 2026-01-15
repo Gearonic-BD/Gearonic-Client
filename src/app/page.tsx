@@ -4,6 +4,9 @@ import HomeFlashSale from "@/components/HomeFlashSale";
 import HomeAllCategories from "@/components/HomeAllCategories";
 import HomeSwiper from "@/components/HomeSwiper";
 
+// Force dynamic rendering for home page since it uses components with no-store fetches
+export const dynamic = "force-dynamic";
+
 const Home = () => {
   return (
     <>
