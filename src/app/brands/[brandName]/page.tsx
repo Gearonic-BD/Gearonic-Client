@@ -1,8 +1,12 @@
 import FeaturedProductCard from "@/components/FeaturedProductCard";
 import { Product } from "@/types/types";
 
-const Brand = async ({ params }: { params: { brandName: string } }) => {
-  const { brandName } = params;
+const Brand = async ({
+  params,
+}: {
+  params: Promise<{ brandName: string }>;
+}) => {
+  const { brandName } = await params;
 
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_SERVER_URL}/api/products/brand/${brandName}`,

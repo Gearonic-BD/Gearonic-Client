@@ -3,34 +3,40 @@ export const footerLinks = {
     description:
       "Your trusted destination for premium electronics and gadgets. Quality products, competitive prices, and exceptional service.",
     contact: {
-      phone: "+880 1234-567890",
+      phone: "+880 1928-316192",
       email: "gadgetcitybangladesh@gmail.com",
-      address: "House #123, Road #12, Banani, Dhaka-1213, Bangladesh",
+      address:
+        "Shop 128, 68-69 Concept Towern, Greenroad, Dhaka-1205, Bangladesh",
     },
   },
   quickLinks: [
     { href: "/about", text: "About Us" },
     { href: "/contact", text: "Contact Us" },
-    { href: "/blog", text: "Blog & News" },
+    // { href: "/blog", text: "Blog & News" },
     { href: "/stores", text: "Store Locator" },
   ],
   customerService: [
     { href: "/terms-conditions", text: "Terms & Conditions" },
     { href: "/privacy-policy", text: "Privacy Policy" },
-    // { href: "/shipping", text: "Shipping Info" },
     // { href: "/returns", text: "Returns Policy" },
     // { href: "/faq", text: "FAQ" },
-    { href: "/help", text: "Help Center" },
+    { href: "/contact", text: "Help Center" },
   ],
   categories: [
     { href: "/categories/mobile", text: "Smartphones" },
     { href: "/categories/airpods", text: "Airpods & Earphones" },
     { href: "/categories/smartwatches", text: "Smartwatches" },
-    { href: "/categories/chargers", text: "Chargers & Cables" },
+    { href: "/categories/chargers", text: "Chargers" },
   ],
   socialLinks: [
-    { href: "#", platform: "Facebook" },
-    { href: "#", platform: "Twitter" },
-    { href: "#", platform: "Instagram" },
+    {
+      href: "https://www.facebook.com/gadgetcitybangladesh/",
+      platform: "Facebook",
+    },
+    {
+      href: "https://www.linkedin.com/company/gadgetcitybd",
+      platform: "Linkedin",
+    },
+    { href: "https://www.instagram.com/gadgetcitybd", platform: "Instagram" },
   ],
 };

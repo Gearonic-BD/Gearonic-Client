@@ -1,3 +1,52 @@
+import type { Metadata } from "next";
+
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://gadgetcitybd.com";
+const pageUrl = `${siteUrl}/privacy-policy`;
+
+export const metadata: Metadata = {
+  title: "Privacy Policy - Gadget City BD | Data Protection & Privacy",
+  description:
+    "Read Gadget City BD's Privacy Policy to learn how we collect, use, and protect your personal information. We are committed to your privacy and data security. Updated January 2025.",
+  keywords: [
+    "privacy policy",
+    "data protection",
+    "privacy policy bangladesh",
+    "gadget city privacy",
+    "data security",
+    "personal information protection",
+  ].join(", "),
+  authors: [{ name: "Gadget City BD" }],
+  creator: "Gadget City BD",
+  publisher: "Gadget City BD",
+  alternates: {
+    canonical: pageUrl,
+  },
+  openGraph: {
+    title: "Privacy Policy - Gadget City BD | Data Protection",
+    description:
+      "Read Gadget City BD's Privacy Policy to learn how we collect, use, and protect your personal information.",
+    url: pageUrl,
+    siteName: "Gadget City BD",
+    images: [
+      {
+        url: "/logo.png",
+        width: 1200,
+        height: 630,
+        alt: "Gadget City BD - Privacy Policy",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Privacy Policy - Gadget City BD",
+    description:
+      "Read Gadget City BD's Privacy Policy to learn how we protect your data.",
+    images: ["/logo.png"],
+  },
+};
+
 export default function PrivacyPolicy() {
   return (
     <div className="min-h-screen">
