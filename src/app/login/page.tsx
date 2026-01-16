@@ -48,9 +48,12 @@ export default function LoginPage() {
 
     try {
       // Use axiosInstance to ensure correct baseURL from environment variables
-      const response = await axiosInstance.post("/auth/api/check-email", {
-        email,
-      });
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/api/check-email`,
+        {
+          email,
+        }
+      );
 
       if (response.data.exists && response.data.hasPassword) {
         setCheckedName(response?.data?.name);

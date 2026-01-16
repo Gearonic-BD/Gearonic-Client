@@ -1,6 +1,53 @@
 import { Product } from "@/types/types";
 import Link from "next/link";
 import React from "react";
+import type { Metadata } from "next";
+
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://gadgetcitybd.com";
+
+export const metadata: Metadata = {
+  title:
+    "Flash Sale & Special Offers - Gadget City BD | Best Deals on Electronics",
+  description:
+    "Shop amazing flash sale deals and special offers on electronics, smartphones, laptops, and gadgets at Gadget City BD. Limited time offers with huge discounts. Don't miss out!",
+  keywords: [
+    "flash sale bangladesh",
+    "electronics deals",
+    "discount electronics",
+    "special offers",
+    "gadget city offers",
+    "electronics sale",
+    "best deals bangladesh",
+    "flash sale electronics",
+  ],
+  alternates: {
+    canonical: `${siteUrl}/offers`,
+  },
+  openGraph: {
+    title: "Flash Sale & Special Offers - Gadget City BD",
+    description:
+      "Shop amazing flash sale deals and special offers on electronics at Gadget City BD. Limited time offers with huge discounts.",
+    url: `${siteUrl}/offers`,
+    siteName: "Gadget City BD",
+    images: [
+      {
+        url: "/logo.png",
+        width: 1200,
+        height: 630,
+        alt: "Flash Sale - Gadget City BD",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Flash Sale & Special Offers - Gadget City BD",
+    description:
+      "Shop amazing flash sale deals and special offers on electronics. Limited time offers with huge discounts.",
+    images: ["/logo.png"],
+  },
+};
 
 // Utility function to calculate time remaining
 function getTimeRemaining(endDate: string): string {
@@ -118,7 +165,12 @@ export default async function FlashSaleProducts() {
                   <img
                     src={product.featuredImage}
                     alt={product.title}
+                    width={200}
+                    height={200}
                     className="w-full  object-contain transition-transform duration-300 group-hover:scale-105"
+                    loading="lazy"
+                    decoding="async"
+                    style={{ width: "100%", height: "auto" }}
                   />
                   {/* Discount Badge */}
                   <span className="absolute top-2 left-2 bg-primary text-white text-xs font-semibold px-1.5 py-1 rounded">

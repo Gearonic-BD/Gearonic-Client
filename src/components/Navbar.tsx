@@ -33,6 +33,11 @@ const Navbar = () => {
                 className="w-28 lg:w-32"
                 src="/logo2.svg"
                 alt="Gadget City BD"
+                width={128}
+                height={40}
+                loading="eager"
+                fetchPriority="high"
+                decoding="async"
               />
             </Link>
           </div>

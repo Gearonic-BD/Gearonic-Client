@@ -25,6 +25,7 @@ const ProductVariants = ({
           <button
             key={variant.id}
             onClick={() => onVariantChange(variant)}
+            aria-label={`Select ${variant.color || variant.size} variant`}
             className={` px-2 xs:px-4 py-2 rounded-lg border-2 text-sm xs:text-base  transition-colors capitalize ${
               selectedVariant?.id === variant.id
                 ? "border-info bg-info/10 text-black"

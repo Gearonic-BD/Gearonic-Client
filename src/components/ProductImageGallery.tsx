@@ -86,6 +86,9 @@ const ProductImageGallery = ({
                   src={image || "/placeholder.svg"}
                   alt={`${productTitle} - Image ${index + 1}`}
                   className="w-full h-full object-cover"
+                  loading={index === 0 ? "eager" : "lazy"}
+                  fetchPriority={index === 0 ? "high" : "auto"}
+                  decoding="async"
                 />
               </div>
             </SwiperSlide>
@@ -117,7 +120,11 @@ const ProductImageGallery = ({
               <img
                 src={image || "/placeholder.svg"}
                 alt={`Thumbnail ${index + 1}`}
+                width={100}
+                height={100}
                 className="w-full h-full object-cover"
+                loading="lazy"
+                decoding="async"
               />
             </div>
           </SwiperSlide>
@@ -134,6 +141,7 @@ const ProductImageGallery = ({
           <div className="relative max-w-4xl max-h-[90vh] mx-4">
             <button
               onClick={closeLightbox}
+              aria-label="Close image lightbox"
               className="absolute cursor-pointer -top-12 right-0 text-white hover:text-gray-300 transition-colors z-10"
             >
               <X size={24} />
@@ -143,6 +151,7 @@ const ProductImageGallery = ({
             </div>
             <button
               onClick={goToPrevImage}
+              aria-label="Previous image"
               className="absolute left-4 top-1/2 -translate-y-1/2 text-white hover:text-gray-300 transition-colors z-10 bg-black/50 rounded-full p-2"
             >
               <svg
@@ -161,6 +170,7 @@ const ProductImageGallery = ({
             </button>
             <button
               onClick={goToNextImage}
+              aria-label="Next image"
               className="absolute right-4 top-1/2 -translate-y-1/2 text-white hover:text-gray-300 transition-colors z-10 bg-black/50 rounded-full p-2"
             >
               <svg
@@ -181,7 +191,11 @@ const ProductImageGallery = ({
               <img
                 src={images[lightboxImageIndex] || "/placeholder.svg"}
                 alt={`${productTitle} - Image ${lightboxImageIndex + 1}`}
+                width={1200}
+                height={1200}
                 className="max-w-full max-h-[90vh] object-contain rounded-lg"
+                loading="eager"
+                decoding="async"
               />
             </div>
             <div className="flex justify-center mt-4 gap-2 overflow-x-auto pb-2">
@@ -189,6 +203,7 @@ const ProductImageGallery = ({
                 <button
                   key={index}
                   onClick={() => setLightboxImageIndex(index)}
+                  aria-label={`View image ${index + 1} of ${images.length}`}
                   className={`flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-colors ${
                     index === lightboxImageIndex
                       ? "border-white"
@@ -198,7 +213,11 @@ const ProductImageGallery = ({
                   <img
                     src={image || "/placeholder.svg"}
                     alt={`Thumbnail ${index + 1}`}
+                    width={64}
+                    height={64}
                     className="w-full h-full object-cover"
+                    loading="lazy"
+                    decoding="async"
                   />
                 </button>
               ))}
