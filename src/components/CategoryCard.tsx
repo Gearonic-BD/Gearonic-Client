@@ -1,8 +1,6 @@
 import { Category } from "@/types/types";
 import Link from "next/link";
 
-
-
 const CategoryCard = ({ category }: { category: Category }) => {
   return (
     <Link href={category.href} className="group block my-2">
@@ -12,8 +10,17 @@ const CategoryCard = ({ category }: { category: Category }) => {
           <img
             src={category.image || "/placeholder.svg"}
             alt={category.name}
+            width={128}
+            height={128}
             className="max-w-full max-h-full object-contain transition-transform duration-300 group-active:scale-105 group-hover:scale-105"
-            crossOrigin="anonymous"
+            loading="lazy"
+            decoding="async"
+            style={{
+              width: "auto",
+              height: "auto",
+              maxWidth: "100%",
+              maxHeight: "100%",
+            }}
           />
         </div>
 

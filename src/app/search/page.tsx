@@ -1,5 +1,47 @@
 import FeaturedProductCard from "@/components/FeaturedProductCard";
 import { Product } from "@/types/types";
+import type { Metadata } from "next";
+
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://gadgetcitybd.com";
+
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string }>;
+}): Promise<Metadata> {
+  const params = await searchParams;
+  const query = params.q || "";
+  const pageUrl = `${siteUrl}/search${
+    query ? `?q=${encodeURIComponent(query)}` : ""
+  }`;
+
+  if (query) {
+    return {
+      title: `Search Results for "${query}" - Gadget City BD`,
+      description: `Find ${query} products at Gadget City BD. Browse our wide selection of electronics, smartphones, laptops, and tech accessories.`,
+      alternates: {
+        canonical: pageUrl,
+      },
+      robots: {
+        index: true,
+        follow: true,
+      },
+    };
+  }
+
+  return {
+    title: "Search Products - Gadget City BD",
+    description:
+      "Search for electronics, smartphones, laptops, and tech accessories at Gadget City BD. Find the best deals on genuine products.",
+    alternates: {
+      canonical: pageUrl,
+    },
+    robots: {
+      index: false, // Don't index empty search page
+      follow: true,
+    },
+  };
+}
 
 interface SearchPageProps {
   searchParams: Promise<{ q?: string }>;

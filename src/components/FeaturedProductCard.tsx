@@ -19,7 +19,12 @@ const FeaturedProductCard = ({ product }: { product: Product }) => {
           <img
             src={product.featuredImage}
             alt={product.title}
+            width={200}
+            height={200}
             className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105"
+            loading="lazy"
+            decoding="async"
+            style={{ width: "100%", height: "auto" }}
           />
         </div>
 

@@ -17,7 +17,12 @@ const FlashSaleProductCard = ({ product }: { product: Product }) => {
           <img
             src={product.featuredImage}
             alt={product.title}
+            width={200}
+            height={200}
             className="w-full  object-contain transition-transform duration-300 group-hover:scale-105"
+            loading="lazy"
+            decoding="async"
+            style={{ width: "100%", height: "auto" }}
           />
           {/* Discount Badge */}
           <span className="absolute top-2 left-2 bg-primary text-white text-xs font-semibold px-1.5 py-1 rounded">

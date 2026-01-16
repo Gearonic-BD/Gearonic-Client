@@ -58,7 +58,16 @@ const HomeSwiper = () => {
           {mainSlides.map((banner, index) => (
             <SwiperSlide key={banner.id}>
               <Link href={banner.link || "#"}>
-                <img src={banner.imageUrl} alt={`Slide ${index + 1}`} />
+                <img
+                  src={banner.imageUrl}
+                  alt={`Slide ${index + 1}`}
+                  width={800}
+                  height={400}
+                  loading={index === 0 ? "eager" : "lazy"}
+                  fetchPriority={index === 0 ? "high" : "auto"}
+                  decoding="async"
+                  style={{ width: "100%", height: "auto" }}
+                />
               </Link>
             </SwiperSlide>
           ))}
@@ -67,12 +76,14 @@ const HomeSwiper = () => {
         {/* Custom Navigation Buttons */}
         <button
           onClick={() => swiperRef.current?.slidePrev()}
+          aria-label="Previous slide"
           className="absolute cursor-pointer left-2 hidden xs:block top-1/2 -translate-y-1/2 z-10 bg-gray-200 hover:bg-white transition-all p-2 rounded-full shadow"
         >
           <ArrowLeft />
         </button>
         <button
           onClick={() => swiperRef.current?.slideNext()}
+          aria-label="Next slide"
           className="absolute cursor-pointer hidden xs:block right-2 top-1/2 -translate-y-1/2 z-10 bg-gray-200 hover:bg-white transition-all p-2 rounded-full shadow"
         >
           <ArrowRight />
@@ -81,9 +92,10 @@ const HomeSwiper = () => {
         {/* Custom Pagination */}
         <div className="flex absolute bottom-4 left-1/2 -translate-x-1/2 z-40 justify-center mt-4 gap-2">
           {mainSlides.map((_, index) => (
-            <div
+            <button
               key={index}
               onClick={() => swiperRef.current?.slideTo(index)}
+              aria-label={`Go to slide ${index + 1}`}
               className={`w-6 h-2 cursor-pointer ${
                 activeIndex === index ? "bg-primary" : "bg-gray-300"
               }`}
@@ -96,14 +108,30 @@ const HomeSwiper = () => {
       {bottomSlides[0] && (
         <div className="h-fit">
           <Link href={bottomSlides[0].link || "#"}>
-            <img src={bottomSlides[0].imageUrl} alt="Banner" />
+            <img
+              src={bottomSlides[0].imageUrl}
+              alt="Banner"
+              width={400}
+              height={200}
+              loading="lazy"
+              decoding="async"
+              style={{ width: "100%", height: "auto" }}
+            />
           </Link>
         </div>
       )}
       {bottomSlides[1] && (
         <div className="h-fit">
           <Link href={bottomSlides[1].link || "#"}>
-            <img src={bottomSlides[1].imageUrl} alt="Banner" />
+            <img
+              src={bottomSlides[1].imageUrl}
+              alt="Banner"
+              width={400}
+              height={200}
+              loading="lazy"
+              decoding="async"
+              style={{ width: "100%", height: "auto" }}
+            />
           </Link>
         </div>
       )}
