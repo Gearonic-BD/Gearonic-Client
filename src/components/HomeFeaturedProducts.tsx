@@ -1,6 +1,8 @@
 import SectionHeader from "./SectionHeader";
 import FeaturedProductCard from "./FeaturedProductCard";
 import { Product } from "@/types/types";
+import { ProductSkeleton } from "@/utils/suspenseLoaders";
+
 const HomeFeaturedProducts = async () => {
   try {
     const res = await fetch(

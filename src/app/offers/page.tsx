@@ -161,17 +161,15 @@ export default async function FlashSaleProducts() {
             >
               <Link href={`/product/${product.slug}`} className="block ">
                 {/* Image Container */}
-                <div className="p-4 relative">
-                  {/* Make this relative */}
+                <div className="p-4 relative h-48 flex items-center justify-center">
                   <img
                     src={optimizeImageKitUrl(product.featuredImage, 400)}
                     alt={product.title}
-                    width={200}
-                    height={200}
-                    className="w-full  object-contain transition-transform duration-300 group-hover:scale-105"
+                    width={400}
+                    height={400}
+                    className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105"
                     loading="lazy"
                     decoding="async"
-                    style={{ width: "100%", height: "auto" }}
                   />
                   {/* Discount Badge */}
                   <span className="absolute top-2 left-2 bg-primary text-white text-xs font-semibold px-1.5 py-1 rounded">

@@ -16,16 +16,15 @@ const FeaturedProductCard = ({ product }: { product: Product }) => {
     <div className="rounded-lg bg-white active:scale-98 shadow-sm overflow-hidden group transition-all duration-300 active:shadow-lg active:-translate-y-1 hover:shadow-lg hover:-translate-y-1 h-full flex flex-col">
       <Link href={`/product/${product.slug}`} className="flex flex-col h-full">
         {/* Image Container - Fixed height for consistency */}
-        <div className="p-4 relative flex-shrink-0 h-48 flex items-center justify-center">
+        <div className="p-4 relative flex-shrink-0 h-48 flex items-center justify-center aspect-square">
           <img
             src={optimizeImageKitUrl(product.featuredImage, 400)}
             alt={product.title}
-            width={200}
-            height={200}
+            width={400}
+            height={400}
             className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105"
             loading="lazy"
             decoding="async"
-            style={{ width: "100%", height: "auto" }}
           />
         </div>
 
