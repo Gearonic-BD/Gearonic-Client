@@ -61,6 +61,7 @@ const Navbar = () => {
             <Link
               href={"/offers"}
               className="xs:flex hidden items-center gap-2 px-3 py-2 hover:bg-gray-50 rounded-lg transition-colors group"
+              aria-label="View offers and flash sales"
             >
               <Zap
                 size={18}
@@ -75,6 +76,11 @@ const Navbar = () => {
               <Link
                 href={"/cart"}
                 className="xs:flex hidden items-center gap-2 px-3 py-2 hover:bg-gray-50 rounded-lg transition-colors group relative"
+                aria-label={`Shopping cart${
+                  itemsLen > 0
+                    ? ` with ${itemsLen} item${itemsLen > 1 ? "s" : ""}`
+                    : ""
+                }`}
               >
                 <ShoppingCart
                   size={18}
@@ -94,6 +100,7 @@ const Navbar = () => {
             <Link
               href={"/account"}
               className="xs:flex hidden items-center gap-2 px-3 py-2 hover:bg-gray-50 rounded-lg transition-colors group"
+              aria-label="View account"
             >
               <User2
                 size={18}

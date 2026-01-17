@@ -17,6 +17,7 @@ const Breadcrumb = ({ items }: BreadcrumbProps) => {
       <Link
         href="/"
         className="flex items-center hover:text-primary transition-colors duration-200 flex-shrink-0"
+        aria-label="Go to homepage"
       >
         <Home size={16} className="mr-1" />
       </Link>
