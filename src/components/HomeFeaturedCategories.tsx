@@ -13,59 +13,59 @@ import SectionHeader from "./SectionHeader";
 const categories = [
   {
     id: 1,
-    name: "Smartphones",
+    name: "Smart Watches",
     image:
-      "https://vinetanextjs.vercel.app/images/cls-categories/electronic/smartphone.png",
-    href: "/categories/smartphones",
+      "https://ik.imagekit.io/otbgrtfsy/categories/smart-watches.webp?tr=w-256,h-256,f-auto,q-auto",
+    href: "/categories/smart-watch",
   },
   {
     id: 2,
-    name: "Earphones",
+    name: "Earphone",
     image:
-      "https://vinetanextjs.vercel.app/images/cls-categories/electronic/earphone.png",
-    href: "/categories/earphones",
+      "https://ik.imagekit.io/otbgrtfsy/categories/earphones.webp?tr=w-256,h-256,f-auto,q-auto",
+    href: "/categories/earphone",
   },
   {
     id: 3,
-    name: "Cables",
+    name: "Cable",
     image:
-      "https://vinetanextjs.vercel.app/images/cls-categories/electronic/cable.png",
-    href: "/categories/cables",
+      "https://ik.imagekit.io/otbgrtfsy/categories/cables.webp?tr=w-256,h-256,f-auto,q-auto",
+    href: "/categories/cable",
   },
   {
     id: 4,
-    name: "Smart Watches",
+    name: "Charger",
     image:
-      "https://vinetanextjs.vercel.app/images/cls-categories/electronic/smart-watch.png",
-    href: "/categories/smart-watches",
+      "https://ik.imagekit.io/otbgrtfsy/categories/chargers.webp?tr=w-256,h-256,f-auto,q-auto",
+    href: "/categories/charger",
   },
   {
     id: 5,
-    name: "Chargers",
+    name: "Screen Protector",
     image:
-      "https://vinetanextjs.vercel.app/images/cls-categories/electronic/charge.png",
-    href: "/categories/chargers",
+      "https://ik.imagekit.io/otbgrtfsy/categories/screen-protectors.webp?tr=w-256,h-256,f-auto,q-auto",
+    href: "/categories/screen-protector",
   },
   {
     id: 6,
-    name: "Screen Protectors",
+    name: "Headphones",
     image:
-      "https://vinetanextjs.vercel.app/images/cls-categories/electronic/keyboard.png",
-    href: "/categories/screen-protectors",
+      "https://ik.imagekit.io/otbgrtfsy/categories/headphones.webp?tr=w-256,h-256,f-auto,q-auto",
+    href: "/categories/headphone",
   },
   {
     id: 7,
-    name: "Headphones",
+    name: "Powerbank",
     image:
-      "https://vinetanextjs.vercel.app/images/cls-categories/electronic/headphone.png",
-    href: "/categories/headphones",
+      "https://ik.imagekit.io/otbgrtfsy/categories/powerbanks.webp?tr=w-256,h-256,f-auto,q-auto",
+    href: "/categories/powerbank",
   },
   {
     id: 8,
-    name: "Keyboards",
+    name: "Keyboard",
     image:
-      "https://vinetanextjs.vercel.app/images/cls-categories/electronic/keyboard.png",
-    href: "/categories/keyboards",
+      "https://ik.imagekit.io/otbgrtfsy/categories/keyboards.webp?tr=w-256,h-256,f-auto,q-auto",
+    href: "/categories/keyboard",
   },
 ];
 

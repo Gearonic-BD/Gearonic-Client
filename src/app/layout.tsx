@@ -6,6 +6,7 @@ import BottomNavbar from "@/components/BottomNavbar";
 import Footer from "@/components/Footer";
 import { Toaster } from "sonner";
 import CartFetcher from "@/components/CartFetcher";
+import { optimizeImageKitUrl } from "@/utils/optimizeImageKit";
 
 const roboto = Roboto({
   weight: ["100", "300", "400", "500", "700", "900"],
@@ -108,11 +109,44 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+// Fetch first banner for LCP preload (only on homepage)
+async function getFirstBanner() {
+  try {
+    const baseUrl =
+      process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:3000";
+    const response = await fetch(`${baseUrl}/api/banners`, {
+      next: { revalidate: 60 }, // Cache for 60 seconds
+    });
+
+    if (!response.ok) {
+      return null;
+    }
+
+    const banners = await response.json();
+    if (banners && banners.length > 0) {
+      // Get the first banner (main slides are all except last 2)
+      const mainSlides = banners.slice(0, -2);
+      if (mainSlides.length > 0) {
+        return mainSlides[0].imageUrl;
+      }
+    }
+    return null;
+  } catch (error) {
+    // Silently fail - preload is an optimization, not critical
+    return null;
+  }
+}
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Fetch first banner for LCP preload
+  const firstBannerUrl = await getFirstBanner();
+  const lcpImageUrl = firstBannerUrl
+    ? optimizeImageKitUrl(firstBannerUrl, 800)
+    : null;
   const organizationSchema = {
     "@context": "https://schema.org",
     "@type": "Organization",
@@ -170,6 +204,14 @@ export default function RootLayout({
         <link rel="preconnect" href="https://api.gadgetcitybd.com" />
         <link rel="dns-prefetch" href="https://ik.imagekit.io" />
         <link rel="dns-prefetch" href="https://vinetanextjs.vercel.app" />
+        {lcpImageUrl && (
+          <link
+            rel="preload"
+            as="image"
+            href={lcpImageUrl}
+            fetchPriority="high"
+          />
+        )}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{

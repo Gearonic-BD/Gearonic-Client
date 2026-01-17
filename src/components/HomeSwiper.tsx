@@ -58,7 +58,10 @@ const HomeSwiper = () => {
         >
           {mainSlides.map((banner, index) => (
             <SwiperSlide key={banner.id}>
-              <Link href={banner.link || "#"}>
+              <Link
+                href={banner.link || "#"}
+                aria-label={`View banner promotion ${index + 1}`}
+              >
                 <img
                   src={optimizeImageKitUrl(banner.imageUrl, 800)}
                   alt={`Slide ${index + 1}`}
@@ -108,7 +111,10 @@ const HomeSwiper = () => {
       {/* bottom 2 banners */}
       {bottomSlides[0] && (
         <div className="h-fit">
-          <Link href={bottomSlides[0].link || "#"}>
+          <Link
+            href={bottomSlides[0].link || "#"}
+            aria-label="View banner promotion"
+          >
             <img
               src={optimizeImageKitUrl(bottomSlides[0].imageUrl, 400)}
               alt="Banner"
@@ -123,7 +129,10 @@ const HomeSwiper = () => {
       )}
       {bottomSlides[1] && (
         <div className="h-fit">
-          <Link href={bottomSlides[1].link || "#"}>
+          <Link
+            href={bottomSlides[1].link || "#"}
+            aria-label="View banner promotion"
+          >
             <img
               src={optimizeImageKitUrl(bottomSlides[1].imageUrl, 400)}
               alt="Banner"
