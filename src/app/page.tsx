@@ -11,10 +11,9 @@ export const revalidate = 60; // Revalidate every 60 seconds
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://gadgetcitybd.com";
 
 export const metadata: Metadata = {
-  title:
-    "Gadget City BD - Largest Electronics E-commerce Platform in Bangladesh",
+  title: "Gadget City BD - Electronics E-commerce Platform",
   description:
-    "Buy authentic electronics, smartphones, laptops, smartwatches, headphones, and tech accessories in Bangladesh. Best prices, fast delivery, genuine products with warranty. Shop now at Gadget City BD!",
+    "Buy authentic electronics in Bangladesh. Best prices, fast delivery, genuine products with warranty. Shop smartphones, laptops & more!",
   keywords: [
     "electronics bangladesh",
     "online electronics shop",
@@ -34,15 +33,14 @@ export const metadata: Metadata = {
     canonical: "/",
   },
   openGraph: {
-    title:
-      "Gadget City BD - Largest Electronics E-commerce Platform in Bangladesh",
+    title: "Gadget City BD - Electronics E-commerce Platform in Bangladesh",
     description:
-      "Buy authentic electronics, smartphones, laptops, smartwatches, headphones, and tech accessories in Bangladesh. Best prices, fast delivery, genuine products with warranty.",
+      "Buy authentic electronics in Bangladesh. Best prices, fast delivery, genuine products with warranty. Shop smartphones, laptops & more!",
     url: siteUrl,
     siteName: "Gadget City BD",
     images: [
       {
-        url: "/logo.png",
+        url: "/og-image.png",
         width: 1200,
         height: 630,
         alt: "Gadget City BD - Electronics Store",
@@ -53,10 +51,10 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Gadget City BD - Largest Electronics E-commerce Platform",
+    title: "Gadget City BD - Electronics E-commerce",
     description:
-      "Buy authentic electronics, smartphones, laptops, and tech accessories in Bangladesh. Best prices, fast delivery, genuine products.",
-    images: ["/logo.png"],
+      "Buy authentic electronics in Bangladesh. Best prices, fast delivery, genuine products with warranty. Shop now!",
+    images: ["/og-image.png"],
   },
 };
 
