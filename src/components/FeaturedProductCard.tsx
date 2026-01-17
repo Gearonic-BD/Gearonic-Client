@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Product } from "@/types/types";
 import { renderStars } from "@/utils/ratings";
+import { optimizeImageKitUrl } from "@/utils/optimizeImageKit";
 
 const FeaturedProductCard = ({ product }: { product: Product }) => {
   const discountPercentage = product.discountPrice
@@ -17,7 +18,7 @@ const FeaturedProductCard = ({ product }: { product: Product }) => {
         {/* Image Container - Fixed height for consistency */}
         <div className="p-4 relative flex-shrink-0 h-48 flex items-center justify-center">
           <img
-            src={product.featuredImage}
+            src={optimizeImageKitUrl(product.featuredImage, 400)}
             alt={product.title}
             width={200}
             height={200}

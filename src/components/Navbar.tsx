@@ -23,6 +23,7 @@ const Navbar = () => {
             <button
               className="block ml:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors"
               onClick={() => setSidebarOpen(true)}
+              aria-label="Open menu"
             >
               <Menu size={20} />
             </button>
@@ -52,6 +53,7 @@ const Navbar = () => {
             <button
               className="block sm:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors"
               onClick={() => setShowMobileSearch((prev) => !prev)}
+              aria-label="Toggle search"
             >
               <SearchIcon size={20} />
             </button>

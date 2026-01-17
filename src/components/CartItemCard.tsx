@@ -5,6 +5,7 @@ import { useWishlistStore } from "@/store/wishlist";
 import { slugify } from "@/utils/slugify";
 import { debounce } from "lodash";
 import { Minus, Plus, Trash2, Heart } from "lucide-react";
+import { optimizeImageKitUrl } from "@/utils/optimizeImageKit";
 import Link from "next/link";
 import React, { useCallback, useEffect, useState } from "react";
 import useAuth from "@/hooks/useAuth";
@@ -120,7 +121,7 @@ const CartItemCard = ({
           {/* Product Image */}
           <div className="flex-shrink-0 relative">
             <img
-              src={item.image || "/placeholder.svg"}
+              src={optimizeImageKitUrl(item.image, 200)}
               alt={item.title}
               className={`w-20 h-20 object-cover rounded-sm border border-gray-200 ${
                 isOutOfStock ? "opacity-60" : ""
@@ -209,6 +210,7 @@ const CartItemCard = ({
                   className="h-8 w-8 flex items-center justify-center hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   onClick={handleDecrease}
                   disabled={item.quantity <= 1}
+                  aria-label="Decrease quantity"
                 >
                   <Minus size={14} />
                 </button>
@@ -219,6 +221,7 @@ const CartItemCard = ({
                   className="h-8 w-8 flex items-center justify-center hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   onClick={handleIncrease}
                   disabled={localQuantity >= item.stock}
+                  aria-label="Increase quantity"
                 >
                   <Plus size={14} />
                 </button>
@@ -237,6 +240,9 @@ const CartItemCard = ({
                 }`}
                 onClick={handleWishlist}
                 disabled={isWishlisting}
+                aria-label={
+                  isWishlisted ? "Remove from wishlist" : "Add to wishlist"
+                }
               >
                 <Heart
                   size={14}
@@ -251,6 +257,7 @@ const CartItemCard = ({
             <button
               className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-danger bg-white border border-gray-300 rounded-md hover:bg-red-50 transition-colors"
               onClick={removeItem}
+              aria-label="Remove item from cart"
             >
               <Trash2 size={14} />
               <span className="ml:block hidden">Remove</span>

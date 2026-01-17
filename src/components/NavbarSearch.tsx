@@ -2,6 +2,7 @@
 import { SearchIcon } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { optimizeImageKitUrl } from "@/utils/optimizeImageKit";
 
 interface Suggestion {
   id: string;
@@ -80,7 +81,7 @@ const NavbarSearch = () => {
               onClick={() => router.push(`/product/${s.slug}`)}
             >
               <img
-                src={s.featuredImage}
+                src={optimizeImageKitUrl(s.featuredImage, 80)}
                 alt={s.title}
                 className="w-10 h-10 object-cover rounded"
               />

@@ -1,5 +1,6 @@
 import { CartItem } from "@/store/cart";
 import React from "react";
+import { optimizeImageKitUrl } from "@/utils/optimizeImageKit";
 
 const CheckoutItemCard = ({
   item,
@@ -17,7 +18,7 @@ const CheckoutItemCard = ({
           {/* Product Image */}
           <div className="flex-shrink-0">
             <img
-              src={item.image || "/placeholder.svg"}
+              src={optimizeImageKitUrl(item.image, 200)}
               alt={item.title}
               className="w-18 h-18 object-cover rounded-sm border border-gray-200"
             />

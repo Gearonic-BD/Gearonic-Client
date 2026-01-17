@@ -152,6 +152,7 @@ const ProductActions = ({
               onClick={() => handleQuantityChange("decrease")}
               disabled={quantity <= 1 || isLoading}
               className="p-2 rounded-full bg-black text-white  cursor-pointer disabled:cursor-not-allowed"
+              aria-label="Decrease quantity"
             >
               <Minus size={20} />
             </button>
@@ -160,6 +161,7 @@ const ProductActions = ({
               onClick={() => handleQuantityChange("increase")}
               disabled={quantity >= currentStock || isLoading}
               className="p-2 rounded-full bg-black text-white cursor-pointer disabled:cursor-not-allowed"
+              aria-label="Increase quantity"
             >
               <Plus size={20} />
             </button>
@@ -209,6 +211,9 @@ const ProductActions = ({
                   ? "border-danger/30 bg-danger/5 hover:bg-danger/10 text-danger"
                   : "border-gray-300 hover:border-gray-400 text-gray-600"
               }`}
+              aria-label={
+                isWishlisted ? "Remove from wishlist" : "Add to wishlist"
+              }
             >
               {isWishlistLoading ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
@@ -234,6 +239,7 @@ const ProductActions = ({
                   onClick={() => handleQuantityChange("decrease")}
                   disabled={quantity <= 1 || isLoading}
                   className="p-2 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                  aria-label="Decrease quantity"
                 >
                   <Minus size={14} />
                 </button>
@@ -244,6 +250,7 @@ const ProductActions = ({
                   onClick={() => handleQuantityChange("increase")}
                   disabled={quantity >= currentStock || isLoading}
                   className="p-2 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                  aria-label="Increase quantity"
                 >
                   <Plus size={14} />
                 </button>
@@ -257,6 +264,9 @@ const ProductActions = ({
                   ? "border-danger/30 bg-danger/5 hover:bg-danger/10 text-danger"
                   : "border-gray-300 hover:border-gray-400 text-gray-600"
               }`}
+              aria-label={
+                isWishlisted ? "Remove from wishlist" : "Add to wishlist"
+              }
             >
               {isWishlistLoading ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
