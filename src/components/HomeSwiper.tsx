@@ -10,6 +10,7 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight } from "lucide-react";
+import { optimizeImageKitUrl } from "@/utils/optimizeImageKit";
 
 type Banner = {
   id: string;
@@ -59,7 +60,7 @@ const HomeSwiper = () => {
             <SwiperSlide key={banner.id}>
               <Link href={banner.link || "#"}>
                 <img
-                  src={banner.imageUrl}
+                  src={optimizeImageKitUrl(banner.imageUrl, 800)}
                   alt={`Slide ${index + 1}`}
                   width={800}
                   height={400}
@@ -109,7 +110,7 @@ const HomeSwiper = () => {
         <div className="h-fit">
           <Link href={bottomSlides[0].link || "#"}>
             <img
-              src={bottomSlides[0].imageUrl}
+              src={optimizeImageKitUrl(bottomSlides[0].imageUrl, 400)}
               alt="Banner"
               width={400}
               height={200}
@@ -124,7 +125,7 @@ const HomeSwiper = () => {
         <div className="h-fit">
           <Link href={bottomSlides[1].link || "#"}>
             <img
-              src={bottomSlides[1].imageUrl}
+              src={optimizeImageKitUrl(bottomSlides[1].imageUrl, 400)}
               alt="Banner"
               width={400}
               height={200}

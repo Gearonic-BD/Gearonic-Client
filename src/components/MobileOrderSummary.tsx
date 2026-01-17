@@ -33,12 +33,12 @@ const MobileOrderSummary: React.FC<MobileOrderSummaryProps> = ({
                 ৳{subtotal.toLocaleString()}
               </p>
             </div>
-            <div className="flex justify-end items-center gap-1">
+            {/* <div className="flex justify-end items-center gap-1">
               <p className="text-base text-gray-800">You Save:</p>
               <p className="text-base font-medium text-success">
                 -৳{totalSavings.toLocaleString()}
               </p>
-            </div>
+            </div> */}
           </div>
           {hasOutOfStockItems ? (
             <div className="px-4 py-3 bg-danger/10 border border-danger/20 rounded-sm max-w-[200px]">

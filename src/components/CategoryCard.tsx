@@ -1,5 +1,6 @@
 import { Category } from "@/types/types";
 import Link from "next/link";
+import { optimizeImageKitUrl } from "@/utils/optimizeImageKit";
 
 const CategoryCard = ({ category }: { category: Category }) => {
   return (
@@ -8,7 +9,7 @@ const CategoryCard = ({ category }: { category: Category }) => {
         {/* Image Container */}
         <div className="flex justify-center items-center h-32 mb-2">
           <img
-            src={category.image || "/placeholder.svg"}
+            src={optimizeImageKitUrl(category.image, 256)}
             alt={category.name}
             width={128}
             height={128}

@@ -1,5 +1,6 @@
 import { Product } from "@/types/types";
 import Link from "next/link";
+import { optimizeImageKitUrl } from "@/utils/optimizeImageKit";
 
 const FlashSaleProductCard = ({ product }: { product: Product }) => {
   const discountPercentage = Math.round(
@@ -15,7 +16,7 @@ const FlashSaleProductCard = ({ product }: { product: Product }) => {
         <div className="p-4 relative">
           {/* Make this relative */}
           <img
-            src={product.featuredImage}
+            src={optimizeImageKitUrl(product.featuredImage, 400)}
             alt={product.title}
             width={200}
             height={200}

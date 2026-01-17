@@ -2,6 +2,7 @@ import { Product } from "@/types/types";
 import Link from "next/link";
 import React from "react";
 import type { Metadata } from "next";
+import { optimizeImageKitUrl } from "@/utils/optimizeImageKit";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://gadgetcitybd.com";
 
@@ -163,7 +164,7 @@ export default async function FlashSaleProducts() {
                 <div className="p-4 relative">
                   {/* Make this relative */}
                   <img
-                    src={product.featuredImage}
+                    src={optimizeImageKitUrl(product.featuredImage, 400)}
                     alt={product.title}
                     width={200}
                     height={200}

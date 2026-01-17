@@ -8,6 +8,7 @@ import "swiper/css/navigation";
 import "swiper/css/thumbs";
 import type { Swiper as SwiperType } from "swiper";
 import { X } from "lucide-react";
+import { optimizeImageKitUrl } from "@/utils/optimizeImageKit";
 
 interface ProductImageGalleryProps {
   images: string[];
@@ -83,7 +84,7 @@ const ProductImageGallery = ({
                 onClick={() => openLightbox(index)}
               >
                 <img
-                  src={image || "/placeholder.svg"}
+                  src={optimizeImageKitUrl(image, 800)}
                   alt={`${productTitle} - Image ${index + 1}`}
                   className="w-full h-full object-cover"
                   loading={index === 0 ? "eager" : "lazy"}
@@ -118,7 +119,7 @@ const ProductImageGallery = ({
               }}
             >
               <img
-                src={image || "/placeholder.svg"}
+                src={optimizeImageKitUrl(image, 100)}
                 alt={`Thumbnail ${index + 1}`}
                 width={100}
                 height={100}
@@ -189,7 +190,7 @@ const ProductImageGallery = ({
             </button>
             <div className="relative">
               <img
-                src={images[lightboxImageIndex] || "/placeholder.svg"}
+                src={optimizeImageKitUrl(images[lightboxImageIndex], 1200)}
                 alt={`${productTitle} - Image ${lightboxImageIndex + 1}`}
                 width={1200}
                 height={1200}
@@ -211,7 +212,7 @@ const ProductImageGallery = ({
                   }`}
                 >
                   <img
-                    src={image || "/placeholder.svg"}
+                    src={optimizeImageKitUrl(image, 64)}
                     alt={`Thumbnail ${index + 1}`}
                     width={64}
                     height={64}
