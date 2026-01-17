@@ -99,6 +99,31 @@ export const ProductSkeleton = () => (
   </div>
 );
 
+// Banner Loading Skeleton (for HomeSwiper)
+export const BannerSkeleton = () => {
+  return (
+    <section className="max-w-[1280px] h-fit px-3 sm:px-6 container grid grid-cols-2 sm:grid-cols-3 sm:grid-rows-2 gap-4 gap-y-2 mx-auto relative">
+      {/* Main banner skeleton */}
+      <div className="relative col-span-2 sm:row-span-2 animate-pulse">
+        <div className="bg-gray-300 rounded-lg w-full aspect-[2/1] min-h-[300px] sm:min-h-[400px]"></div>
+        {/* Pagination dots skeleton */}
+        <div className="flex absolute bottom-4 left-1/2 -translate-x-1/2 z-40 justify-center mt-4 gap-2">
+          {[1, 2, 3].map((index) => (
+            <div key={index} className="w-6 h-2 bg-gray-400 rounded" />
+          ))}
+        </div>
+      </div>
+      {/* Bottom banner skeletons */}
+      <div className="h-fit animate-pulse">
+        <div className="bg-gray-300 rounded-lg w-full h-[150px] sm:h-[200px]"></div>
+      </div>
+      <div className="h-fit animate-pulse">
+        <div className="bg-gray-300 rounded-lg w-full h-[150px] sm:h-[200px]"></div>
+      </div>
+    </section>
+  );
+};
+
 // Cart Loading Skeleton
 export const CartSkeleton = () => (
   <div className="space-y-4 animate-pulse">

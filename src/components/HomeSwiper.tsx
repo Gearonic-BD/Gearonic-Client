@@ -11,6 +11,7 @@ import "swiper/css/pagination";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { optimizeImageKitUrl } from "@/utils/optimizeImageKit";
+import { BannerSkeleton } from "@/utils/suspenseLoaders";
 
 type Banner = {
   id: string;
@@ -22,6 +23,7 @@ const HomeSwiper = () => {
   const swiperRef = useRef<SwiperType | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [slides, setSlides] = useState<Banner[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchBanners = async () => {
@@ -33,10 +35,18 @@ const HomeSwiper = () => {
         setSlides(data);
       } catch (err) {
         console.error("Failed to fetch banners", err);
+      } finally {
+        setLoading(false);
       }
     };
     fetchBanners();
   }, []);
+
+  // Show skeleton while loading
+  if (loading) {
+    return <BannerSkeleton />;
+  }
+  
 
   // split slides → all except last 2 + last 2
   const mainSlides = slides.slice(0, -2);
