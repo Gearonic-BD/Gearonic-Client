@@ -40,25 +40,24 @@ const FeaturedProductCard = ({ product }: { product: Product }) => {
 
             {/* Rating and Sold Section - Always show sold info on the right */}
             <div className="flex items-center flex-wrap gap-2 justify-between">
-              {product.rating && product.rating > 0 ? (
-                <div className="flex items-center gap-.5">
+              {product.rating !== null && 
+               product.rating !== undefined && 
+               product.rating > 0 ? (
+                <div className="flex items-center gap-1">
                   <div className="flex items-center">
-                    {renderStars(product.rating)}
+                    {renderStars(product.rating, 12)}
+                    
                   </div>
-                  <span className="text-xs font-semibold text-gray-500 ml-1">
-                    {product.rating}
+                  <span className="text-xs font-semibold text-gray-600">
+                    {Number(product.rating).toFixed(1)}
                   </span>
                 </div>
-              ) : (
-                <div></div>
-              )}
+              ) : null}
               {product.sold > 0 ? (
                 <div className="text-xs text-gray-500 font-medium">
                   {product.sold} sold
                 </div>
-              ) : (
-                <div></div>
-              )}
+              ) : null}
             </div>
           </div>
 

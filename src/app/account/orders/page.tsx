@@ -2,12 +2,13 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ChevronRight, Package, Calendar, CreditCard } from "lucide-react";
+import { ChevronRight, Package, Calendar, CreditCard, Star, CheckCircle } from "lucide-react";
 import { Order } from "@/types/types";
 import { useRouter } from "next/navigation";
 import axiosInstance from "@/utils/axiosInstance";
 import axios from "axios";
 import { toast } from "sonner";
+import ReviewModal from "@/components/ReviewModal";
 
 const getStatusColor = (status: string) => {
   switch (status) {
@@ -42,6 +43,13 @@ const OrdersPage = () => {
   const [selectedFilter, setSelectedFilter] = useState("all");
   const [orders, setOrders] = useState<Order[] | null>(null);
   const [ordersLoading, setOrdersLoading] = useState(true);
+  const [reviewModal, setReviewModal] = useState<{
+    isOpen: boolean;
+    productId: string;
+    productTitle: string;
+    productImage: string;
+    orderItemId?: string;
+  } | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -106,6 +114,9 @@ const OrdersPage = () => {
     delivered: orders.filter((o) => o.status === "delivered").length,
     cancelled: orders.filter((o) => o.status === "cancelled").length,
   };
+
+  const hasReview = (reviews?: { id: string }[]) =>
+    Array.isArray(reviews) && reviews.length > 0;
 
   return (
     <div className="min-h-screen bg-gray-50 py-6 px-4 sm:px-6 lg:px-8">
@@ -181,20 +192,23 @@ const OrdersPage = () => {
             </div>
           ) : (
             filteredOrders.map((order) => (
-              <Link
+              <div
                 key={order.id}
-                href={`/account/orders/${order.id}`}
-                className="block bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200"
+                className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200"
               >
                 <div className="p-6">
                   {/* Order Header */}
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 pb-4 border-b border-gray-100">
-                    <div className="flex items-center gap-4 mb-3 sm:mb-0">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 mb-3 sm:mb-0">
                       <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2">
                         <Package className="w-5 h-5 text-gray-400" />
-                        <span className="font-medium text-gray-900">
+                        <Link
+                          href={`/account/orders/${order.id}`}
+                          className="font-medium text-gray-900 hover:text-[var(--color-primary)] transition-colors"
+                        >
                           Order #{order.id.slice(-8).toUpperCase()}
-                        </span>
+                        </Link>
                       </div>
                       <span
                         className={`px-3 py-1 rounded-full text-xs font-medium capitalize ${getStatusColor(
@@ -203,6 +217,38 @@ const OrdersPage = () => {
                       >
                         {order.status}
                       </span>
+                      </div>
+                      {order.status === "delivered" &&
+                        order.items.some((item) => !hasReview((item as any).reviews)) ? (
+                          <button
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              const unreviewed = order.items.find(
+                                (item) => !hasReview((item as any).reviews)
+                              );
+                              if (unreviewed) {
+                                setReviewModal({
+                                  isOpen: true,
+                                  productId: unreviewed.productId || "",
+                                  productTitle: unreviewed.productTitle,
+                                  productImage:
+                                    unreviewed.variantImage || unreviewed.productImage,
+                                  orderItemId: unreviewed.id,
+                                });
+                              }
+                            }}
+                            className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-primary cursor-pointer w-fit text-white font-medium hover:bg-primary/90 transition-colors shadow-sm"
+                          >
+                            <Star size={14} className="fill-current" />
+                            Review
+                          </button>
+                        ) : (<button
+                            className="inline-flex items-center gap-1.5 border border-success px-3 py-1 rounded-lg w-fit text-success font-medium hover:bg-success/10 shadow-sm"
+                          >
+                            <CheckCircle size={14} className="fill-current" />
+                            Reviewed
+                          </button>)}
                     </div>
 
                     <div className="flex items-center gap-4 text-sm text-gray-500">
@@ -214,77 +260,103 @@ const OrdersPage = () => {
                         <CreditCard className="w-4 h-4" />
                         {formatPrice(order.total)}
                       </div>
-                      <ChevronRight className="w-5 h-5 text-gray-400" />
-                    </div>
-                  </div>
-
-                  {/* Order Items */}
-                  <div className="space-y-4">
-                    {order.items.map((item) => (
-                      <div key={item.id} className="flex items-center gap-4">
-                        <div className="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
-                          <img
-                            src={item.variantImage || item.productImage}
-                            alt={item.productTitle}
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-
-                        <div className="flex-1 min-w-0">
-                          <h4 className="font-medium text-gray-900 truncate">
-                            {item.productTitle}
-                          </h4>
-                          <div className="flex items-center gap-2 mt-1">
-                            <span className="text-sm text-gray-500">
-                              {item.productBrand}
-                            </span>
-                            {item.variantColor && (
-                              <>
-                                <span className="text-gray-300">•</span>
-                                <span className="text-sm text-gray-500">
-                                  {item.variantColor}
-                                </span>
-                              </>
-                            )}
-                          </div>
-                        </div>
-
-                        <div className="text-right flex-shrink-0">
-                          <div className="font-medium text-gray-900">
-                            {formatPrice(item.price)}
-                          </div>
-                          <div className="text-sm text-gray-500">
-                            Qty: {item.quantity}
-                          </div>
-                          {item.originalPrice > item.price && (
-                            <div className="text-xs text-gray-400 line-through">
-                              {formatPrice(item.originalPrice)}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Order Summary */}
-                  <div className="mt-4 pt-4 border-t border-gray-100">
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-gray-600">
-                        {order.items.length} item
-                        {order.items.length !== 1 ? "s" : ""} • Payment via{" "}
-                        {order.payment?.method.toUpperCase()}
-                      </span>
-                      <span className="font-medium text-gray-900">
-                        Total: {formatPrice(order.total)}
-                      </span>
+                      <Link href={`/account/orders/${order.id}`}>
+                        <ChevronRight className="w-5 h-5 text-gray-400 hover:text-[var(--color-primary)] transition-colors" />
+                      </Link>
                     </div>
                   </div>
                 </div>
-              </Link>
+
+                {/* Order Items */}
+                <div className="px-6 pb-6 space-y-4">
+                  {order.items.map((item) => (
+                    <div
+                      key={item.id}
+                      className="flex items-center gap-4 pb-4 border-b border-gray-100 last:border-b-0 last:pb-0"
+                    >
+                      <div className="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
+                        <img
+                          src={item.variantImage || item.productImage}
+                          alt={item.productTitle}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-medium text-gray-900 truncate">
+                          {item.productTitle}
+                        </h4>
+                        <div className="flex items-center gap-2 mt-1">
+                          <span className="text-sm text-gray-500">
+                            {item.productBrand}
+                          </span>
+                          {item.variantColor && (
+                            <>
+                              <span className="text-gray-300">•</span>
+                              <span className="text-sm text-gray-500">
+                                {item.variantColor}
+                              </span>
+                            </>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="text-right flex-shrink-0">
+                        <div className="font-medium text-gray-900">
+                          {formatPrice(item.price)}
+                        </div>
+                        <div className="text-sm text-gray-500">
+                          Qty: {item.quantity}
+                        </div>
+                        {item.originalPrice > item.price && (
+                          <div className="text-xs text-gray-400 line-through">
+                            {formatPrice(item.originalPrice)}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Order Summary */}
+                <div className="px-6 pb-6 pt-4 border-t border-gray-100">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-gray-600">
+                      {order.items.length} item
+                      {order.items.length !== 1 ? "s" : ""} • Payment via{" "}
+                      {order.payment?.method.toUpperCase()}
+                    </span>
+                    <span className="font-medium text-gray-900">
+                      Total: {formatPrice(order.total)}
+                    </span>
+                  </div>
+                </div>
+              </div>
             ))
           )}
         </div>
       </div>
+
+      {/* Review Modal */}
+      {reviewModal && (
+        <ReviewModal
+          isOpen={reviewModal.isOpen}
+          onClose={() => setReviewModal(null)}
+          productId={reviewModal.productId}
+          productTitle={reviewModal.productTitle}
+          productImage={reviewModal.productImage}
+          orderItemId={reviewModal.orderItemId}
+          onReviewSubmitted={async () => {
+            try {
+              const res = await axiosInstance.get(`/api/orders/all`);
+              const data = res.data?.data;
+              setOrders(data);
+            } catch (err) {
+              console.error("Error refreshing orders:", err);
+            }
+          }}
+        />
+      )}
     </div>
   );
 };

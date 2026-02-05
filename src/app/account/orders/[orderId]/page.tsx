@@ -6,12 +6,21 @@ import axios from "axios";
 import { useSearchParams, useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { CheckCircle, Star } from "lucide-react";
+import ReviewModal from "@/components/ReviewModal";
 const OrderPage = () => {
   const params = useParams();
   const searchParams = useSearchParams();
   const router = useRouter();
   const [orderData, setOrderData] = useState<Order | null>(null);
   const [isOrderLoading, setIsOrderLoading] = useState(true);
+  const [reviewModal, setReviewModal] = useState<{
+    isOpen: boolean;
+    productId: string;
+    productTitle: string;
+    productImage: string;
+    orderItemId?: string;
+  } | null>(null);
 
   const orderId = params.orderId;
   const firstOrder = searchParams.get("firstOrder");
@@ -117,6 +126,9 @@ const OrderPage = () => {
     return `৳${amount.toFixed(2)}`;
   };
 
+  const hasReview = (reviews?: { id: string }[]) =>
+    Array.isArray(reviews) && reviews.length > 0;
+
   if (isOrderLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -161,15 +173,51 @@ const OrderPage = () => {
         {/* Order Information */}
         <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 mb-6">
           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-4 space-y-4 sm:space-y-0">
-            <div className="text-center sm:text-left">
-              <h2 className="text-lg font-semibold text-gray-900 mb-1">
-                Order #{orderId}
-              </h2>
-              <p className="text-sm text-gray-600">
-                Placed on {formatDate(orderData.createdAt)}
-              </p>
+            <div className="text-center sm:text-left flex-1">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+                <div>
+                  <h2 className="text-lg font-semibold text-gray-900 mb-1">
+                    Order #{orderId}
+                  </h2>
+                  <p className="text-sm text-gray-600">
+                    Placed on {formatDate(orderData.createdAt)}
+                  </p>
+                </div>
+                {orderData.status === "delivered" &&
+                  orderData.items?.some((item: any) => !hasReview(item.reviews)) ? (
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        const unreviewed = orderData.items?.find(
+                          (item: any) => !hasReview(item.reviews)
+                        );
+                        if (unreviewed) {
+                          setReviewModal({
+                            isOpen: true,
+                            productId: unreviewed.productId || "",
+                            productTitle: unreviewed.productTitle,
+                            productImage:
+                              unreviewed.variantImage || unreviewed.productImage,
+                            orderItemId: unreviewed.id,
+                          });
+                        }
+                      }}
+                      className="inline-flex items-center gap-2 px-3 py-2 text-sm font-semibold text-white bg-primary rounded-lg hover:bg-primary/90 shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-105"
+                    >
+                      <Star size={16} className="fill-current" />
+                      Write Review
+                    </button>
+                    ) : (
+                    <button
+                      className="inline-flex items-center gap-1.5 border border-success px-3 py-1 rounded-lg w-fit text-success font-medium hover:bg-success/10 shadow-sm"
+                    >
+                      <CheckCircle size={14} className="fill-current" />
+                      Reviewed
+                    </button>
+                  )}
+              </div>
             </div>
-            <div className="">
+            <div className="text-center sm:text-right">
               <div
                 className={`inline-flex gap-2 items-center px-4 py-2 rounded-full text-sm font-medium ${getStatusColor(
                   orderData.status
@@ -429,6 +477,26 @@ const OrderPage = () => {
           </div>
         </div>
       </div>
+
+      {reviewModal && (
+        <ReviewModal
+          isOpen={reviewModal.isOpen}
+          onClose={() => setReviewModal(null)}
+          productId={reviewModal.productId}
+          productTitle={reviewModal.productTitle}
+          productImage={reviewModal.productImage}
+          orderItemId={reviewModal.orderItemId}
+          onReviewSubmitted={async () => {
+            try {
+              const res = await axiosInstance.get(`/api/orders/full/${orderId}`);
+              const data = res.data;
+              setOrderData(data);
+            } catch (err) {
+              console.error("Error refreshing order:", err);
+            }
+          }}
+        />
+      )}
     </div>
   );
 };
