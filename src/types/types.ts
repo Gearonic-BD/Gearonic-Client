@@ -103,6 +103,7 @@ export type BackendCartItem = {
 
 export type OrderItem = {
   id: string;
+  productId?: string;
   productTitle: string;
   productBrand: string;
   productImage: string;
@@ -111,6 +112,7 @@ export type OrderItem = {
   quantity: number;
   price: number;
   originalPrice: number;
+  reviews?: { id: string }[];
 };
 
 export type Payment = {
