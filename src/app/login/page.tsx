@@ -59,7 +59,7 @@ export default function LoginPage() {
         setCheckedName(response?.data?.name);
         setStep("login");
       } else {
-        console.log("User does not exist. Going to signup step.");
+      
         setStep("signup");
       }
     } catch (err) {

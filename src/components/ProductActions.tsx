@@ -135,7 +135,7 @@ const ProductActions = ({
 
     try {
       const res = await addToCart(cartObject);
-      console.log(res);
+   
     } finally {
       setIsLoading(false);
     }

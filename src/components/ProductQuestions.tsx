@@ -77,7 +77,7 @@ const ProductQuestions = ({ questions, productId }: ProductQuestionsProps) => {
         question: optimisticQuestion.question,
       });
 
-      console.log(data);
+   
 
       // Replace tempId with real question from backend
       setLocalQuestions((prev) =>

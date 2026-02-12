@@ -61,7 +61,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
 
   const data = query ? await res.json() : [];
   const products = data.data as Product[];
-  console.log(data);
+
 
   return (
     <div className="max-w-[1280px] mx-auto px-4 py-10">

@@ -52,7 +52,7 @@ const OrderPage = () => {
         }
       } finally {
         setIsOrderLoading(false);
-        console.log(orderData);
+       
       }
     };
 
@@ -184,7 +184,9 @@ const OrderPage = () => {
                   </p>
                 </div>
                 {orderData.status === "delivered" &&
-                  orderData.items?.some((item: any) => !hasReview(item.reviews)) ? (
+                  (orderData.items?.some(
+                    (item: any) => !hasReview(item.reviews)
+                  ) ? (
                     <button
                       onClick={(e) => {
                         e.preventDefault();
@@ -207,14 +209,14 @@ const OrderPage = () => {
                       <Star size={16} className="fill-current" />
                       Write Review
                     </button>
-                    ) : (
+                  ) : (
                     <button
                       className="inline-flex items-center gap-1.5 border border-success px-3 py-1 rounded-lg w-fit text-success font-medium hover:bg-success/10 shadow-sm"
                     >
                       <CheckCircle size={14} className="fill-current" />
                       Reviewed
                     </button>
-                  )}
+                  ))}
               </div>
             </div>
             <div className="text-center sm:text-right">
@@ -373,7 +375,7 @@ const OrderPage = () => {
                           orderData.status.slice(1)}
                       </span>
                       <button onClick={()=>{
-                        console.log(orderData)
+                     
                       }} className="text-sm text-[var(--color-info)] hover:underline">
                         MORE DETAILS
                       </button>

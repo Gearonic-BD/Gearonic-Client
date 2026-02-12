@@ -95,7 +95,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
   } catch (error) {
     // Silently fail - sitemap will still work with static pages
-    console.error("Error fetching products for sitemap:", error);
+    // console.error("Error fetching products for sitemap:", error);
   }
 
   // Common categories and brands (you can expand this list)

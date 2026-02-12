@@ -219,7 +219,9 @@ const OrdersPage = () => {
                       </span>
                       </div>
                       {order.status === "delivered" &&
-                        order.items.some((item) => !hasReview((item as any).reviews)) ? (
+                        (order.items.some(
+                          (item) => !hasReview((item as any).reviews)
+                        ) ? (
                           <button
                             onClick={(e) => {
                               e.preventDefault();
@@ -243,12 +245,14 @@ const OrdersPage = () => {
                             <Star size={14} className="fill-current" />
                             Review
                           </button>
-                        ) : (<button
+                        ) : (
+                          <button
                             className="inline-flex items-center gap-1.5 border border-success px-3 py-1 rounded-lg w-fit text-success font-medium hover:bg-success/10 shadow-sm"
                           >
                             <CheckCircle size={14} className="fill-current" />
                             Reviewed
-                          </button>)}
+                          </button>
+                        ))}
                     </div>
 
                     <div className="flex items-center gap-4 text-sm text-gray-500">

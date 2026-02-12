@@ -394,7 +394,7 @@ const CheckoutPage = () => {
         <Breadcrumb items={[{ label: "Checkout", href: "/checkout" }]} />
         <button
           onClick={() => {
-            console.log(items);
+           
           }}
         >
           See me
