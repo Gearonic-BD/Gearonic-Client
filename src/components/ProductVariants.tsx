@@ -18,7 +18,7 @@ const ProductVariants = ({
   return (
     <div className="space-x-3 flex items-center">
       <h3 className="text-base xs:text-lg text-gray-900">
-        {selectedVariant?.color ? "Color" : "Variant"}
+        Variant
       </h3>
       <div className="flex gap-3">
         {variants.map((variant) => (

@@ -100,7 +100,7 @@ export const useCartStore = create<CartState>((set, get) => ({
     try {
       const res = await axiosInstance.get("/api/cart");
       const backendCart = res.data;
-      console.log(backendCart);
+   
 
       if (backendCart && backendCart.items) {
         // Map the backend data to your frontend CartItem type
@@ -290,7 +290,7 @@ export const useCartStore = create<CartState>((set, get) => ({
       if (res.status === 200) {
         // You can update the store with the response if it returns the full item
         // or cart to be more robust, but the optimistic update is often sufficient.
-        console.log("Cart item updated on the backend.");
+      //  console.log("Cart item updated on the backend.");
       }
     } catch (error) {
       console.error("Failed to update cart:", error);

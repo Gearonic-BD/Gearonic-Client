@@ -11,7 +11,7 @@ import { SuspenseLoading } from "@/utils/suspenseLoaders";
 
 const CartPage = () => {
   const items = useCartStore((state) => state.cart.items);
-  console.log(items);
+ 
   const removeItem = useCartStore((state) => state.removeFromCart);
 
   const shipping = useCartStore((state) => state.cart.shipping);

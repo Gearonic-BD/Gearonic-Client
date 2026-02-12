@@ -88,7 +88,7 @@ export default function PaymentPage() {
         const res = await axiosInstance.get(`/api/orders/${orderId}`);
         const data: OrderData = res.data;
 
-        console.log(res.data);
+  
 
         // 🚨 Redirect immediately if already paid
         if (data.paymentStatus === "success" || data.paymentMethod) {

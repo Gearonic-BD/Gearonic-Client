@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import { Toaster } from "sonner";
 import CartFetcher from "@/components/CartFetcher";
 import { optimizeImageKitUrl } from "@/utils/optimizeImageKit";
+import Script from "next/script";
 
 const roboto = Roboto({
   weight: ["100", "300", "400", "500", "700", "900"],
@@ -223,6 +224,19 @@ export default async function RootLayout({
             __html: JSON.stringify(websiteSchema),
           }}
         />
+        <Script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=G-V3ZPWB6R5G"
+          strategy="afterInteractive"
+        />
+        <Script id="ga-init" strategy="afterInteractive">
+          {`
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-V3ZPWB6R5G');
+      `}
+        </Script>
       </head>
       <body>
         <Navbar />

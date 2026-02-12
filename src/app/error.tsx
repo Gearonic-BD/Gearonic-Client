@@ -12,7 +12,7 @@ import { AlertTriangle, Home, RefreshCw, ArrowLeft } from "lucide-react";
 export default function Error({ error, reset }: ErrorComponentProps) {
   useEffect(() => {
     // Log error to error reporting service
-    console.error("Error boundary caught an error:", error);
+    // console.error("Error boundary caught an error:", error);
   }, [error]);
 
   const getErrorInfo = () => {
