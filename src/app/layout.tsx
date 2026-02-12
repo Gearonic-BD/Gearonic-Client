@@ -226,15 +226,15 @@ export default async function RootLayout({
         />
         <Script
           async
-          src="https://www.googletagmanager.com/gtag/js?id=G-V3ZPWB6R5G"
+          src="https://www.googletagmanager.com/gtag/js?id=G-9ZWZ80V6XB"
           strategy="afterInteractive"
         />
         <Script id="ga-init" strategy="afterInteractive">
           {`
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-V3ZPWB6R5G');
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-9ZWZ80V6XB');
       `}
         </Script>
       </head>
