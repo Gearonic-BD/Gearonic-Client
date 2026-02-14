@@ -1,5 +1,6 @@
 import { BackendCartItem, Variant } from "@/types/types";
 import axiosInstance from "@/utils/axiosInstance";
+import { trackAddToCart } from "@/utils/facebookPixel";
 import axios from "axios";
 import { toast } from "sonner";
 import { create } from "zustand";
@@ -198,6 +199,13 @@ export const useCartStore = create<CartState>((set, get) => ({
           },
         }));
 
+        trackAddToCart({
+          content_ids: [item.productId],
+          content_name: item.title,
+          value: item.price * item.quantity,
+          currency: "BDT",
+          num_items: item.quantity,
+        });
         toast.success("Product added to cart");
       }
 

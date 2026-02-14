@@ -4,8 +4,9 @@ import Breadcrumb from "@/components/Breadcrumb";
 import CheckoutSummary from "@/components/MobileCheckoutSummary";
 import useCartTotalItems from "@/hooks/useCartTotalItems";
 import { CartItem, useCartStore } from "@/store/cart";
+import { trackInitiateCheckout } from "@/utils/facebookPixel";
 import { useRouter, useSearchParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import CheckoutShippingAddress from "@/components/CheckoutShippingAddress";
 import CheckoutOrderSummary from "@/components/CheckoutOrderSummary";
 import CheckoutOrderInfoSidebar from "@/components/CheckoutOrderInfoSidebar";
@@ -17,12 +18,14 @@ import axios from "axios";
 const CheckoutPage = () => {
   const items = useCartStore((state) => state.cart.items);
   const shipping = useCartStore((state) => state.cart.shipping);
+  const finalTotalPrice = useCartStore((state) => state.finalTotalPrice);
   const isCartLoaded = useCartStore((state) => state.isCartLoaded);
   const clearCart = useCartStore((state) => state.clearCart);
 
   const changeShipping = useCartStore((state) => state.changeShipping);
   const totalItems = useCartTotalItems();
   const [orderPlaced, setOrderPlaced] = useState(false);
+  const initiateCheckoutFired = useRef(false);
 
   const searchParams = useSearchParams();
   const mode = searchParams.get("mode");
@@ -52,6 +55,34 @@ const CheckoutPage = () => {
   const router = useRouter();
 
   const [isAddressLoading, setIsAddressLoading] = useState(true);
+
+  useEffect(() => {
+    if (initiateCheckoutFired.current) return;
+    if (buyNowProduct) {
+      initiateCheckoutFired.current = true;
+      const value = (buyNowProduct.price ?? 0) * (buyNowProduct.quantity ?? 1);
+      const productId =
+        "productId" in buyNowProduct
+          ? buyNowProduct.productId
+          : (buyNowProduct as { id: string }).id;
+      trackInitiateCheckout({
+        content_ids: [productId],
+        value,
+        currency: "BDT",
+        num_items: buyNowProduct.quantity ?? 1,
+      });
+      return;
+    }
+    if (items.length > 0 && finalTotalPrice > 0) {
+      initiateCheckoutFired.current = true;
+      trackInitiateCheckout({
+        content_ids: items.map((i) => i.productId),
+        value: finalTotalPrice,
+        currency: "BDT",
+        num_items: totalItems,
+      });
+    }
+  }, [buyNowProduct, items, finalTotalPrice, totalItems]);
 
   useEffect(() => {
     const fetchProduct = async () => {

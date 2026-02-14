@@ -1,4 +1,5 @@
 import Breadcrumb from "@/components/Breadcrumb";
+import MetaPixelViewContent from "@/components/MetaPixelViewContent";
 import ProductDescription from "@/components/ProductDescription";
 import ProductDetailsCard from "@/components/ProductDetailsCard";
 import ProductQuestions from "@/components/ProductQuestions";
@@ -249,6 +250,7 @@ const ProductPage = async ({
         }}
       />
 
+      <MetaPixelViewContent product={product} />
       <section className="container mx-auto max-w-[1280px] px-4 sm:px-6">
         <Breadcrumb items={breadcrumbItems} />
       </section>
