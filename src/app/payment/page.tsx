@@ -7,6 +7,7 @@ import PaymentMethodDetails from "@/components/PaymentMethodDetails";
 import PaymentOrderSummary from "@/components/PaymentOrderSummary";
 import PaymentMobileSummary from "@/components/PaymentMobileSummary";
 import axiosInstance from "@/utils/axiosInstance";
+import { trackPurchase } from "@/utils/facebookPixel";
 import { toast } from "sonner";
 
 interface OrderData {
@@ -166,6 +167,13 @@ export default function PaymentPage() {
         method: selectedMethod,
         accountNumber,
         trxId,
+      });
+
+      trackPurchase({
+        value: orderData.total,
+        currency: "BDT",
+        order_id: orderId ?? undefined,
+        num_items: orderData.totalQuantity,
       });
 
       toast.success(data.message || "Payment processed successfully!");
