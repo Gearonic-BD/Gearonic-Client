@@ -47,15 +47,15 @@ const paymentMethods = [
     image:
       "https://ik.imagekit.io/otbgrtfsy/logos/bkash.png?updatedAt=1752682855923",
   },
-  {
-    id: "nagad",
-    name: "Nagad",
-    subtitle: "Pay with Nagad",
-    enabled: true,
-    color: "#F26522",
-    image:
-      "https://ik.imagekit.io/otbgrtfsy/logos/nagad.png?updatedAt=1752682856158",
-  },
+  // {
+  //   id: "nagad",
+  //   name: "Nagad",
+  //   subtitle: "Pay with Nagad",
+  //   enabled: true,
+  //   color: "#F26522",
+  //   image:
+  //     "https://ik.imagekit.io/otbgrtfsy/logos/nagad.png?updatedAt=1752682856158",
+  // },
 ];
 const paymentMethodWithoutCod = paymentMethods.map((method) =>
   method.id === "cod" ? { ...method, enabled: false } : method
