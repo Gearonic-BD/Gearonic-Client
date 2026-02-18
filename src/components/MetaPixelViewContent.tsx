@@ -9,11 +9,13 @@ interface MetaPixelViewContentProps {
 }
 
 /** Fires Meta Pixel ViewContent when product page is viewed. Renders nothing. */
-export default function MetaPixelViewContent({ product }: MetaPixelViewContentProps) {
+export default function MetaPixelViewContent({
+  product,
+}: MetaPixelViewContentProps) {
   useEffect(() => {
     const value = product.discountPrice ?? product.originalPrice;
     trackViewContent({
-      content_ids: [product.id],
+      content_ids: [product.slug],
       content_name: product.title,
       content_type: "product",
       value,
