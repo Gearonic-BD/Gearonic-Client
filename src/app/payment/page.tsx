@@ -254,6 +254,7 @@ export default function PaymentPage() {
                 onSelect={handleMethodSelection}
                 renderDetails={(methodId) => (
                   <PaymentMethodDetails
+                    isOrderLoading={isOrderLoading}
                     paymentData={paymentInformation}
                     method={methodId}
                     totalAmount={orderData?.total}
@@ -267,6 +268,7 @@ export default function PaymentPage() {
               {/* Payment Method Details for larger screens */}
               <div className="hidden xs:block">
                 <PaymentMethodDetails
+                  isOrderLoading={isOrderLoading}
                   paymentData={paymentInformation}
                   method={selectedMethod}
                   totalAmount={orderData?.total}

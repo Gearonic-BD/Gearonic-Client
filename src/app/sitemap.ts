@@ -3,7 +3,7 @@ import { MetadataRoute } from "next";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const siteUrl =
     process.env.NEXT_PUBLIC_SITE_URL || "https://gadgetcitybd.com";
-  const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000";
+  const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5001";
 
   // Static pages
   const staticPages: MetadataRoute.Sitemap = [

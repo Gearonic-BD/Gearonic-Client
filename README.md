@@ -20,7 +20,7 @@ npm i
 cp .env.example .env
 
 # Then update .env:
-# NEXT_PUBLIC_SERVER_URL= http://localhost:5000
+# NEXT_PUBLIC_SERVER_URL= http://localhost:5001
 
 # Start local server
 npm run dev

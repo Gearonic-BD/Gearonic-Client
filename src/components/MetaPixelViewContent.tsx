@@ -21,7 +21,7 @@ export default function MetaPixelViewContent({
       value,
       currency: "BDT",
     });
-  }, [product.id, product.title, product.discountPrice, product.originalPrice]);
+  }, [product.id, product.title,product.slug, product.discountPrice, product.originalPrice]);
 
   return null;
 }

@@ -5,7 +5,6 @@ import { CartItem } from "@/store/cart";
 
 interface OrderSummaryProps {
   subtotal: number;
-  shipping: number;
   total: number;
   totalSavings: number;
   voucherCode: string;
@@ -13,7 +12,9 @@ interface OrderSummaryProps {
   error: string;
   setError: (msg: string) => void;
   onApplyVoucher: () => void;
-  changeShipping: (val: number) => void;
+  voucherLoading?: boolean;
+  appliedCouponCode?: string | null;
+  onRemoveCoupon?: () => void;
   itemsCount: number;
   items?: CartItem[];
 }
@@ -27,6 +28,9 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
   error,
   setError,
   onApplyVoucher,
+  voucherLoading = false,
+  appliedCouponCode,
+  onRemoveCoupon,
   itemsCount,
   items = [],
 }) => {
@@ -48,6 +52,9 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
               error={error}
               setError={setError}
               onApply={onApplyVoucher}
+              isLoading={voucherLoading}
+              appliedCode={appliedCouponCode}
+              onRemove={onRemoveCoupon}
             />
           </div>
           <div className="flex justify-between text-sm">
@@ -75,6 +82,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
             <span className="">Total</span>
             <span className="">৳{total.toLocaleString()}</span>
           </div>
+          <p className="text-xs text-gray-500 mt-1">Shipping added at checkout</p>
         </div>
         {hasOutOfStockItems ? (
           <div className="w-full p-3 bg-danger/10 border border-danger/20 rounded-sm">

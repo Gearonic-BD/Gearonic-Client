@@ -50,33 +50,28 @@ type CartState = {
   clearCart: () => void;
   updateQty: (id: string, quantity: number) => Promise<void>;
 
-  // Voucher
+  // Voucher (validated by backend)
   applyVoucher: (
     code: string,
     type: "flat" | "percentage",
     amount: number
   ) => void;
+  setVoucherFromApi: (
+    code: string,
+    type: "flat" | "percentage",
+    value: number,
+    discountAmount: number
+  ) => void;
+  validateAndApplyVoucher: (code: string) => Promise<{ success: boolean; message?: string }>;
+  /** Re-validate applied voucher against current cart; clear if no longer valid (e.g. no eligible items). */
+  revalidateVoucher: () => Promise<void>;
   removeVoucher: () => void;
 };
-
-const dummyVouchers: Voucher[] = [
-  {
-    code: "SUMMER10",
-    type: "percentage",
-    discountAmount: 10,
-  },
-  {
-    code: "S50",
-    type: "flat",
-    discountAmount: 50,
-    minOrderAmount: 1000,
-  },
-];
 
 export const useCartStore = create<CartState>((set, get) => ({
   cart: {
     items: [],
-    voucher: dummyVouchers[0],
+    voucher: undefined,
     discount: 0,
     shipping: 60,
   },
@@ -123,6 +118,7 @@ export const useCartStore = create<CartState>((set, get) => ({
 
         // This is the key line: update the store with the fetched items
         set((state) => ({ cart: { ...state.cart, items } }));
+        await get().revalidateVoucher();
       }
     } catch (error) {
       console.error("Failed to fetch cart:", error);
@@ -156,7 +152,7 @@ export const useCartStore = create<CartState>((set, get) => ({
     }
     set({ cart: { ...get().cart, items: updatedItems } });
 
-    // Recalculate discount if voucher exists (optional)
+    // Re-apply voucher discount if one is set (recalculated from current cart)
     const voucher = get().cart.voucher;
     if (voucher) {
       get().applyVoucher(voucher.code, voucher.type, voucher.discountAmount);
@@ -256,6 +252,8 @@ export const useCartStore = create<CartState>((set, get) => ({
 
       // 4. On success, show a toast notification
       toast.success("Product removed from cart");
+      // 5. Re-validate voucher; clear if no eligible items remain (e.g. product-scoped coupon)
+      await get().revalidateVoucher();
     } catch (error) {
       console.error("Failed to remove item:", error);
       // 5. On failure, rollback the state to the previous items
@@ -296,9 +294,7 @@ export const useCartStore = create<CartState>((set, get) => ({
       });
 
       if (res.status === 200) {
-        // You can update the store with the response if it returns the full item
-        // or cart to be more robust, but the optimistic update is often sufficient.
-      //  console.log("Cart item updated on the backend.");
+        await get().revalidateVoucher();
       }
     } catch (error) {
       console.error("Failed to update cart:", error);
@@ -329,10 +325,86 @@ export const useCartStore = create<CartState>((set, get) => ({
     set({
       cart: {
         ...get().cart,
-        voucher: { code, type, discountAmount: amount },
+        voucher: { code: code.toUpperCase(), type, discountAmount: amount },
         discount: Math.floor(discount),
       },
     });
+  },
+
+  setVoucherFromApi: (code, type, value, discountAmount) => {
+    set({
+      cart: {
+        ...get().cart,
+        voucher: { code, type, discountAmount: value },
+        discount: Math.floor(discountAmount),
+      },
+    });
+  },
+
+  validateAndApplyVoucher: async (code) => {
+    const trimmed = code?.trim().toUpperCase();
+    if (!trimmed) {
+      return { success: false, message: "Enter a coupon code." };
+    }
+    const items = get().cart.items;
+    if (items.length === 0) {
+      return { success: false, message: "Your cart is empty." };
+    }
+    try {
+      const res = await axiosInstance.post("/api/coupons/validate", {
+        code: trimmed,
+        items: items.map((i) => ({
+          productId: i.productId,
+          quantity: i.quantity,
+          price: i.price,
+        })),
+      });
+      const data = res.data;
+      if (data.valid && data.discount != null) {
+        get().setVoucherFromApi(
+          trimmed,
+          data.type || "flat",
+          data.value ?? data.discount,
+          data.discount
+        );
+        return { success: true };
+      }
+      return { success: false, message: data.message || "Invalid coupon." };
+    } catch (err: any) {
+      const msg = err.response?.data?.message || "Could not validate coupon.";
+      return { success: false, message: msg };
+    }
+  },
+
+  revalidateVoucher: async () => {
+    const { voucher, items } = get().cart;
+    if (!voucher || items.length === 0) {
+      if (voucher) get().removeVoucher();
+      return;
+    }
+    try {
+      const res = await axiosInstance.post("/api/coupons/validate", {
+        code: voucher.code,
+        items: items.map((i) => ({
+          productId: i.productId,
+          quantity: i.quantity,
+          price: i.price,
+        })),
+      });
+      const data = res.data;
+      if (data.valid && data.discount != null && data.discount > 0) {
+        get().setVoucherFromApi(
+          voucher.code,
+          data.type || "flat",
+          data.value ?? data.discount,
+          data.discount
+        );
+      } else {
+        get().removeVoucher();
+      }
+    } catch {
+      get().removeVoucher();
+    }
   },
 
   removeVoucher: () =>

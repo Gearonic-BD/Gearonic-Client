@@ -18,9 +18,15 @@ import axios from "axios";
 const CheckoutPage = () => {
   const items = useCartStore((state) => state.cart.items);
   const shipping = useCartStore((state) => state.cart.shipping);
+  const cartDiscount = useCartStore((state) => state.cart.discount);
+  const cartVoucher = useCartStore((state) => state.cart.voucher);
   const finalTotalPrice = useCartStore((state) => state.finalTotalPrice);
   const isCartLoaded = useCartStore((state) => state.isCartLoaded);
   const clearCart = useCartStore((state) => state.clearCart);
+  const validateAndApplyVoucher = useCartStore(
+    (state) => state.validateAndApplyVoucher,
+  );
+  const removeVoucher = useCartStore((state) => state.removeVoucher);
 
   const changeShipping = useCartStore((state) => state.changeShipping);
   const totalItems = useCartTotalItems();
@@ -33,9 +39,22 @@ const CheckoutPage = () => {
   const quantity = Number(searchParams.get("quantity")) || 1;
   const variantId = searchParams.get("variantId");
   const [buyNowProduct, setBuyNowProduct] = useState<CartItem | null>(null);
+  const [buyNowDiscount, setBuyNowDiscount] = useState(0);
+  const [buyNowCouponCode, setBuyNowCouponCode] = useState<string | null>(null);
 
-  const totalSavings = 0;
+  const totalSavings = mode === "buyNow" ? buyNowDiscount : cartDiscount;
+  const appliedCouponCode =
+    mode === "buyNow" ? buyNowCouponCode : cartVoucher?.code;
+  const removeCoupon = () => {
+    if (mode === "buyNow") {
+      setBuyNowDiscount(0);
+      setBuyNowCouponCode(null);
+    } else {
+      removeVoucher();
+    }
+  };
   const [voucherCode, setVoucherCode] = useState("");
+  const [voucherLoading, setVoucherLoading] = useState(false);
   const [error, setError] = useState({
     name: "",
     mobile: "",
@@ -89,11 +108,11 @@ const CheckoutPage = () => {
       if (mode === "buyNow" && productId) {
         try {
           const res = await axiosInstance.get(
-            `/api/checkout/product/${productId}`
+            `/api/checkout/product/${productId}`,
           );
           if (variantId) {
             const variant = res.data.variants.find(
-              (v: { id: string }) => v.id === variantId
+              (v: { id: string }) => v.id === variantId,
             );
             if (variant) {
               const variantImage = variant?.image;
@@ -136,7 +155,7 @@ const CheckoutPage = () => {
           } else {
             console.error(
               "Failed to fetch address with status:",
-              error.response.status
+              error.response.status,
             );
             toast.error("Failed to load your saved address.");
           }
@@ -175,11 +194,11 @@ const CheckoutPage = () => {
     mode === "buyNow" && buyNowProduct ? [buyNowProduct] : items;
 
   const subtotal = displayItems.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0
+    (sum, item) => sum + (item.price ?? 0) * (item.quantity ?? 1),
+    0,
   );
-
-  const finalTotal = subtotal + shipping;
+  const discount = mode === "buyNow" ? buyNowDiscount : cartDiscount;
+  const finalTotal = Math.max(0, subtotal - discount + shipping);
 
   // Bangladeshi mobile number validation
   const validateBangladeshiMobile = (mobile: string) => {
@@ -241,9 +260,47 @@ const CheckoutPage = () => {
     return isValid;
   };
 
-  const handleApplyVoucher = () => {
-    //TODO: write the apply voucher code here
-    setVoucherError("Invalid Voucher given");
+  const handleApplyVoucher = async () => {
+    setVoucherError("");
+    const code = voucherCode?.trim().toUpperCase();
+    if (!code) {
+      setVoucherError("Enter a coupon code.");
+      return;
+    }
+    setVoucherLoading(true);
+    try {
+      if (mode === "buyNow" && buyNowProduct) {
+        const res = await axiosInstance.post("/api/coupons/validate", {
+          code,
+          items: [
+            {
+              productId:
+                buyNowProduct.productId ??
+                (buyNowProduct as { id?: string }).id,
+              quantity: buyNowProduct.quantity || 1,
+              price: buyNowProduct.price,
+            },
+          ],
+        });
+        const data = res.data;
+        if (data.valid && data.discount != null) {
+          setBuyNowDiscount(data.discount);
+          setBuyNowCouponCode(code);
+          setVoucherCode("");
+        } else {
+          setVoucherError(data.message || "Invalid coupon.");
+        }
+        return;
+      }
+      const result = await validateAndApplyVoucher(code);
+      if (result.success) {
+        setVoucherCode("");
+      } else {
+        setVoucherError(result.message || "Invalid voucher.");
+      }
+    } finally {
+      setVoucherLoading(false);
+    }
   };
 
   const handleCancelAddressBar = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -305,7 +362,7 @@ const CheckoutPage = () => {
         } else {
           toast.error(
             error.response.data.message ||
-              "Failed to save address. Please try again."
+              "Failed to save address. Please try again.",
           );
         }
       } else {
@@ -339,17 +396,20 @@ const CheckoutPage = () => {
 
     // Check for out-of-stock items
     const hasOutOfStockItems = items.some(
-      (item) => item.stock === 0 || item.stock < item.quantity
+      (item) => item.stock === 0 || item.stock < item.quantity,
     );
     if (hasOutOfStockItems) {
       toast.error(
-        "Please remove out-of-stock items or add them to your wishlist to proceed."
+        "Please remove out-of-stock items or add them to your wishlist to proceed.",
       );
       return;
     }
 
     try {
       setPlacingOrder(true);
+
+      const couponCodeToSend =
+        mode === "buyNow" ? buyNowCouponCode : cartVoucher?.code;
 
       const payload = {
         address: {
@@ -360,6 +420,7 @@ const CheckoutPage = () => {
           comment: address.comment || "",
         },
         shipping,
+        ...(couponCodeToSend ? { couponCode: couponCodeToSend } : {}),
       };
 
       let res;
@@ -369,7 +430,7 @@ const CheckoutPage = () => {
         res = await axiosInstance.post("/api/checkout/buy-now", {
           ...payload,
           item: {
-            productId: buyNowProduct.id,
+            productId: buyNowProduct.productId ?? (buyNowProduct as any).id,
             quantity: buyNowProduct.quantity || 1,
             variantId: variantId || null,
           },
@@ -423,13 +484,6 @@ const CheckoutPage = () => {
     <>
       <div className="container px-4 xl:px-0 mx-auto max-w-[1280px]">
         <Breadcrumb items={[{ label: "Checkout", href: "/checkout" }]} />
-        <button
-          onClick={() => {
-           
-          }}
-        >
-          See me
-        </button>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 lg:gap-8">
           <div className="sm:col-span-2 flex flex-col gap-4">
@@ -452,6 +506,9 @@ const CheckoutPage = () => {
               error={voucherError}
               setError={setVoucherError}
               handleApplyVoucher={handleApplyVoucher}
+              voucherLoading={voucherLoading}
+              appliedCouponCode={appliedCouponCode}
+              onRemoveCoupon={removeCoupon}
             />
           </div>
           <CheckoutOrderInfoSidebar
@@ -463,6 +520,9 @@ const CheckoutPage = () => {
             error={voucherError}
             setError={setVoucherError}
             handleApplyVoucher={handleApplyVoucher}
+            voucherLoading={voucherLoading}
+            appliedCouponCode={appliedCouponCode}
+            onRemoveCoupon={removeCoupon}
             totalSavings={totalSavings}
             finalTotal={finalTotal}
             onProceedToPay={handlePaymentClick}
@@ -472,6 +532,7 @@ const CheckoutPage = () => {
       <CheckoutSummary
         total={finalTotal}
         shipping={shipping}
+        totalSavings={totalSavings}
         onPaymentClick={handlePaymentClick}
       />
     </>

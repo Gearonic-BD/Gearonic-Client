@@ -10,6 +10,9 @@ interface CheckoutOrderSummaryProps {
   error: string;
   setError: (error: string) => void;
   handleApplyVoucher: () => void;
+  voucherLoading?: boolean;
+  appliedCouponCode?: string | null;
+  onRemoveCoupon?: () => void;
 }
 
 const CheckoutOrderSummary: React.FC<CheckoutOrderSummaryProps> = ({
@@ -19,6 +22,9 @@ const CheckoutOrderSummary: React.FC<CheckoutOrderSummaryProps> = ({
   error,
   setError,
   handleApplyVoucher,
+  voucherLoading = false,
+  appliedCouponCode,
+  onRemoveCoupon,
 }) => {
   return (
     <div className="bg-white p-3 lg:p-6 md:col-span-2 rounded-md shadow-sm h-fit">
@@ -40,6 +46,9 @@ const CheckoutOrderSummary: React.FC<CheckoutOrderSummaryProps> = ({
             error={error}
             setError={setError}
             onApply={handleApplyVoucher}
+            isLoading={voucherLoading}
+            appliedCode={appliedCouponCode}
+            onRemove={onRemoveCoupon}
           />
         </div>
       </div>

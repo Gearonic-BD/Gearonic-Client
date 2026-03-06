@@ -15,6 +15,7 @@ interface PaymentMethodDetailsProps {
     bkashQr: string;
     nagadQr: string;
   };
+  isOrderLoading: boolean;
 }
 
 const PaymentMethodDetails: React.FC<PaymentMethodDetailsProps> = ({
@@ -25,6 +26,7 @@ const PaymentMethodDetails: React.FC<PaymentMethodDetailsProps> = ({
   accountNumber,
   trxId,
   onInputChange,
+  isOrderLoading,
 }) => {
   if (method === "cod") {
     return (
@@ -39,6 +41,7 @@ const PaymentMethodDetails: React.FC<PaymentMethodDetailsProps> = ({
           </p>
           <button
             onClick={onConfirm}
+            disabled={isOrderLoading}
             className="bg-primary hover:bg-primary/90 cursor-pointer text-white font-semibold py-3 px-8 rounded-sm transition-colors"
           >
             Confirm Order
