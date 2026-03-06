@@ -10,6 +10,9 @@ interface CheckoutOrderInfoSidebarProps {
   error: string;
   setError: (error: string) => void;
   handleApplyVoucher: () => void;
+  voucherLoading?: boolean;
+  appliedCouponCode?: string | null;
+  onRemoveCoupon?: () => void;
   totalSavings: number;
   finalTotal: number;
   onProceedToPay: () => void;
@@ -24,6 +27,9 @@ const CheckoutOrderInfoSidebar: React.FC<CheckoutOrderInfoSidebarProps> = ({
   error,
   setError,
   handleApplyVoucher,
+  voucherLoading = false,
+  appliedCouponCode,
+  onRemoveCoupon,
   totalSavings,
   finalTotal,
   onProceedToPay,
@@ -53,6 +59,9 @@ const CheckoutOrderInfoSidebar: React.FC<CheckoutOrderInfoSidebarProps> = ({
               error={error}
               setError={setError}
               onApply={handleApplyVoucher}
+              isLoading={voucherLoading}
+              appliedCode={appliedCouponCode}
+              onRemove={onRemoveCoupon}
             />
           </div>
           {totalSavings > 0 && (
@@ -67,7 +76,7 @@ const CheckoutOrderInfoSidebar: React.FC<CheckoutOrderInfoSidebarProps> = ({
         <hr className="border-gray-200" />
         <div className="flex flex-col text-lg gap-2">
           <div className="flex justify-between">
-            <span className="">Total</span>
+            <span className="font-medium">Total payable</span>
             <span className="text-danger font-semibold">
               ৳{finalTotal.toLocaleString()}
             </span>

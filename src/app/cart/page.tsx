@@ -10,28 +10,45 @@ import { useState } from "react";
 import { SuspenseLoading } from "@/utils/suspenseLoaders";
 
 const CartPage = () => {
-  const items = useCartStore((state) => state.cart.items);
- 
-  const removeItem = useCartStore((state) => state.removeFromCart);
+  const cart = useCartStore((state) => state.cart);
+  const items = cart.items;
+  const discount = cart.discount;
+  const voucher = cart.voucher;
 
-  const shipping = useCartStore((state) => state.cart.shipping);
+  const removeItem = useCartStore((state) => state.removeFromCart);
+  const removeVoucher = useCartStore((state) => state.removeVoucher);
   const isCartLoaded = useCartStore((state) => state.isCartLoaded);
+  const validateAndApplyVoucher = useCartStore((state) => state.validateAndApplyVoucher);
 
   const subtotal = items.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
   );
-  const discount = useCartStore((state) => state.cart.discount);
-  const finalTotal = subtotal - discount;
-  const changeShipping = useCartStore((state) => state.changeShipping);
-
-  const totalSavings = 0;
+  // Cart page: total = subtotal - discount only (no shipping; shipping shown at checkout)
+  const cartTotal = subtotal - discount;
+  const totalSavings = discount;
   const [voucherCode, setVoucherCode] = useState("");
   const [error, setError] = useState("");
+  const [voucherLoading, setVoucherLoading] = useState(false);
 
-  const handleApplyVoucher = () => {
-    //TODO: write the apply voucher code here
-    setError("Invalid Voucher Used");
+  const handleApplyVoucher = async () => {
+    setError("");
+    setVoucherLoading(true);
+    // Yield so React commits loading state before we block on the API (so spinner is visible)
+    await new Promise((r) => setTimeout(r, 0));
+    try {
+      const result = await validateAndApplyVoucher(voucherCode);
+      if (result.success) {
+        setVoucherCode("");
+        setError("");
+      } else {
+        setError(result.message || "Invalid voucher.");
+      }
+    } finally {
+      // Keep loading visible at least 300ms so user sees feedback
+      await new Promise((r) => setTimeout(r, 300));
+      setVoucherLoading(false);
+    }
   };
 
   if (!isCartLoaded) {
@@ -74,6 +91,9 @@ const CartPage = () => {
                     error={error}
                     setError={setError}
                     onApply={handleApplyVoucher}
+                    isLoading={voucherLoading}
+                    appliedCode={voucher?.code}
+                    onRemove={removeVoucher}
                   />
                 </div>
               </div>
@@ -83,15 +103,16 @@ const CartPage = () => {
             <div className="md:col-span-1 hidden md:block">
               <OrderSummary
                 subtotal={subtotal}
-                shipping={shipping}
-                total={finalTotal}
+                total={cartTotal}
                 totalSavings={totalSavings}
                 voucherCode={voucherCode}
                 setVoucherCode={setVoucherCode}
                 error={error}
                 setError={setError}
                 onApplyVoucher={handleApplyVoucher}
-                changeShipping={changeShipping}
+                voucherLoading={voucherLoading}
+                appliedCouponCode={voucher?.code}
+                onRemoveCoupon={removeVoucher}
                 itemsCount={items.length}
                 items={items}
               />
@@ -104,6 +125,7 @@ const CartPage = () => {
       <MobileOrderSummary
         subtotal={subtotal}
         totalSavings={totalSavings}
+        finalTotal={cartTotal}
         items={items}
       />
     </>
