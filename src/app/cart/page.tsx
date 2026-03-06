@@ -6,8 +6,10 @@ import CartVoucherInput from "@/components/CartVoucherInput";
 import OrderSummary from "@/components/OrderSummary";
 import MobileOrderSummary from "@/components/MobileOrderSummary";
 import { useCartStore } from "@/store/cart";
-import { useState } from "react";
 import { SuspenseLoading } from "@/utils/suspenseLoaders";
+import axiosInstance from "@/utils/axiosInstance";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 
 const CartPage = () => {
   const cart = useCartStore((state) => state.cart);
@@ -18,7 +20,10 @@ const CartPage = () => {
   const removeItem = useCartStore((state) => state.removeFromCart);
   const removeVoucher = useCartStore((state) => state.removeVoucher);
   const isCartLoaded = useCartStore((state) => state.isCartLoaded);
-  const validateAndApplyVoucher = useCartStore((state) => state.validateAndApplyVoucher);
+  const validateAndApplyVoucher = useCartStore(
+    (state) => state.validateAndApplyVoucher,
+  );
+  const router = useRouter();
 
   const subtotal = items.reduce(
     (sum, item) => sum + item.price * item.quantity,
@@ -30,6 +35,26 @@ const CartPage = () => {
   const [voucherCode, setVoucherCode] = useState("");
   const [error, setError] = useState("");
   const [voucherLoading, setVoucherLoading] = useState(false);
+  const [authChecked, setAuthChecked] = useState(false);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const res = await axiosInstance.get("/auth/api/status");
+        if (!res.data?.isAuthenticated) {
+          router.replace("/login?redirect=/cart");
+          return;
+        }
+      } catch {
+        router.replace("/login?redirect=/cart");
+        return;
+      } finally {
+        setAuthChecked(true);
+      }
+    };
+
+    checkAuth();
+  }, [router]);
 
   const handleApplyVoucher = async () => {
     setError("");
@@ -45,13 +70,12 @@ const CartPage = () => {
         setError(result.message || "Invalid voucher.");
       }
     } finally {
-      // Keep loading visible at least 300ms so user sees feedback
       await new Promise((r) => setTimeout(r, 300));
       setVoucherLoading(false);
     }
   };
 
-  if (!isCartLoaded) {
+  if (!authChecked || !isCartLoaded) {
     return (
       <div className="min-h-[80vh]">
         <SuspenseLoading />;
